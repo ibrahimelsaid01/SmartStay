@@ -274,9 +274,6 @@ Administrators have protected access to management and moderation functionality 
 
 
 
-Project screenshots can be added here as the repository documentation is finalized.
-
-
 
 \### Home Page
 <img width="1920" height="1080" alt="Screenshot 2026-08-12 065604" src="https://github.com/user-attachments/assets/ffd73e82-ac2f-4d37-a604-92864572bf14" />
@@ -1020,15 +1017,7 @@ The current project build contains a small number of non-blocking warnings that 
 
 \* Nullable-reference warnings in selected backend property services
 
-\* Dependency security advisories reported by npm that require controlled package review before applying breaking upgrades
 
-
-
-These warnings do not currently prevent successful frontend or backend builds.
-
-
-
-\---
 
 
 
@@ -1078,7 +1067,7 @@ GitHub: \[ibrahimelsaid01](https://github.com/ibrahimelsaid01)
 
 
 
-LinkedIn: Add LinkedIn profile URL
+LinkedIn: [Ibrahim Elsaid](https://www.linkedin.com/in/ibrahimelsaid1/)
 
 
 
