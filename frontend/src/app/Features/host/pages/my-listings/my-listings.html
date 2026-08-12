@@ -1,0 +1,392 @@
+<div class="my-listings-container p-4">
+  <!-- Title Header -->
+  <div class="mb-4 d-flex flex-column flex-lg-row justify-content-between gap-3">
+    <div>
+      <h1 class="page-title mb-1">Manage Listings</h1>
+      <p class="page-subtitle mb-0">Overview of your SmartStay property portfolio.</p>
+    </div>
+
+    <div class="d-flex gap-2 flex-wrap">
+      <button
+        type="button"
+        class="btn btn-sync-calendar border rounded-3 bg-white text-dark fw-medium"
+        (click)="refresh()"
+        [disabled]="isLoading()"
+      >
+        <i class="bi bi-arrow-clockwise me-2"></i>
+        Refresh
+      </button>
+
+      <button
+        type="button"
+        class="btn btn-sync-calendar border rounded-3 text-white fw-medium"
+        style="background-color: #0d9488;"
+        routerLink="/host/listings/add"
+      >
+        <i class="bi bi-plus-lg me-2"></i>
+        Add Listing
+      </button>
+    </div>
+  </div>
+
+  @if (errorMessage()) {
+  <div class="alert alert-danger py-2">
+    {{ errorMessage() }}
+  </div>
+  }
+
+  @if (successMessage()) {
+  <div class="alert alert-success py-2">
+    {{ successMessage() }}
+  </div>
+  }
+
+  @if (isLoading()) {
+  <div class="d-flex justify-content-center align-items-center py-5">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+  } @else {
+
+  <!-- Stats Cards Row -->
+  @if (summary(); as metrics) {
+  <div class="row g-4 mb-4">
+    <div class="col-md-4">
+      <div class="stat-card d-flex align-items-center justify-content-between p-4 bg-white rounded-4 border-0 shadow-xs">
+        <div>
+          <span class="stat-label text-muted d-block mb-2">Total Properties</span>
+          <span class="stat-value text-dark fw-bold">{{ metrics.totalProperties }}</span>
+        </div>
+
+        <div class="stat-icon-wrapper bg-grey-light d-flex align-items-center justify-content-center rounded-3">
+          <i class="bi bi-buildings text-secondary fs-4"></i>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="stat-card d-flex align-items-center justify-content-between p-4 bg-white rounded-4 border-0 shadow-xs">
+        <div>
+          <span class="stat-label text-muted d-block mb-2">Published</span>
+          <span class="stat-value text-dark fw-bold">{{ metrics.publishedProperties }}</span>
+        </div>
+
+        <div class="stat-icon-wrapper bg-gold-light d-flex align-items-center justify-content-center rounded-3">
+          <i class="bi bi-key-fill text-gold fs-4"></i>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="stat-card d-flex align-items-center justify-content-between p-4 bg-white rounded-4 border-0 shadow-xs">
+        <div>
+          <span class="stat-label text-muted d-block mb-2">Pending Review</span>
+          <span class="stat-value text-red fw-bold">{{ metrics.pendingProperties }}</span>
+        </div>
+
+        <div class="stat-icon-wrapper bg-red-light d-flex align-items-center justify-content-center rounded-3">
+          <i class="bi bi-hourglass-split text-red fs-4"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+  }
+
+  <!-- Main Workspace Area -->
+  <div class="row g-4">
+    <div class="col-lg-8">
+      <div class="card property-overview-card bg-white rounded-4 border-0 shadow-xs h-100">
+        <div class="card-header bg-transparent border-0 d-flex flex-column flex-xl-row justify-content-between align-items-xl-center gap-3 px-4 pt-4 pb-2">
+          <div>
+            <h2 class="section-title text-dark mb-1">Property Overview</h2>
+            <p class="text-muted small mb-0">
+              Showing {{ totalCount() }} listing(s)
+            </p>
+          </div>
+
+          <div class="d-flex flex-column flex-sm-row gap-2">
+            <div class="search-input-wrapper position-relative">
+              <i class="bi bi-search search-icon text-muted"></i>
+              <input
+                type="text"
+                class="form-control search-input"
+                placeholder="Search listings..."
+                [ngModel]="searchQuery()"
+                (ngModelChange)="searchQuery.set($event)"
+              />
+            </div>
+
+            <select
+              class="form-select search-input"
+              style="max-width: 180px;"
+              [ngModel]="statusFilter()"
+              (ngModelChange)="statusFilter.set($event); applyStatusFilter()"
+            >
+              @for (option of statusOptions; track option.value) {
+              <option [value]="option.value">
+                {{ option.label }}
+              </option>
+              }
+            </select>
+
+            <button
+              type="button"
+              class="btn btn-sync-calendar border rounded-3 bg-white text-dark fw-medium"
+              (click)="resetFilters()"
+            >
+              Reset
+            </button>
+          </div>
+        </div>
+
+        <div class="card-body px-0 py-0">
+          <div class="table-responsive">
+            <table class="table align-middle mb-0 custom-listings-table">
+              <thead>
+                <tr>
+                  <th scope="col" class="px-4 py-3 text-muted fw-semibold">Property Unit</th>
+                  <th scope="col" class="py-3 text-muted fw-semibold">Type</th>
+                  <th scope="col" class="py-3 text-muted fw-semibold">Status</th>
+                  <th scope="col" class="py-3 text-muted fw-semibold">Pricing</th>
+                  <th scope="col" class="py-3 text-muted fw-semibold">Last Update</th>
+                  <th scope="col" class="px-4 py-3 text-muted fw-semibold text-end">Actions</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                @for (prop of filteredProperties(); track prop.id) {
+                <tr>
+                  <!-- Property Unit -->
+                  <td class="px-4 py-3">
+                    <div class="d-flex align-items-center gap-3">
+                      <img
+                        [src]="getPropertyImage(prop)"
+                        [alt]="prop.title"
+                        class="property-thumbnail rounded-3"
+                      />
+
+                      <div>
+                        <span class="property-title fw-bold text-dark d-block">
+                          {{ prop.title || 'Untitled listing' }}
+                        </span>
+
+                        <span class="property-subtext text-muted d-block">
+                          {{ getLocationLabel(prop) }}
+                        </span>
+
+                        <span class="property-subtext text-muted d-block mt-1">
+                          {{ getStatusHint(prop) }}
+                        </span>
+                      </div>
+                    </div>
+                  </td>
+
+                  <!-- Type -->
+                  <td class="py-3">
+                    <span class="property-type text-dark fw-medium d-block">
+                      {{ getTypeLabel(prop) }}
+                    </span>
+
+                    <span class="features-icons-row d-flex align-items-center gap-1.5 mt-1">
+                      <span class="property-subtext text-muted">
+                        {{ prop.imagesCount }} image(s)
+                      </span>
+                    </span>
+                  </td>
+
+                  <!-- Status -->
+                  <td class="py-3">
+                    <span class="badge" [ngClass]="getStatusBadgeClass(prop.status)">
+                      <span class="badge-dot" [ngClass]="getStatusDotClass(prop.status)"></span>
+                      {{ getStatusLabel(prop.status) }}
+                    </span>
+                  </td>
+
+                  <!-- Pricing -->
+                  <td class="py-3">
+                    <span class="property-price fw-bold text-dark d-block">
+                      {{ getPriceLabel(prop) }}
+                    </span>
+                    <span class="price-unit text-muted d-block">/night</span>
+                  </td>
+
+                  <!-- Last Update -->
+                  <td class="py-3">
+                    <span class="property-type text-dark fw-medium d-block">
+                      {{ getUpdatedLabel(prop) | date: 'MMM d, y' }}
+                    </span>
+
+                    @if (prop.submittedAt) {
+                    <span class="property-subtext text-muted d-block">
+                      Submitted: {{ prop.submittedAt | date: 'MMM d, y' }}
+                    </span>
+                    }
+                  </td>
+
+                  <!-- Actions -->
+                  <td class="px-4 py-3 text-end">
+                    <div class="d-inline-flex gap-2">
+                      <button
+                        class="btn btn-sync-calendar border rounded-3 bg-white text-dark fw-medium"
+                        type="button"
+                        [disabled]="!canOpenProperty(prop)"
+                        (click)="openProperty(prop.id)"
+                      >
+                        {{ getPrimaryActionLabel(prop) }}
+                      </button>
+
+                      @if (canUnpublishProperty(prop)) {
+                      <button
+                        class="btn btn-action-icon border rounded-3 bg-white text-danger"
+                        type="button"
+                        (click)="onUnpublish(prop)"
+                        [disabled]="actionLoadingId() === prop.id"
+                        title="Unpublish Listing"
+                      >
+                        @if (actionLoadingId() === prop.id) {
+                        <span class="spinner-border spinner-border-sm"></span>
+                        } @else {
+                        <i class="bi bi-eye-slash-fill"></i>
+                        }
+                      </button>
+                      }
+
+                      @if (prop.status === 'Published') {
+                      <button
+                        class="btn btn-sync-calendar border rounded-3 bg-white text-dark fw-medium"
+                        type="button"
+                        (click)="onSyncCalendar(prop)"
+                      >
+                        Sync Calendar
+                      </button>
+                      }
+                    </div>
+                  </td>
+                </tr>
+                } @empty {
+                <tr>
+                  <td colspan="6" class="text-center py-5 text-muted">
+                    No listings found matching your search.
+                  </td>
+                </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+
+          <div class="d-flex justify-content-center align-items-center gap-3 py-4 border-top">
+            <button
+              type="button"
+              class="btn btn-view-all-tasks px-3 rounded-3"
+              (click)="goToPreviousPage()"
+              [disabled]="page() <= 1 || isLoading()"
+            >
+              Previous
+            </button>
+
+            <span class="text-muted small fw-semibold">
+              Page {{ page() }} of {{ totalPages() }}
+            </span>
+
+            <button
+              type="button"
+              class="btn btn-view-all-tasks px-3 rounded-3"
+              (click)="goToNextPage()"
+              [disabled]="page() >= totalPages() || isLoading()"
+            >
+              Next
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right side -->
+    <div class="col-lg-4">
+      <div class="d-flex flex-column gap-4">
+        <div class="card sidebar-card bg-white rounded-4 border-0 shadow-xs">
+          <div class="card-header bg-transparent border-0 d-flex justify-content-between align-items-center px-4 pt-4 pb-2">
+            <h2 class="sidebar-section-title text-dark mb-0">Status Guide</h2>
+            <i class="bi bi-info-circle text-teal fs-4"></i>
+          </div>
+
+          <div class="card-body px-4 pb-4 pt-2">
+            <div class="d-flex flex-column gap-3">
+              @for (warning of healthWarnings(); track warning.id) {
+              <div class="health-alert-box p-3 rounded-3 d-flex gap-3 align-items-start">
+                <div class="health-icon-wrapper mt-0.5">
+                  <i
+                    class="bi"
+                    [class]="warning.icon"
+                    [ngClass]="warning.type === 'danger' ? 'text-red' : 'text-teal'"
+                  ></i>
+                </div>
+
+                <div>
+                  <h4
+                    class="health-title fw-bold mb-1"
+                    [ngClass]="warning.type === 'danger' ? 'text-red' : 'text-dark'"
+                  >
+                    {{ warning.title }}
+                  </h4>
+
+                  <p class="health-desc text-muted mb-0 small">
+                    {{ warning.description }}
+                  </p>
+                </div>
+              </div>
+              }
+            </div>
+          </div>
+        </div>
+
+        <div class="card sidebar-card bg-white rounded-4 border-0 shadow-xs">
+          <div class="card-header bg-transparent border-0 d-flex justify-content-between align-items-center px-4 pt-4 pb-2">
+            <h2 class="sidebar-section-title text-dark mb-0">Listing Tasks</h2>
+            <i class="bi bi-tools text-dark fs-4"></i>
+          </div>
+
+          <div class="card-body px-4 pb-4 pt-2">
+            <div class="d-flex flex-column gap-3">
+              @for (task of maintenanceTasks(); track task.id) {
+              <div class="maintenance-task-box p-3 rounded-3 d-flex align-items-center justify-content-between">
+                <div class="d-flex align-items-center gap-3">
+                  <div
+                    class="maintenance-icon-wrapper rounded-circle d-flex align-items-center justify-content-center"
+                    [class]="task.iconBgClass"
+                  >
+                    <i class="bi text-secondary" [class]="task.icon"></i>
+                  </div>
+
+                  <div>
+                    <h4 class="task-title fw-bold text-dark mb-0">
+                      {{ task.title }}
+                    </h4>
+
+                    <p class="task-property text-muted mb-0 small">
+                      {{ task.property }}
+                    </p>
+                  </div>
+                </div>
+
+                <span class="task-status fw-semibold" [class]="task.statusClass">
+                  {{ task.status }}
+                </span>
+              </div>
+              }
+            </div>
+
+            <button
+              class="btn btn-view-all-tasks w-100 mt-3 py-2.5 rounded-3 fw-medium"
+              (click)="refresh()"
+            >
+              Refresh Listings
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  }
+</div>

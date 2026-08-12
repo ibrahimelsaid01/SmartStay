@@ -1,0 +1,26 @@
+.card {
+  border: 1px solid #42cccc !important;
+  border-radius: 20px !important;
+  background: #ffffff;
+  padding: 20px;
+  margin-top: 5%;
+}
+
+.text-info {
+  color: #42cccc !important;
+}
+.btn-outline-info {
+  border-color: #42cccc;
+  color: #42cccc;
+}
+
+.btn-outline-info:hover {
+  background-color: #42cccc;
+  color: white;
+}
+
+.btn-info {
+  background-color: #42cccc;
+  border-color: #42cccc;
+  color: white;
+}

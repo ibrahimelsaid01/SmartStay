@@ -1,0 +1,829 @@
+<div class="property-editor-page p-4">
+  <!-- Header -->
+  <div class="editor-header mb-4">
+    <div>
+      <button
+        type="button"
+        class="back-btn mb-3"
+        (click)="backToListings()"
+      >
+        <i class="bi bi-arrow-left"></i>
+        Back to Listings
+      </button>
+
+      <h1 class="page-title mb-1">
+        {{ isAddMode() ? 'Add New Listing' : 'Edit Listing' }}
+      </h1>
+
+      <p class="page-subtitle mb-0">
+        Complete all listing sections, then submit the property for admin review.
+      </p>
+    </div>
+
+    @if (editor()) {
+    <div class="editor-status-card">
+      <span>Status</span>
+      <strong>{{ editor()?.status }}</strong>
+    </div>
+    }
+  </div>
+
+  @if (errorMessage()) {
+  <div class="alert alert-danger py-2">
+    {{ errorMessage() }}
+  </div>
+  }
+
+  @if (successMessage()) {
+  <div class="alert alert-success py-2">
+    {{ successMessage() }}
+  </div>
+  }
+
+  @if (isPropertyPendingReview()) {
+  <div class="alert alert-info py-2">
+    This property is already submitted and waiting for admin review. Editing is disabled until the review is completed.
+  </div>
+  }
+
+  @if (loading()) {
+  <div class="loading-state">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+
+    <p class="text-muted mt-3 mb-0">Loading editor data...</p>
+  </div>
+  } @else {
+
+  <div class="editor-layout">
+    <!-- Steps Sidebar -->
+    <aside class="steps-sidebar">
+      <div class="steps-card">
+        <h2>Listing Steps</h2>
+
+        <div class="steps-list">
+          @for (step of steps; track step.key; let index = $index) {
+          <button
+            type="button"
+            class="step-item"
+            [class.active]="activeStepIndex() === index"
+            [class.completed]="getStepStatus(step.key)"
+            (click)="goToStep(index)"
+          >
+            <span class="step-icon">
+              @if (getStepStatus(step.key)) {
+              <i class="bi bi-check-lg"></i>
+              } @else {
+              <i class="bi" [class]="step.icon"></i>
+              }
+            </span>
+
+            <span class="step-label">
+              {{ step.label }}
+            </span>
+          </button>
+          }
+        </div>
+      </div>
+
+      @if (completion()) {
+      <div class="completion-card">
+        <h3>Completion</h3>
+
+        <div class="completion-row">
+          <span>Basic Info</span>
+          <strong [class.done]="completion()?.basicInformation">
+            {{ completion()?.basicInformation ? 'Done' : 'Missing' }}
+          </strong>
+        </div>
+
+        <div class="completion-row">
+          <span>Location</span>
+          <strong [class.done]="completion()?.location">
+            {{ completion()?.location ? 'Done' : 'Missing' }}
+          </strong>
+        </div>
+
+        <div class="completion-row">
+          <span>Capacity</span>
+          <strong [class.done]="completion()?.capacity">
+            {{ completion()?.capacity ? 'Done' : 'Missing' }}
+          </strong>
+        </div>
+
+        <div class="completion-row">
+          <span>Pricing</span>
+          <strong [class.done]="completion()?.pricingAndPolicies">
+            {{ completion()?.pricingAndPolicies ? 'Done' : 'Missing' }}
+          </strong>
+        </div>
+
+        <div class="completion-row">
+          <span>House Rules</span>
+          <strong [class.done]="completion()?.houseRules">
+            {{ completion()?.houseRules ? 'Done' : 'Missing' }}
+          </strong>
+        </div>
+
+        <div class="completion-row">
+          <span>Images</span>
+          <strong [class.done]="completion()?.images">
+            {{ completion()?.images ? 'Done' : 'Missing' }}
+          </strong>
+        </div>
+
+        <div class="completion-row">
+          <span>Document</span>
+          <strong [class.done]="completion()?.verificationDocument">
+            {{ completion()?.verificationDocument ? 'Done' : 'Missing' }}
+          </strong>
+        </div>
+      </div>
+      }
+    </aside>
+
+    <!-- Editor Content -->
+    <main class="editor-content">
+      <div class="editor-card">
+        <div class="section-header">
+          <div>
+            <h2>{{ currentStep().label }}</h2>
+            <p>Fill the current section and save before moving forward.</p>
+          </div>
+
+          @if (propertyId()) {
+          <span class="draft-id">
+            ID: {{ propertyId() }}
+          </span>
+          }
+        </div>
+
+        <!-- Basic Information -->
+        @if (currentStep().key === 'basic') {
+        <div class="form-section">
+          <div class="row g-3">
+            <div class="col-12">
+              <label class="form-label">Listing Title</label>
+              <input
+                type="text"
+                class="form-control"
+                placeholder="Example: Cozy apartment near Nile"
+                [disabled]="!isPropertyEditableForMutation()"
+                [ngModel]="basicForm().title"
+                (ngModelChange)="basicForm.update(form => ({ ...form, title: $event }))"
+              />
+            </div>
+
+            <div class="col-12">
+              <label class="form-label">Description</label>
+              <textarea
+                class="form-control"
+                rows="5"
+                placeholder="Describe the property, nearby places, and what makes it special..."
+                [disabled]="!isPropertyEditableForMutation()"
+                [ngModel]="basicForm().description"
+                (ngModelChange)="basicForm.update(form => ({ ...form, description: $event }))"
+              ></textarea>
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label">Property Type</label>
+              <select
+                class="form-select"
+                [disabled]="!isPropertyEditableForMutation()"
+                [ngModel]="basicForm().propertyType"
+                (ngModelChange)="basicForm.update(form => ({ ...form, propertyType: +$event }))"
+              >
+                @for (option of propertyTypeOptions; track option.value) {
+                <option [value]="option.value">
+                  {{ option.label }}
+                </option>
+                }
+              </select>
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label">Space Type</label>
+              <select
+                class="form-select"
+                [disabled]="!isPropertyEditableForMutation()"
+                [ngModel]="basicForm().spaceType"
+                (ngModelChange)="basicForm.update(form => ({ ...form, spaceType: +$event }))"
+              >
+                @for (option of spaceTypeOptions; track option.value) {
+                <option [value]="option.value">
+                  {{ option.label }}
+                </option>
+                }
+              </select>
+            </div>
+          </div>
+        </div>
+        }
+
+        <!-- Location -->
+        @if (currentStep().key === 'location') {
+        <div class="form-section">
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label">Country</label>
+              <input
+                type="text"
+                class="form-control"
+                placeholder="Egypt"
+                [disabled]="!isPropertyEditableForMutation()"
+                [ngModel]="locationForm().country"
+                (ngModelChange)="locationForm.update(form => ({ ...form, country: $event }))"
+              />
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label">City</label>
+              <input
+                type="text"
+                class="form-control"
+                placeholder="Cairo"
+                [disabled]="!isPropertyEditableForMutation()"
+                [ngModel]="locationForm().city"
+                (ngModelChange)="locationForm.update(form => ({ ...form, city: $event }))"
+              />
+            </div>
+
+            <div class="col-12">
+              <label class="form-label">Street Address</label>
+              <input
+                type="text"
+                class="form-control"
+                placeholder="Street name and area"
+                [disabled]="!isPropertyEditableForMutation()"
+                [ngModel]="locationForm().streetAddress"
+                (ngModelChange)="locationForm.update(form => ({ ...form, streetAddress: $event }))"
+              />
+            </div>
+
+            <div class="col-md-3">
+              <label class="form-label">Building</label>
+              <input
+                type="text"
+                class="form-control"
+                [disabled]="!isPropertyEditableForMutation()"
+                [ngModel]="locationForm().buildingNumber"
+                (ngModelChange)="locationForm.update(form => ({ ...form, buildingNumber: $event }))"
+              />
+            </div>
+
+            <div class="col-md-3">
+              <label class="form-label">Floor</label>
+              <input
+                type="text"
+                class="form-control"
+                [disabled]="!isPropertyEditableForMutation()"
+                [ngModel]="locationForm().floor"
+                (ngModelChange)="locationForm.update(form => ({ ...form, floor: $event }))"
+              />
+            </div>
+
+            <div class="col-md-3">
+              <label class="form-label">Apartment</label>
+              <input
+                type="text"
+                class="form-control"
+                [disabled]="!isPropertyEditableForMutation()"
+                [ngModel]="locationForm().apartmentNumber"
+                (ngModelChange)="locationForm.update(form => ({ ...form, apartmentNumber: $event }))"
+              />
+            </div>
+
+            <div class="col-md-3">
+              <label class="form-label">Postal Code</label>
+              <input
+                type="text"
+                class="form-control"
+                [disabled]="!isPropertyEditableForMutation()"
+                [ngModel]="locationForm().postalCode"
+                (ngModelChange)="locationForm.update(form => ({ ...form, postalCode: $event }))"
+              />
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label">Latitude</label>
+              <input
+                type="number"
+                class="form-control"
+                [disabled]="!isPropertyEditableForMutation()"
+                [ngModel]="locationForm().latitude"
+                (ngModelChange)="locationForm.update(form => ({ ...form, latitude: +$event }))"
+              />
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label">Longitude</label>
+              <input
+                type="number"
+                class="form-control"
+                [disabled]="!isPropertyEditableForMutation()"
+                [ngModel]="locationForm().longitude"
+                (ngModelChange)="locationForm.update(form => ({ ...form, longitude: +$event }))"
+              />
+            </div>
+          </div>
+
+          <div class="hint-box mt-3">
+            <i class="bi bi-info-circle"></i>
+            Later we can connect this section to Google Maps or Leaflet so the host chooses location directly from a map.
+          </div>
+        </div>
+        }
+
+        <!-- Capacity -->
+        @if (currentStep().key === 'capacity') {
+        <div class="form-section">
+          <div class="capacity-grid">
+            <div class="capacity-card">
+              <i class="bi bi-people"></i>
+              <label>Max Guests</label>
+              <input
+                type="number"
+                min="1"
+                class="form-control"
+                [disabled]="!isPropertyEditableForMutation()"
+                [ngModel]="capacityForm().maxGuests"
+                (ngModelChange)="capacityForm.update(form => ({ ...form, maxGuests: +$event }))"
+              />
+            </div>
+
+            <div class="capacity-card">
+              <i class="bi bi-door-open"></i>
+              <label>Bedrooms</label>
+              <input
+                type="number"
+                min="0"
+                class="form-control"
+                [disabled]="!isPropertyEditableForMutation()"
+                [ngModel]="capacityForm().bedrooms"
+                (ngModelChange)="capacityForm.update(form => ({ ...form, bedrooms: +$event }))"
+              />
+            </div>
+
+            <div class="capacity-card">
+              <i class="bi bi-lamp"></i>
+              <label>Beds</label>
+              <input
+                type="number"
+                min="1"
+                class="form-control"
+                [disabled]="!isPropertyEditableForMutation()"
+                [ngModel]="capacityForm().beds"
+                (ngModelChange)="capacityForm.update(form => ({ ...form, beds: +$event }))"
+              />
+            </div>
+
+            <div class="capacity-card">
+              <i class="bi bi-droplet"></i>
+              <label>Bathrooms</label>
+              <input
+                type="number"
+                min="1"
+                class="form-control"
+                [disabled]="!isPropertyEditableForMutation()"
+                [ngModel]="capacityForm().bathrooms"
+                (ngModelChange)="capacityForm.update(form => ({ ...form, bathrooms: +$event }))"
+              />
+            </div>
+          </div>
+        </div>
+        }
+
+        <!-- Pricing -->
+        @if (currentStep().key === 'pricing') {
+        <div class="form-section">
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label">Price Per Night</label>
+              <input
+                type="number"
+                min="1"
+                class="form-control"
+                [disabled]="!isPropertyEditableForMutation()"
+                [ngModel]="pricingForm().pricePerNight"
+                (ngModelChange)="pricingForm.update(form => ({ ...form, pricePerNight: +$event }))"
+              />
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label">Currency</label>
+              <input
+                type="text"
+                class="form-control"
+                placeholder="EGP"
+                [disabled]="!isPropertyEditableForMutation()"
+                [ngModel]="pricingForm().currency"
+                (ngModelChange)="pricingForm.update(form => ({ ...form, currency: $event }))"
+              />
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label">Check-in Time</label>
+              <input
+                type="time"
+                class="form-control"
+                [disabled]="!isPropertyEditableForMutation()"
+                [ngModel]="pricingForm().checkInTime"
+                (ngModelChange)="pricingForm.update(form => ({ ...form, checkInTime: $event }))"
+              />
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label">Check-out Time</label>
+              <input
+                type="time"
+                class="form-control"
+                [disabled]="!isPropertyEditableForMutation()"
+                [ngModel]="pricingForm().checkOutTime"
+                (ngModelChange)="pricingForm.update(form => ({ ...form, checkOutTime: $event }))"
+              />
+            </div>
+
+            <div class="col-12">
+              <label class="form-label">Cancellation Policy</label>
+              <select
+                class="form-select"
+                [disabled]="!isPropertyEditableForMutation()"
+                [ngModel]="pricingForm().cancellationPolicy"
+                (ngModelChange)="pricingForm.update(form => ({ ...form, cancellationPolicy: +$event }))"
+              >
+                @for (option of cancellationPolicyOptions; track option.value) {
+                <option [value]="option.value">
+                  {{ option.label }}
+                </option>
+                }
+              </select>
+            </div>
+          </div>
+        </div>
+        }
+
+        <!-- House Rules -->
+        @if (currentStep().key === 'rules') {
+        <div class="form-section">
+          <div class="rules-grid">
+            <label class="rule-card">
+              <input
+                type="checkbox"
+                [disabled]="!isPropertyEditableForMutation()"
+                [ngModel]="houseRulesForm().allowsSmoking"
+                (ngModelChange)="houseRulesForm.update(form => ({ ...form, allowsSmoking: $event }))"
+              />
+              <span>
+                <i class="bi bi-fire"></i>
+                Allows Smoking
+              </span>
+            </label>
+
+            <label class="rule-card">
+              <input
+                type="checkbox"
+                [disabled]="!isPropertyEditableForMutation()"
+                [ngModel]="houseRulesForm().allowsPets"
+                (ngModelChange)="houseRulesForm.update(form => ({ ...form, allowsPets: $event }))"
+              />
+              <span>
+                <i class="bi bi-heart"></i>
+                Allows Pets
+              </span>
+            </label>
+
+            <label class="rule-card">
+              <input
+                type="checkbox"
+                [disabled]="!isPropertyEditableForMutation()"
+                [ngModel]="houseRulesForm().allowsParties"
+                (ngModelChange)="houseRulesForm.update(form => ({ ...form, allowsParties: $event }))"
+              />
+              <span>
+                <i class="bi bi-music-note-beamed"></i>
+                Allows Parties
+              </span>
+            </label>
+
+            <label class="rule-card">
+              <input
+                type="checkbox"
+                [disabled]="!isPropertyEditableForMutation()"
+                [ngModel]="houseRulesForm().allowsChildren"
+                (ngModelChange)="houseRulesForm.update(form => ({ ...form, allowsChildren: $event }))"
+              />
+              <span>
+                <i class="bi bi-emoji-smile"></i>
+                Allows Children
+              </span>
+            </label>
+          </div>
+
+          <div class="mt-4">
+            <label class="form-label">Additional House Rules</label>
+            <textarea
+              class="form-control"
+              rows="5"
+              placeholder="Example: Quiet hours after 11 PM, no extra guests without approval..."
+              [disabled]="!isPropertyEditableForMutation()"
+              [ngModel]="houseRulesForm().additionalHouseRules"
+              (ngModelChange)="houseRulesForm.update(form => ({ ...form, additionalHouseRules: $event }))"
+            ></textarea>
+          </div>
+        </div>
+        }
+
+        <!-- Amenities -->
+        @if (currentStep().key === 'amenities') {
+        <div class="form-section">
+          @if (groupedAmenities().length === 0) {
+          <div class="empty-state">
+            No amenities available.
+          </div>
+          } @else {
+          <div class="amenities-wrapper">
+            @for (group of groupedAmenities(); track group.category) {
+            <div class="amenity-group">
+              <h3>{{ group.category }}</h3>
+
+              <div class="amenities-grid">
+                @for (amenity of group.amenities; track amenity.id) {
+                <button
+                  type="button"
+                  class="amenity-card"
+                  [disabled]="!isPropertyEditableForMutation()"
+                  [class.selected]="isAmenitySelected(amenity.id)"
+                  (click)="toggleAmenity(amenity.id)"
+                >
+                  <i class="bi bi-check-circle"></i>
+                  <span>{{ amenity.name }}</span>
+                </button>
+                }
+              </div>
+            </div>
+            }
+          </div>
+          }
+        </div>
+        }
+
+        <!-- Images -->
+        @if (currentStep().key === 'images') {
+        <div class="form-section">
+          @if (isPropertyEditableForMutation()) {
+          <div class="upload-box">
+            <i class="bi bi-cloud-arrow-up"></i>
+            <h3>Upload Property Images</h3>
+            <p>Select one or more images for your listing.</p>
+
+            <input
+              type="file"
+              class="form-control"
+              multiple
+              accept="image/*"
+              (change)="onImageFilesSelected($event)"
+            />
+
+            @if (selectedImageFiles().length > 0) {
+            <p class="selected-files mt-2">
+              {{ selectedImageFiles().length }} file(s) selected.
+            </p>
+            }
+          </div>
+          }
+
+          @if (propertyImages().length > 0) {
+          <div class="images-grid mt-4">
+            @for (image of propertyImages(); track image.id) {
+            <article class="image-card">
+              <img [src]="image.url" alt="Property image" />
+
+              <div class="image-actions">
+                <span>
+                  {{ image.format }}
+                  @if (image.isCover) {
+                  · Cover
+                  }
+                </span>
+
+                @if (isPropertyEditableForMutation()) {
+                <div>
+                  @if (!image.isCover) {
+                  <button
+                    type="button"
+                    class="small-action-btn"
+                    (click)="setCoverImage(image)"
+                  >
+                    Set Cover
+                  </button>
+                  }
+
+                  <button
+                    type="button"
+                    class="small-action-btn danger"
+                    (click)="deleteImage(image)"
+                  >
+                    Delete
+                  </button>
+                </div>
+                }
+              </div>
+            </article>
+            }
+          </div>
+          } @else {
+          <div class="empty-state mt-4">
+            No images uploaded yet.
+          </div>
+          }
+        </div>
+        }
+
+        <!-- Verification Document -->
+        @if (currentStep().key === 'document') {
+        <div class="form-section">
+          @if (isPropertyEditableForMutation()) {
+          <div class="row g-3">
+            <div class="col-md-5">
+              <label class="form-label">Document Type</label>
+              <select
+                class="form-select"
+                [ngModel]="documentType()"
+                (ngModelChange)="documentType.set(+$event)"
+              >
+                @for (option of documentTypeOptions; track option.value) {
+                <option [value]="option.value">
+                  {{ option.label }}
+                </option>
+                }
+              </select>
+            </div>
+
+            <div class="col-md-7">
+              <label class="form-label">Document Files</label>
+              <input
+                type="file"
+                class="form-control"
+                multiple
+                accept="image/*,.pdf"
+                (change)="onDocumentFilesSelected($event)"
+              />
+            </div>
+          </div>
+          }
+
+          @if (selectedDocumentFiles().length > 0) {
+          <p class="selected-files mt-2">
+            {{ selectedDocumentFiles().length }} document file(s) selected.
+          </p>
+          }
+
+          @if (editor()?.verificationDocument) {
+          <div class="document-card mt-4">
+            <div>
+              <h3>{{ editor()?.verificationDocument?.documentType }}</h3>
+              <p>
+                {{ editor()?.verificationDocument?.pagesCount }} page(s)
+                · Uploaded at
+                {{ editor()?.verificationDocument?.createdAt | date: 'medium' }}
+              </p>
+            </div>
+
+            @if (isPropertyEditableForMutation()) {
+            <button
+              type="button"
+              class="danger-outline-btn"
+              (click)="deleteVerificationDocument()"
+            >
+              Delete Document
+            </button>
+            }
+          </div>
+
+          @if (verificationPages().length > 0) {
+          <div class="document-pages mt-3">
+            @for (page of verificationPages(); track page.id) {
+            <div class="document-page">
+              <i class="bi bi-file-earmark-text"></i>
+              <div>
+                <strong>Page {{ page.pageNumber }}</strong>
+                <span>{{ page.format }} · {{ page.createdAt | date: 'medium' }}</span>
+              </div>
+            </div>
+            }
+          </div>
+          }
+          } @else {
+          <div class="empty-state mt-4">
+            No verification document uploaded yet.
+          </div>
+          }
+        </div>
+        }
+
+        <!-- Submit -->
+        @if (currentStep().key === 'submit') {
+        <div class="form-section">
+          <div class="submit-card">
+            <i class="bi bi-send-check"></i>
+
+            @if (isPropertyPendingReview()) {
+            <h3>Property Pending Review</h3>
+
+            <p>
+              This property has already been submitted and is waiting for admin review.
+            </p>
+
+            <div class="ready-box">
+              <i class="bi bi-hourglass-split"></i>
+              Your listing is now pending. You cannot edit it until the admin review is completed.
+            </div>
+            } @else {
+            <h3>Submit Property for Review</h3>
+
+            <p>
+              Once submitted, the property will be reviewed by admin before it becomes available to users.
+            </p>
+
+            @if (canSubmitProperty()) {
+            <div class="ready-box">
+              <i class="bi bi-check-circle-fill"></i>
+              This listing is ready for submission.
+            </div>
+            } @else {
+            <div class="missing-box">
+              <h4>Missing Requirements</h4>
+
+              @if (getSubmissionErrors().length > 0) {
+              <ul>
+                @for (error of getSubmissionErrors(); track error) {
+                <li>{{ error }}</li>
+                }
+              </ul>
+              } @else {
+              <p>Please complete all required sections before submission.</p>
+              }
+            </div>
+            }
+
+            <button
+              type="button"
+              class="submit-btn"
+              (click)="submitProperty()"
+              [disabled]="!canSubmitProperty() || submitting()"
+            >
+              @if (submitting()) {
+              Submitting...
+              } @else {
+              Submit for Review
+              }
+            </button>
+            }
+          </div>
+        </div>
+        }
+
+        <!-- Footer Actions -->
+        <div class="editor-actions">
+          <button
+            type="button"
+            class="secondary-btn"
+            (click)="previousStep()"
+            [disabled]="!canGoPrevious() || saving() || submitting()"
+          >
+            Previous
+          </button>
+
+          <div class="right-actions">
+            @if (currentStep().key !== 'submit' && isPropertyEditableForMutation()) {
+            <button
+              type="button"
+              class="save-btn"
+              (click)="saveCurrentStep()"
+              [disabled]="saving() || submitting()"
+            >
+              @if (saving()) {
+              Saving...
+              } @else {
+              Save Current Step
+              }
+            </button>
+            }
+
+            <button
+              type="button"
+              class="primary-btn"
+              (click)="nextStep()"
+              [disabled]="!canGoNext() || saving() || submitting()"
+            >
+              Next
+            </button>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+  }
+</div>

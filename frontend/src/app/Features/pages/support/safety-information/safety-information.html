@@ -1,0 +1,80 @@
+<div class="safety-page">
+
+  <header class="safety-hero">
+    <span class="badge">SAFETY FIRST</span>
+    <h1>Your Safety is Our Priority</h1>
+    <p>
+      At SmartStay, we believe hospitality starts with a secure environment. Our commitment to safety,
+      verification, and transparency ensures that every stay is as peaceful as it is premium.
+    </p>
+  </header>
+
+  <section class="safety-cards-section">
+    <div class="safety-cards-grid">
+      <div class="safety-card" *ngFor="let card of safetyCards">
+        <div class="safety-icon" [innerHTML]="card.icon"></div>
+        <h3>{{ card.title }}</h3>
+        <ul>
+          <li *ngFor="let point of card.points">
+            <span class="check-icon">&#10003;</span>
+            <span>{{ point }}</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="transparency-section">
+    <div class="transparency-grid">
+      <div class="transparency-text">
+        <h2>Monitoring &amp; Transparency</h2>
+        <p>
+          SmartStay utilizes technology to ensure property security, but never at the cost of your privacy.
+          Our transparency guidelines are strictly enforced for all host listings.
+        </p>
+
+        <div class="transparency-item" *ngFor="let item of transparencyItems">
+          <div class="transparency-icon" [class.warning]="item.variant === 'warning'" [innerHTML]="item.icon"></div>
+          <div>
+            <h4>{{ item.title }}</h4>
+            <p>{{ item.text }}</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="transparency-image">
+        <img src="Images/safety.jpg" alt="Smart Stay property entrance with keyless entry" />
+      </div>
+    </div>
+  </section>
+
+  <section class="assistance-section">
+    <div class="assistance-banner">
+      <h2>Need Assistance?</h2>
+      <p>
+        Our Global Safety Team is available around the clock. If you feel unsafe or need to report a property
+        issue, contact us immediately.
+      </p>
+      <div class="assistance-actions">
+        <button type="button" class="btn btn-report" (click)="onReportSafetyConcern()">
+          <span class="icon">&#9888;</span> Report a Safety Concern
+        </button>
+        <button type="button" class="btn btn-contact" (click)="onContactSupport()">
+          Contact 24/7 Support
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <section class="trust-partners-section">
+    <p class="trust-label">GLOBAL TRUST PARTNERS</p>
+    <div class="trust-partners-list">
+      <div class="trust-partner" *ngFor="let partner of trustPartners">
+        <span class="trust-icon" [innerHTML]="partner.icon"></span>
+        <span>{{ partner.name }}</span>
+      </div>
+    </div>
+  </section>
+
+</div>
+

@@ -1,0 +1,33 @@
+<h2>Basic Information</h2>
+
+<form [formGroup]="form" (ngSubmit)="onSubmit()">
+  <label>Display Name</label>
+  <input formControlName="displayName" placeholder="Saad Ahmed" />
+
+  <label>Bio</label>
+  <textarea
+    formControlName="bio"
+    maxlength="500"
+    placeholder="I love hosting and helping travellers discover amazing places ...."
+  ></textarea>
+  <div class="counter">{{ form.value.bio?.length || 0 }}/500</div>
+
+  <label>Country</label>
+  <input formControlName="country" placeholder="Egypt" />
+
+  <label>City</label>
+  <input formControlName="city" placeholder="Alexandria" />
+
+  <label>Phone Number</label>
+  <input formControlName="phoneNumber" placeholder="+20 000 000 000" />
+
+  <p class="error" *ngIf="state.error()">{{ state.error() }}</p>
+
+  <div class="actions">
+    <button type="button" (click)="cancel()">Cancel</button>
+    <button type="submit" [disabled]="form.invalid || state.loading()">
+      {{ state.loading() ? 'Saving...' : 'Save & Continue' }}
+    </button>
+  </div>
+  <p class="hint">You can edit this information anytime before submitting</p>
+</form>

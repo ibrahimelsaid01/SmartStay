@@ -1,0 +1,23 @@
+.city-card {
+  height: 200px;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.city-card:hover {
+  transform: scale(1.03);
+}
+
+.city-img {
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.city-card:hover .city-img {
+  transform: scale(1.08);
+}
+
+.gradient-overlay {
+  height: 60%;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0) 100%);
+}

@@ -1,0 +1,24 @@
+<div class="host-application-container" *ngIf="!state.loading() || state.application()">
+  <!-- Terminal states take over the whole screen, no stepper -->
+  <ng-container [ngSwitch]="state.status()">
+    <app-application-approved *ngSwitchCase="'Approved'" />
+    <app-application-rejected *ngSwitchCase="'Rejected'" />
+    <app-application-submitted *ngSwitchCase="'Pending'" />
+
+    <!-- Draft / in-progress: show the wizard -->
+    <ng-container *ngSwitchDefault>
+      <app-host-stepper [currentStep]="state.currentStep()" />
+
+      <ng-container [ngSwitch]="state.currentStep()">
+        <app-step-information *ngSwitchCase="Step.Information" />
+        <app-step-profile-image *ngSwitchCase="Step.ProfileImage" />
+        <app-step-id-document *ngSwitchCase="Step.IdDocument" />
+        <app-step-review *ngSwitchCase="Step.Review" />
+      </ng-container>
+    </ng-container>
+  </ng-container>
+</div>
+
+<div class="loading" *ngIf="state.loading() && !state.application()">
+  Loading your application...
+</div>

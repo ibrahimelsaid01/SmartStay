@@ -1,0 +1,159 @@
+<div class="container all-stays-page my-5 pt-4">
+
+  <!-- Filters Bar -->
+  <div class="bg-light p-4 rounded-4 shadow-sm mb-5">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h5 class="fw-bold mb-0 text-secondary">
+        <i class="bi bi-sliders"></i>
+        Filter Properties
+      </h5>
+
+      @if (hasActiveFilters) {
+      <span class="badge bg-info text-white rounded-pill px-3 py-2">
+        Search applied
+      </span>
+      }
+    </div>
+
+    <div class="row g-3 align-items-end">
+
+      <!-- Location -->
+      <div class="col-lg-3 col-md-6">
+        <label class="form-label fw-medium fs-7">Location</label>
+        <select class="form-select rounded-3 filter-select" [(ngModel)]="selectedLocation" (change)="applyFilters()">
+          <option value="">All Locations</option>
+          <option value="Cairo">Cairo</option>
+          <option value="Alexandria">Alexandria</option>
+          <option value="Giza">Giza</option>
+          <option value="North Coast">North Coast</option>
+          <option value="Aswan">Aswan</option>
+        </select>
+      </div>
+
+      <!-- Check-in -->
+      <div class="col-lg-2 col-md-6">
+        <label class="form-label fw-medium fs-7">Check-in</label>
+        <input type="date" class="form-control rounded-3" [(ngModel)]="selectedCheckInDate" [attr.min]="today"
+          (change)="applyFilters()" />
+      </div>
+
+      <!-- Check-out -->
+      <div class="col-lg-2 col-md-6">
+        <label class="form-label fw-medium fs-7">Check-out</label>
+        <input type="date" class="form-control rounded-3" [(ngModel)]="selectedCheckOutDate"
+          [attr.min]="selectedCheckInDate || today" (change)="applyFilters()" />
+      </div>
+
+      <!-- Guests -->
+      <div class="col-lg-2 col-md-6">
+        <label class="form-label fw-medium fs-7">Guests</label>
+        <select class="form-select rounded-3 filter-select" [(ngModel)]="selectedGuests" (change)="applyFilters()">
+          <option [ngValue]="0">Any guests</option>
+          <option [ngValue]="1">1 Guest</option>
+          <option [ngValue]="2">2 Guests</option>
+          <option [ngValue]="3">3 Guests</option>
+          <option [ngValue]="4">4 Guests</option>
+          <option [ngValue]="5">5 Guests</option>
+          <option [ngValue]="6">6 Guests</option>
+          <option [ngValue]="7">7 Guests</option>
+          <option [ngValue]="8">8 Guests</option>
+        </select>
+      </div>
+
+      <!-- Reset -->
+      <div class="col-12">
+        <button type="button" class="btn btn-secondary rounded-3 fw-bold py-2 px-4 fs-7" (click)="resetFilters()">
+          Reset Filters
+        </button>
+      </div>
+    </div>
+
+    @if (selectedCheckInDate && selectedCheckOutDate) {
+    <div class="alert alert-info mt-3 mb-0 small">
+      Showing stays for
+      <strong>{{ selectedCheckInDate }}</strong>
+      to
+      <strong>{{ selectedCheckOutDate }}</strong>.
+      Final date availability is checked when booking.
+    </div>
+    }
+
+    @if (dateError) {
+    <div class="alert alert-danger mt-3 mb-0 small">
+      {{ dateError }}
+    </div>
+    }
+  </div>
+
+  <!-- Results Header -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold text-dark mb-0">Available Stays</h2>
+
+    <span class="badge bg-info text-white px-3 py-2 rounded-pill fs-6">
+      {{ filteredStaysList.length }} Places Found
+    </span>
+  </div>
+
+  @if (errorMessage) {
+  <div class="alert alert-danger py-2 small mb-4">
+    {{ errorMessage }}
+  </div>
+  }
+
+  <!-- Loading يظهر فقط لو مفيش أي داتا وصلت لسه -->
+  @if (isLoading && originalStaysList.length === 0) {
+  <div class="text-center py-5">
+    <div class="spinner-border text-info mb-3" role="status"></div>
+    <h5 class="text-muted">Loading stays...</h5>
+  </div>
+  }
+
+  <!-- Stays تظهر أول ما الداتا توصل حتى لو isLoading لسه true -->
+  @if (!isLoading || originalStaysList.length > 0) {
+  <div class="row">
+    @for (stay of paginatedStays; track stay.id) {
+    <div class="col-lg-4 col-md-6 mb-4">
+      <app-stay-card [stayData]="stay"></app-stay-card>
+    </div>
+    } @empty {
+    <div class="col-12 text-center py-5">
+      <i class="bi bi-search fs-1 text-muted mb-3 d-block"></i>
+      <h4 class="text-muted">No places match your search criteria.</h4>
+      <p class="text-muted">Try another location, guests count, or price range.</p>
+    </div>
+    }
+  </div>
+  }
+
+  <!-- Pagination -->
+  @if ((!isLoading || originalStaysList.length > 0) && totalPages > 1) {
+  <nav class="d-flex justify-content-center mt-5">
+    <ul class="pagination pagination-md gap-1">
+
+      <li class="page-item" [class.disabled]="currentPage === 1">
+        <button type="button" class="page-link rounded-3 border-0 shadow-sm" (click)="changePage(currentPage - 1)">
+          <i class="bi bi-chevron-left"></i>
+        </button>
+      </li>
+
+      @for (page of [].constructor(totalPages); track $index) {
+      <li class="page-item" [class.active]="currentPage === ($index + 1)">
+        <button type="button" class="page-link rounded-3 border-0 shadow-sm fw-bold"
+          [style.background-color]="currentPage === ($index + 1) ? '#4cd1c0' : ''"
+          [style.color]="currentPage === ($index + 1) ? '#ffffff' : ''" (click)="changePage($index + 1)">
+          {{ $index + 1 }}
+        </button>
+      </li>
+      }
+
+      <li class="page-item" [class.disabled]="currentPage === totalPages">
+        <button type="button" class="page-link rounded-3 border-0 shadow-sm" (click)="changePage(currentPage + 1)">
+          <i class="bi bi-chevron-right"></i>
+        </button>
+      </li>
+
+    </ul>
+  </nav>
+  }
+
+</div>

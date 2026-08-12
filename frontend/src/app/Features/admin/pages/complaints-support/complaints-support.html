@@ -1,0 +1,822 @@
+<section class="support-page">
+  <div class="page-header">
+    <div>
+      <h2>Complaints & Support</h2>
+      <p>
+        Review complaints, inspect evidence, reply to users, apply admin
+        decisions, execute verified refunds, and resolve tickets.
+      </p>
+    </div>
+
+    <button
+      type="button"
+      class="refresh-btn"
+      (click)="loadTickets()"
+      [disabled]="loading"
+    >
+      <span
+        *ngIf="loading"
+        class="spinner-border spinner-border-sm me-1"
+        aria-hidden="true"
+      ></span>
+      <i *ngIf="!loading" class="bi bi-arrow-clockwise"></i>
+      Refresh
+    </button>
+  </div>
+
+  <div *ngIf="errorMessage" class="alert alert-danger py-2" role="alert">
+    {{ errorMessage }}
+  </div>
+
+  <div *ngIf="successMessage" class="alert alert-success py-2" role="status">
+    {{ successMessage }}
+  </div>
+
+  <div class="filters-card">
+    <div class="filter-group search-group">
+      <label for="support-search">Search</label>
+      <input
+        id="support-search"
+        type="text"
+        class="form-control"
+        placeholder="Search subject, user, email, reference..."
+        [(ngModel)]="search"
+        [disabled]="loading"
+        (keyup.enter)="applyFilters()"
+      />
+    </div>
+
+    <div class="filter-group">
+      <label for="support-status">Status</label>
+      <select
+        id="support-status"
+        class="form-select"
+        [(ngModel)]="status"
+        [disabled]="loading"
+      >
+        <option *ngFor="let option of statusOptions" [value]="option.value">
+          {{ option.label }}
+        </option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label for="support-category">Category</label>
+      <select
+        id="support-category"
+        class="form-select"
+        [(ngModel)]="category"
+        [disabled]="loading"
+      >
+        <option *ngFor="let option of categoryOptions" [value]="option.value">
+          {{ option.label }}
+        </option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label for="support-urgency">Urgency</label>
+      <select
+        id="support-urgency"
+        class="form-select"
+        [(ngModel)]="urgency"
+        [disabled]="loading"
+      >
+        <option *ngFor="let option of urgencyOptions" [value]="option.value">
+          {{ option.label }}
+        </option>
+      </select>
+    </div>
+
+    <div class="filter-actions">
+      <button
+        type="button"
+        class="apply-btn"
+        (click)="applyFilters()"
+        [disabled]="loading"
+      >
+        Apply
+      </button>
+
+      <button
+        type="button"
+        class="reset-btn"
+        (click)="resetFilters()"
+        [disabled]="loading"
+      >
+        Reset
+      </button>
+    </div>
+  </div>
+
+  <div class="summary-row">
+    <div class="summary-card">
+      <span>Total tickets</span>
+      <strong>{{ totalCount }}</strong>
+    </div>
+
+    <div class="summary-card">
+      <span>Current page</span>
+      <strong>{{ page }}</strong>
+    </div>
+
+    <div class="summary-card">
+      <span>Page size</span>
+      <strong>{{ pageSize }}</strong>
+    </div>
+  </div>
+
+  <div *ngIf="loading" class="loading-state" aria-live="polite">
+    <div class="spinner-border spinner-border-sm" style="color: #4dd9d5"></div>
+    <span class="ms-2">Loading support tickets...</span>
+  </div>
+
+  <div *ngIf="!loading && tickets.length === 0" class="empty-state">
+    <i class="bi bi-inbox"></i>
+    <h4>No support tickets found</h4>
+    <p>There are no tickets matching the current filters.</p>
+  </div>
+
+  <div
+    *ngIf="!loading && tickets.length > 0"
+    class="table-responsive tickets-table-wrapper"
+  >
+    <table class="table table-hover align-middle mb-0">
+      <thead>
+        <tr>
+          <th>Ticket</th>
+          <th>User</th>
+          <th>Category</th>
+          <th>Urgency</th>
+          <th>Status</th>
+          <th>Decision</th>
+          <th>Property</th>
+          <th>Messages</th>
+          <th>Files</th>
+          <th>Created</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let ticket of tickets">
+          <td>
+            <strong>{{ ticket.subject }}</strong>
+            <span class="muted-text">
+              {{ ticket.referenceCode || ticket.ticketId }}
+            </span>
+          </td>
+
+          <td>
+            <strong>{{ ticket.createdByName }}</strong>
+            <span class="muted-text">{{ ticket.createdByEmail || '—' }}</span>
+          </td>
+
+          <td>{{ formatValue(ticket.category) }}</td>
+
+          <td>
+            <span
+              class="urgency-pill"
+              [ngClass]="getUrgencyClass(ticket.urgency)"
+            >
+              {{ formatValue(ticket.urgency) }}
+            </span>
+          </td>
+
+          <td>
+            <span
+              class="status-pill"
+              [ngClass]="getStatusClass(ticket.status)"
+            >
+              {{ formatValue(ticket.status) }}
+            </span>
+          </td>
+
+          <td>
+            <span
+              class="decision-pill"
+              [ngClass]="
+                getDecisionClass(
+                  ticket.decisionAction || ticket.decisionStatus
+                )
+              "
+            >
+              {{
+                formatValue(
+                  ticket.decisionAction ||
+                    ticket.decisionStatus ||
+                    'NoDecision'
+                )
+              }}
+            </span>
+          </td>
+
+          <td>{{ ticket.propertyTitle || '—' }}</td>
+          <td>{{ ticket.messagesCount }}</td>
+          <td>{{ ticket.attachmentsCount ?? 0 }}</td>
+          <td>{{ ticket.createdAt | date: 'MMM d, y, h:mm a' }}</td>
+
+          <td>
+            <button
+              type="button"
+              class="btn btn-sm btn-outline-secondary fw-bold"
+              (click)="viewDetails(ticket.ticketId)"
+              [disabled]="loadingDetails"
+            >
+              View
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div *ngIf="totalPages > 1" class="pagination-box">
+    <button
+      type="button"
+      (click)="goToPreviousPage()"
+      [disabled]="page <= 1 || loading"
+    >
+      Previous
+    </button>
+
+    <span>Page {{ page }} of {{ totalPages }}</span>
+
+    <button
+      type="button"
+      (click)="goToNextPage()"
+      [disabled]="page >= totalPages || loading"
+    >
+      Next
+    </button>
+  </div>
+
+  <div *ngIf="loadingDetails" class="text-center py-4" aria-live="polite">
+    <div class="spinner-border spinner-border-sm" style="color: #4dd9d5"></div>
+    <span class="text-muted small ms-2">Loading ticket details...</span>
+  </div>
+
+  <section *ngIf="selectedTicket" class="details-panel">
+    <div class="details-header">
+      <div>
+        <div class="d-flex flex-wrap align-items-center gap-2 mb-2">
+          <span
+            class="status-pill"
+            [ngClass]="getStatusClass(selectedTicket.status)"
+          >
+            {{ formatValue(selectedTicket.status) }}
+          </span>
+
+          <span
+            class="urgency-pill"
+            [ngClass]="getUrgencyClass(selectedTicket.urgency)"
+          >
+            {{ formatValue(selectedTicket.urgency) }}
+          </span>
+
+          <span
+            class="decision-pill"
+            [ngClass]="
+              getDecisionClass(
+                selectedTicket.decisionAction ||
+                  selectedTicket.decisionStatus
+              )
+            "
+          >
+            {{
+              formatValue(
+                selectedTicket.decisionAction ||
+                  selectedTicket.decisionStatus ||
+                  'NoDecision'
+              )
+            }}
+          </span>
+        </div>
+
+        <h3>{{ selectedTicket.subject }}</h3>
+        <p>
+          {{ selectedTicket.referenceCode || selectedTicket.ticketId }}
+          · {{ selectedTicket.createdByName }}
+          · {{ selectedTicket.createdByEmail || 'No email' }}
+        </p>
+      </div>
+
+      <button
+        type="button"
+        class="btn btn-sm btn-outline-secondary"
+        (click)="closeDetails()"
+        [disabled]="
+          replyLoading || decisionLoading || refundLoading || resolveLoading
+        "
+      >
+        Close
+      </button>
+    </div>
+
+    <div
+      *ngIf="isSelectedTicketReadOnly"
+      class="alert alert-light border py-2"
+    >
+      This ticket is {{ formatValue(selectedTicket.status) }}. Replies,
+      decisions, refunds, and resolution updates are disabled.
+    </div>
+
+    <div class="details-grid">
+      <div>
+        <span>Category</span>
+        <strong>{{ formatValue(selectedTicket.category) }}</strong>
+      </div>
+
+      <div>
+        <span>Urgency</span>
+        <strong>{{ formatValue(selectedTicket.urgency) }}</strong>
+      </div>
+
+      <div>
+        <span>Status</span>
+        <strong>{{ formatValue(selectedTicket.status) }}</strong>
+      </div>
+
+      <div>
+        <span>Decision status</span>
+        <strong>
+          {{ formatValue(selectedTicket.decisionStatus || 'NoDecision') }}
+        </strong>
+      </div>
+
+      <div>
+        <span>Decision action</span>
+        <strong>
+          {{ formatValue(selectedTicket.decisionAction || 'NoAction') }}
+        </strong>
+      </div>
+
+      <div>
+        <span>Property</span>
+        <strong>{{ selectedTicket.propertyTitle || '—' }}</strong>
+      </div>
+
+      <div>
+        <span>Property ID</span>
+        <strong>{{ selectedTicket.propertyId || '—' }}</strong>
+      </div>
+
+      <div>
+        <span>Booking ID</span>
+        <strong>{{ selectedTicket.bookingId || '—' }}</strong>
+      </div>
+
+      <div>
+        <span>Created</span>
+        <strong>{{ selectedTicket.createdAt | date: 'medium' }}</strong>
+      </div>
+
+      <div>
+        <span>Updated</span>
+        <strong>{{ selectedTicket.updatedAt | date: 'medium' }}</strong>
+      </div>
+
+      <div>
+        <span>Resolved</span>
+        <strong>
+          {{
+            selectedTicket.resolvedAt
+              ? (selectedTicket.resolvedAt | date: 'medium')
+              : '—'
+          }}
+        </strong>
+      </div>
+    </div>
+
+    <div class="description-box">
+      <h5>Description</h5>
+      <p>{{ selectedTicket.description }}</p>
+    </div>
+
+    <div
+      *ngIf="
+        selectedTicket.decisionStatus ||
+        selectedTicket.decisionAction ||
+        selectedTicket.decisionNote
+      "
+      class="current-decision-box"
+    >
+      <h5>Current admin decision</h5>
+
+      <div class="decision-summary-grid">
+        <div>
+          <span>Status</span>
+          <strong>
+            {{ formatValue(selectedTicket.decisionStatus || 'NoDecision') }}
+          </strong>
+        </div>
+
+        <div>
+          <span>Action</span>
+          <strong>
+            {{ formatValue(selectedTicket.decisionAction || 'NoAction') }}
+          </strong>
+        </div>
+
+        <div>
+          <span>Decided by</span>
+          <strong>{{ selectedTicket.decidedByAdminName || '—' }}</strong>
+        </div>
+
+        <div>
+          <span>Decided at</span>
+          <strong>
+            {{
+              selectedTicket.decidedAt
+                ? (selectedTicket.decidedAt | date: 'medium')
+                : '—'
+            }}
+          </strong>
+        </div>
+      </div>
+
+      <p *ngIf="selectedTicket.decisionNote" class="decision-note">
+        {{ selectedTicket.decisionNote }}
+      </p>
+    </div>
+
+    <div *ngIf="selectedTicket.resolutionNote" class="description-box">
+      <h5>Resolution note</h5>
+      <p>{{ selectedTicket.resolutionNote }}</p>
+    </div>
+
+    <div class="attachments-box">
+      <h5>Evidence attachments</h5>
+
+      <div
+        *ngIf="
+          !selectedTicket.attachments ||
+          selectedTicket.attachments.length === 0
+        "
+        class="empty-messages"
+      >
+        No evidence attachments were uploaded for this ticket.
+      </div>
+
+      <div
+        *ngIf="
+          selectedTicket.attachments &&
+          selectedTicket.attachments.length > 0
+        "
+        class="attachments-grid"
+      >
+        <a
+          *ngFor="
+            let attachment of selectedTicket.attachments;
+            let i = index;
+            trackBy: getAttachmentId
+          "
+          class="attachment-card"
+          [href]="attachment.url"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <div class="attachment-icon">
+            <i class="bi bi-image"></i>
+          </div>
+
+          <div class="attachment-content">
+            <strong>{{ attachment.fileName }}</strong>
+            <span>
+              {{ formatValue(attachment.type || 'IssueEvidence') }}
+              · {{ formatFileSize(attachment.fileSizeInBytes) }}
+              · {{ attachment.createdAt | date: 'mediumDate' }}
+            </span>
+            <span *ngIf="attachment.uploadedByName">
+              Uploaded by {{ attachment.uploadedByName }}
+            </span>
+          </div>
+
+          <i class="bi bi-box-arrow-up-right text-muted"></i>
+        </a>
+      </div>
+    </div>
+
+    <div class="messages-box">
+      <h5>Messages</h5>
+
+      <div *ngIf="selectedTicket.messages.length === 0" class="empty-messages">
+        No messages yet.
+      </div>
+
+      <div
+        *ngFor="let message of selectedTicket.messages"
+        class="message-item"
+        [class.admin-message]="message.isAdminMessage"
+      >
+        <div class="message-header">
+          <div>
+            <strong>{{ message.senderName }}</strong>
+            <span *ngIf="message.isAdminMessage" class="ms-2">Admin</span>
+          </div>
+          <span>{{ message.createdAt | date: 'medium' }}</span>
+        </div>
+
+        <p>{{ message.message }}</p>
+      </div>
+    </div>
+
+    <div class="action-grid">
+      <div class="reply-box">
+        <h5>Reply to ticket</h5>
+        <p class="decision-helper">
+          Send a clear follow-up message to the user without changing the
+          complaint decision.
+        </p>
+
+        <textarea
+          class="form-control mb-2"
+          rows="4"
+          maxlength="4000"
+          placeholder="Write a reply to the user..."
+          [(ngModel)]="replyMessage"
+          [disabled]="isSelectedTicketReadOnly || replyLoading"
+        ></textarea>
+
+        <div class="text-muted small text-end mb-3">
+          {{ replyMessage.length }} / 4000
+        </div>
+
+        <button
+          type="button"
+          class="btn btn-teal fw-bold"
+          (click)="sendReply()"
+          [disabled]="
+            isSelectedTicketReadOnly ||
+            replyLoading ||
+            replyMessage.trim().length < 2
+          "
+        >
+          <span
+            *ngIf="replyLoading"
+            class="spinner-border spinner-border-sm me-1"
+          ></span>
+          {{ replyLoading ? 'Sending...' : 'Send Reply' }}
+        </button>
+      </div>
+
+      <div class="decision-box">
+        <h5>Apply admin decision</h5>
+        <p class="decision-helper">
+          Save the complaint result first. The backend applies the appropriate
+          payout protection for the selected decision.
+        </p>
+
+        <label for="decision-status" class="form-label">Decision status</label>
+        <select
+          id="decision-status"
+          class="form-select mb-2"
+          [(ngModel)]="decisionStatus"
+          [disabled]="isSelectedTicketReadOnly || decisionLoading"
+          (ngModelChange)="onDecisionStatusChanged()"
+        >
+          <option
+            *ngFor="let option of decisionStatusOptions"
+            [ngValue]="option.value"
+          >
+            {{ option.label }}
+          </option>
+        </select>
+        <span class="field-hint">{{ getSelectedDecisionStatusHint() }}</span>
+
+        <label for="decision-action" class="form-label mt-3">
+          Decision action
+        </label>
+        <select
+          id="decision-action"
+          class="form-select mb-2"
+          [(ngModel)]="decisionAction"
+          [disabled]="isSelectedTicketReadOnly || decisionLoading"
+          (ngModelChange)="onDecisionActionChanged()"
+        >
+          <option
+            *ngFor="let option of decisionActionOptions"
+            [ngValue]="option.value"
+          >
+            {{ option.label }}
+          </option>
+        </select>
+        <span class="field-hint">{{ getSelectedDecisionActionHint() }}</span>
+
+        <label for="decision-note" class="form-label mt-3">
+          Decision note
+        </label>
+        <textarea
+          id="decision-note"
+          class="form-control mb-2"
+          rows="4"
+          maxlength="1000"
+          placeholder="Explain the decision and the evidence reviewed..."
+          [(ngModel)]="decisionNote"
+          [disabled]="isSelectedTicketReadOnly || decisionLoading"
+        ></textarea>
+
+        <div class="text-muted small text-end mb-3">
+          {{ decisionNote.length }} / 1000
+        </div>
+
+        <div *ngIf="isNeedsMoreEvidenceDecision">
+          <label for="admin-evidence-message" class="form-label">
+            Evidence request message
+          </label>
+          <textarea
+            id="admin-evidence-message"
+            class="form-control mb-2"
+            rows="4"
+            maxlength="4000"
+            placeholder="Tell the user exactly which additional evidence is required..."
+            [(ngModel)]="adminMessage"
+            [disabled]="isSelectedTicketReadOnly || decisionLoading"
+          ></textarea>
+
+          <div class="text-muted small text-end mb-3">
+            {{ adminMessage.length }} / 4000
+          </div>
+        </div>
+
+        <button
+          type="button"
+          class="btn btn-warning fw-bold"
+          (click)="applyDecision()"
+          [disabled]="
+            isSelectedTicketReadOnly ||
+            decisionLoading ||
+            decisionNote.trim().length < 5 ||
+            (isNeedsMoreEvidenceDecision && adminMessage.trim().length < 5)
+          "
+        >
+          <span
+            *ngIf="decisionLoading"
+            class="spinner-border spinner-border-sm me-1"
+          ></span>
+          {{ decisionLoading ? 'Saving decision...' : 'Save Decision' }}
+        </button>
+      </div>
+
+      <div
+        *ngIf="isPartialRefundDecision || isFullRefundDecision"
+        class="decision-box"
+      >
+        <h5>{{ refundActionTitle }}</h5>
+        <p class="decision-helper">{{ refundActionHint }}</p>
+
+        <div *ngIf="isPartialRefundDecision">
+          <label for="refund-amount" class="form-label">
+            Guest refund amount
+          </label>
+          <input
+            id="refund-amount"
+            type="number"
+            class="form-control mb-2"
+            min="0.01"
+            step="0.01"
+            placeholder="Enter the partial refund amount"
+            [(ngModel)]="refundAmount"
+            [disabled]="!canExecuteRefund || refundLoading"
+          />
+          <span class="field-hint">
+            The backend verifies this amount against the remaining refundable
+            payment balance.
+          </span>
+        </div>
+
+        <div *ngIf="isFullRefundDecision" class="alert alert-light border py-2">
+          The backend calculates the complete remaining refundable amount. No
+          amount is accepted from the browser for a full refund.
+        </div>
+
+        <label for="refund-note" class="form-label mt-3">
+          Refund note
+        </label>
+        <textarea
+          id="refund-note"
+          class="form-control mb-2"
+          rows="4"
+          maxlength="1000"
+          placeholder="Record the refund reason for the audit log..."
+          [(ngModel)]="refundNote"
+          [disabled]="!canExecuteRefund || refundLoading"
+        ></textarea>
+
+        <div class="text-muted small text-end mb-3">
+          {{ refundNote.length }} / 1000
+        </div>
+
+        <button
+          type="button"
+          class="btn btn-danger fw-bold"
+          (click)="executeRefund()"
+          [disabled]="
+            !canExecuteRefund ||
+            refundLoading ||
+            (isPartialRefundDecision &&
+              (!refundAmount || refundAmount <= 0))
+          "
+        >
+          <span
+            *ngIf="refundLoading"
+            class="spinner-border spinner-border-sm me-1"
+          ></span>
+          {{ refundLoading ? 'Processing refund...' : refundActionTitle }}
+        </button>
+
+        <div
+          *ngIf="lastRefundResponse"
+          class="alert alert-light border mt-3 mb-0"
+        >
+          <div class="d-flex justify-content-between gap-2 mb-1">
+            <strong>Refund result</strong>
+            <span
+              class="status-pill"
+              [ngClass]="getStatusClass(lastRefundResponse.status)"
+            >
+              {{ formatValue(lastRefundResponse.status) }}
+            </span>
+          </div>
+
+          <div class="small text-muted">
+            Amount:
+            <strong class="text-dark">
+              {{ lastRefundResponse.amount | number: '1.2-2' }}
+              {{ lastRefundResponse.currency }}
+            </strong>
+          </div>
+
+          <div class="small text-muted">
+            Provider:
+            <strong class="text-dark">
+              {{ lastRefundResponse.provider }}
+            </strong>
+          </div>
+
+          <div class="small text-muted">
+            Provider refund ID:
+            <strong class="text-dark">
+              {{ lastRefundResponse.providerRefundId || 'Pending' }}
+            </strong>
+          </div>
+
+          <div class="small text-muted">
+            Already processed:
+            <strong class="text-dark">
+              {{ lastRefundResponse.wasAlreadyProcessed ? 'Yes' : 'No' }}
+            </strong>
+          </div>
+
+          <p class="small mb-0 mt-2">
+            {{ lastRefundResponse.message }}
+          </p>
+        </div>
+      </div>
+
+      <div class="resolve-box">
+        <h5>Resolve ticket</h5>
+        <p class="decision-helper">
+          Resolution is allowed only after a final complaint decision and any
+          required payout or refund reconciliation are complete.
+        </p>
+
+        <textarea
+          class="form-control mb-2"
+          rows="4"
+          maxlength="1000"
+          placeholder="Write the final resolution note..."
+          [(ngModel)]="resolutionNote"
+          [disabled]="isSelectedTicketReadOnly || resolveLoading"
+        ></textarea>
+
+        <div class="text-muted small text-end mb-3">
+          {{ resolutionNote.length }} / 1000
+        </div>
+
+        <button
+          type="button"
+          class="btn btn-success fw-bold"
+          (click)="resolveTicket()"
+          [disabled]="
+            resolveLoading ||
+            resolutionNote.trim().length < 5 ||
+            isSelectedTicketReadOnly
+          "
+        >
+          <span
+            *ngIf="resolveLoading"
+            class="spinner-border spinner-border-sm me-1"
+          ></span>
+          {{
+            resolveLoading
+              ? 'Resolving...'
+              : isSelectedTicketReadOnly
+                ? 'Already Resolved'
+                : 'Resolve Ticket'
+          }}
+        </button>
+      </div>
+    </div>
+  </section>
+</section>

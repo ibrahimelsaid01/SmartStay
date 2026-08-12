@@ -1,0 +1,16 @@
+
+.section2 {
+  background-color: #f8f9fa;
+}
+
+/* Section 1 */
+.features-section {
+  background-color: #f0fafa;
+}
+
+.feature-card {
+  background: #fff;
+  border-radius: 12px;
+  border: 1px solid #e0f5f5;
+  height: 100%;
+}

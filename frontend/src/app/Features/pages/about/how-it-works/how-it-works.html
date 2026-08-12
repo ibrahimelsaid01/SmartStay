@@ -1,0 +1,142 @@
+<div class="container py-5 page-container">
+<br>
+   <br>
+   <br>
+  <section class="text-center max-w-hero mx-auto mb-5 pb-4">
+    <h1 class="fw-bold display-5 mb-3 text-dark">
+      How <span class="brand-color">Smart Stay</span> Works
+    </h1>
+    <p class="text-muted small px-md-5 leading-relaxed">
+      Experience the future of hospitality, whether you're looking for a seamless stay or managing your property with
+      ease.
+    </p>
+    <div class="d-flex justify-content-center gap-3 mt-4">
+      <button routerLink="/all-stays" class="btn btn-brand rounded-pill px-4 py-2 text-white fw-medium shadow-sm">Start
+        Browsing</button>
+      <button [routerLink]="isHost() ? '/add-listing' : (isRegularUser() ? '/become-host' : '/login')"
+        class="btn btn-outline-brand rounded-pill px-4 py-2 fw-medium">
+        List Your Space
+      </button>
+    </div>
+  </section>
+
+  <div class="row g-5 mb-5">
+
+    <div class="col-md-6">
+      <div class="d-flex align-items-center gap-2 mb-4">
+        <i class="bi bi-person brand-color fs-4"></i>
+        <h2 class="h5 fw-bold text-dark m-0">For Our Guests</h2>
+      </div>
+
+      <div class="d-flex flex-column gap-3 mb-4">
+        <div class="guest-card d-flex gap-3 p-4 rounded-4 align-items-start shadow-sm bg-white">
+          <div class="icon-box-wrapper">
+            <div class="icon-box rounded-3 d-flex align-items-center justify-content-center">
+              <i class="bi bi-compass-fill"></i>
+            </div>
+          </div>
+          <div>
+            <h3 class="h6 fw-bold text-dark mb-1">Discover & Book</h3>
+            <p class="text-muted small mb-0 leading-relaxed">Browse premium hotels and apartments with smart
+              integrations. Use our filters to find the perfect automated home.</p>
+          </div>
+        </div>
+
+        <div class="guest-card d-flex gap-3 p-4 rounded-4 align-items-start shadow-sm bg-white">
+          <div class="icon-box-wrapper">
+            <div class="icon-box rounded-3 d-flex align-items-center justify-content-center">
+              <i class="bi bi-patch-check-fill"></i>
+            </div>
+          </div>
+          <div>
+            <h3 class="h6 fw-bold text-dark mb-1">Instant Confirmation</h3>
+            <p class="text-muted small mb-0 leading-relaxed">Receive your booking details and a secure, unique digital
+              access code instantly. No front desk queues, no waiting.</p>
+          </div>
+        </div>
+
+        <div class="guest-card d-flex gap-3 p-4 rounded-4 align-items-start shadow-sm bg-white">
+          <div class="icon-box-wrapper">
+            <div class="icon-box rounded-3 d-flex align-items-center justify-content-center">
+              <i class="bi bi-router-fill"></i>
+            </div>
+          </div>
+          <div>
+            <h3 class="h6 fw-bold text-dark mb-1">Smart Access</h3>
+            <p class="text-muted small mb-0 leading-relaxed">Arrive on your own schedule. Use your digital code or phone
+              to unlock your stay instantly through our app.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="image-wrapper rounded-4 overflow-hidden bg-light shadow-sm mt-4">
+        <img src="/Images/howitworks1.jpg" alt="Smart Access Phone" class="img-fluid w-100 object-fit-cover">
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="d-flex align-items-center gap-2 mb-4">
+        <i class="bi bi-house-heart brand-color fs-4"></i>
+        <h2 class="h5 fw-bold text-dark m-0">For Our Hosts</h2>
+      </div>
+
+      <div class="d-flex flex-column gap-3 mb-4">
+        <div class="host-card d-flex gap-3 p-4 rounded-4 align-items-start">
+          <div class="icon-box-wrapper">
+            <div class="icon-box rounded-3 d-flex align-items-center justify-content-center host-icon-box">
+              <i class="bi bi-house-add-fill text-white"></i>
+            </div>
+          </div>
+          <div>
+            <h3 class="h6 fw-bold text-dark mb-1">List Your Property</h3>
+            <p class="text-muted small mb-0 leading-relaxed">Create your listing with professional photos and detailed
+              amenities. Reach a global audience of smart travelers.</p>
+          </div>
+        </div>
+
+        <div class="host-card d-flex gap-3 p-4 rounded-4 align-items-start">
+          <div class="icon-box-wrapper">
+            <div class="icon-box rounded-3 d-flex align-items-center justify-content-center host-icon-box">
+              <i class="bi bi-arrow-repeat text-white"></i>
+            </div>
+          </div>
+          <div>
+            <h3 class="h6 fw-bold text-dark mb-1">Sync Your Smart Home</h3>
+            <p class="text-muted small mb-0 leading-relaxed">Connect your smart locks, thermostats, and lights for
+              automated management. Set custom scenes for guest arrival.</p>
+          </div>
+        </div>
+
+        <div class="host-card d-flex gap-3 p-4 rounded-4 align-items-start">
+          <div class="icon-box-wrapper">
+            <div class="icon-box rounded-3 d-flex align-items-center justify-content-center host-icon-box">
+              <i class="bi bi-credit-card-2-back-fill text-white"></i>
+            </div>
+          </div>
+          <div>
+            <h3 class="h6 fw-bold text-dark mb-1">Automate & Earn</h3>
+            <p class="text-muted small mb-0 leading-relaxed">Welcome guests with automated check-ins. Track your
+              earnings and occupancy in real-time with our dashboard.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="image-wrapper rounded-4 overflow-hidden bg-light shadow-sm mt-4">
+        <img src="/Images/howitworks2.jpg" alt="Host Dashboard Tablet" class="img-fluid w-100 object-fit-cover">
+      </div>
+    </div>
+
+  </div>
+
+  <div
+    class="cta-banner rounded-5 p-4 p-md-5 d-flex flex-column flex-md-row align-items-center justify-content-between gap-4 mt-5">
+    <div class="text-center text-md-start">
+      <h3 class="brand-color fw-bold h4 mb-2">Ready to experience the future?</h3>
+      <p class="text-muted small mb-0">Join thousands of travelers and property owners who have already switched to the
+        smarter way to stay and host.</p>
+    </div>
+    <button routerLink="/login" class="btn btn-brand rounded-pill px-4 py-2.5 text-white fw-bold shadow-sm shrink-0">Get
+      Started</button>
+  </div>
+
+</div>

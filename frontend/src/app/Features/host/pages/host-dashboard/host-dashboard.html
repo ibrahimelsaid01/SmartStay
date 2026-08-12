@@ -1,0 +1,192 @@
+<div class="container-fluid dashboard-wrapper p-4 text-white">
+
+  <!-- الهيدر العلوي -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h2 class="fw-bold text-dark mb-1">Hello, {{ cachedProfile?.firstName }}!</h2>
+      <p class="text-muted small mb-0">Here is a quick overview of your connected properties and rentals today.</p>
+    </div>
+    <button class="btn btn-outline-light btn-sm rounded-3 px-3">
+      <i class="bi bi-download me-2"></i>Export Report
+    </button>
+  </div>
+
+  @if (dashboardService.isLoading()) {
+  <div class="d-flex justify-content-center align-items-center my-5 py-5">
+    <div class="spinner-border text-success" role="status"></div>
+  </div>
+  } @else {
+
+  <!-- السطر الأول: كروت الـ Stats العلويّة -->
+  @if (dashboardService.stats(); as stats) {
+  <div class="row g-4 mb-4">
+
+    <div class="col-lg-4 col-md-6">
+      <div class="card bg-dark rounded-4 p-4 h-100 shadow-sm">
+        <div class="d-flex align-items-center justify-content-between mb-3">
+          <span class="text-muted small fw-medium text-uppercase ">Active Listings</span>
+          <div class="icon-shape bg-success-opacity rounded-3 p-2"><i class="bi bi-building"></i></div>
+        </div>
+        <h1 class="fw-bold mb-1 text-white">{{ stats.activeListings.count }}</h1>
+        <p class="text-muted small mb-0">Last property added <span class="text-white fw-semibold">{{
+            stats.activeListings.lastAddedText }}</span></p>
+      </div>
+    </div>
+
+    <div class="col-lg-4 col-md-6">
+      <div class="card bg-dark rounded-4 p-4 h-100 shadow-sm">
+        <div class="d-flex align-items-center justify-content-between mb-3">
+          <span class="text-muted small fw-medium text-uppercase">Total Views (7 Days)</span>
+          <div class="icon-shape bg-info-opacity rounded-3 p-2"><i class="bi bi-eye"></i></div>
+        </div>
+        <h1 class="fw-bold mb-1 text-white">{{ stats.totalViews.count }}</h1>
+        <p class="small mb-0" [ngClass]="stats.totalViews.isPositive ? 'text-success' : 'text-danger'">
+          <i class="bi" [ngClass]="stats.totalViews.isPositive ? 'bi-arrow-up-short' : 'bi-arrow-down-short'"></i>
+          {{ stats.totalViews.percentageChange }}% <span class="text-muted">vs last week</span>
+        </p>
+      </div>
+    </div>
+
+    <div class="col-lg-4 col-md-12">
+      <div class="card bg-dark rounded-4 p-4 h-100 shadow-sm">
+        <div class="d-flex align-items-center justify-content-between mb-3">
+          <span class="text-muted small fw-medium text-uppercase">Total Reviews</span>
+          <div class="icon-shape bg-warning-opacity rounded-3 p-2"><i class="bi bi-star-fill"></i></div>
+        </div>
+        <h1 class="fw-bold mb-1 text-white">{{ stats.totalReviews.count }}</h1>
+        <p class="text-muted small mb-0">Average rating: <span class="text-warning fw-bold"><i
+              class="bi bi-star-fill me-1"></i>{{ stats.totalReviews.averageRating }}</span></p>
+      </div>
+    </div>
+
+  </div>
+  }
+
+  <!-- السطر الثاني: الـ Recent Activities والـ Views Trends Chart -->
+  <div class="row g-4 mb-4">
+
+    <!-- قائمة الأنشطة -->
+    <div class="col-lg-7">
+      <div class="card bg-dark rounded-4 p-4 h-100 shadow-sm">
+        <h5 class="fw-bold mb-3 text-white">Recent Activities</h5>
+        <div class="activity-list d-flex flex-column gap-3">
+          @for (act of dashboardService.activities(); track act.id) {
+          <div class="activity-item d-flex align-items-center gap-3 p-2 rounded-3">
+            <div
+              class="activity-icon bg-secondary bg-opacity-20 text-white rounded-circle d-flex align-items-center justify-content-center"
+              style="width: 40px; height: 40px;">
+              <i class="bi" [ngClass]="act.icon"></i>
+            </div>
+            <div class="flex-grow-1">
+              <p class="mb-0 text-white small">{{ act.message }} <span class="text-success fw-semibold">{{
+                  act.targetName }}</span></p>
+            </div>
+            <span class="text-muted x-small ms-auto">{{ act.timeAgo }}</span>
+          </div>
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- التشارت الأول: Views Trends -->
+    <div class="col-lg-5">
+      <div class="card bg-dark rounded-4 p-4 h-100 shadow-sm">
+        <h5 class="fw-bold mb-1 text-white">Views Trends</h5>
+        <p class="text-muted small mb-3">Visualizing visitor traffic on your listings.</p>
+
+        @if (viewsChartOptions()) {
+        <apx-chart [series]="viewsChartOptions().series" [chart]="viewsChartOptions().chart"
+          [stroke]="viewsChartOptions().stroke" [colors]="viewsChartOptions().colors" [fill]="viewsChartOptions().fill"
+          [tooltip]="viewsChartOptions().tooltip">
+        </apx-chart>
+        }
+      </div>
+    </div>
+
+  </div>
+
+  <!-- السطر الثالث: طلبات الحجز والتحكم الذكي ومعه الـ Earnings Trend -->
+  <div class="row g-4">
+
+    <!-- طلبات الحجز المعلقة -->
+    <div class="col-lg-6">
+      <div class="card bg-dark rounded-4 p-4 h-100 shadow-sm">
+        <h5 class="fw-bold mb-3 text-white">Quick Booking Requests</h5>
+
+        @if (dashboardService.bookingRequests().length === 0) {
+        <p class="text-muted small text-center my-4">No pending requests at the moment.</p>
+        } @else {
+        <div class="d-flex flex-column gap-3">
+          @for (req of dashboardService.bookingRequests(); track req.id) {
+          <div class="request-item d-flex align-items-center gap-3 p-3 rounded-4">
+            <div
+              class="avatar-initials bg-info text-dark fw-bold rounded-circle d-flex align-items-center justify-content-center"
+              style="width: 45px; height: 45px;">
+              {{ req.guestInitials }}
+            </div>
+            <div class="flex-grow-1">
+              <h6 class="mb-0 fw-semibold text-white small">{{ req.guestName }}</h6>
+              <p class="text-muted x-small mb-0">{{ req.propertyName }} • <span class="text-success">{{ req.dates
+                  }}</span></p>
+            </div>
+            <div class="d-flex gap-2">
+              <button class="btn btn-success btn-sm rounded-3 px-3"
+                (click)="onHandleBooking(req.id, 'approve')">Approve</button>
+              <button class="btn btn-outline-danger btn-sm rounded-3 px-2"
+                (click)="onHandleBooking(req.id, 'decline')"><i class="bi bi-x-lg"></i></button>
+            </div>
+          </div>
+          }
+        </div>
+        }
+      </div>
+    </div>
+
+    <!-- لوحة التحكم الذكي + تشارت الأرباح المدمج -->
+    <div class="col-lg-6">
+      <div class="card bg-dark rounded-4 p-4 h-100 shadow-sm">
+        <h5 class="fw-bold mb-1 text-white">Quick Smart Controls</h5>
+        <p class="text-muted small mb-4">Direct hardware actions for your upcoming arrivals.</p>
+
+        <div class="row g-3 mb-4">
+          <div class="col-6">
+            <button
+              class="btn w-100 p-3 rounded-4 d-flex flex-column align-items-center justify-content-center gap-2 border border-secondary border-opacity-10"
+              [ngClass]="doorUnlocked() ? 'btn-success text-white' : 'btn-outline-secondary text-muted'"
+              [disabled]="smartControlLoading() === 'door'" (click)="onToggleDevice('door')">
+              <i class="bi fs-3"
+                [ngClass]="smartControlLoading() === 'door' ? 'spinner-border spinner-border-sm' : (doorUnlocked() ? 'bi-shield-lock-fill' : 'bi-shield-lock')"></i>
+              <span class="fw-semibold small">{{ doorUnlocked() ? 'Unlock Main Door' : 'Lock Main Door' }}</span>
+            </button>
+          </div>
+
+          <div class="col-6">
+            <button
+              class="btn w-100 p-3 rounded-4 d-flex flex-column align-items-center justify-content-center gap-2 border border-secondary border-opacity-10"
+              [ngClass]="acOn() ? 'btn-info text-dark' : 'btn-outline-secondary text-muted'"
+              [disabled]="smartControlLoading() === 'ac'" (click)="onToggleDevice('ac')">
+              <i class="bi fs-3"
+                [ngClass]="smartControlLoading() === 'ac' ? 'spinner-border spinner-border-sm' : 'bi-wind'"></i>
+              <span class="fw-semibold small">{{ acOn() ? 'Turn AC Off' : 'Turn AC On' }}</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- التشارت الثاني: Earnings Trend في كعب الكارت بالظبط -->
+        <div class="mt-2">
+          <h6 class="text-muted small mb-2 text-uppercase fw-semibold">Earnings Trend</h6>
+          @if (earningsChartOptions()) {
+          <apx-chart [series]="earningsChartOptions().series" [chart]="earningsChartOptions().chart"
+            [stroke]="earningsChartOptions().stroke" [colors]="earningsChartOptions().colors"
+            [fill]="earningsChartOptions().fill" [tooltip]="earningsChartOptions().tooltip">
+          </apx-chart>
+          }
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  }
+</div>

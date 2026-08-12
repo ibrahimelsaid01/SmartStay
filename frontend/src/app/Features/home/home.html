@@ -1,0 +1,79 @@
+<app-search-bar></app-search-bar>
+
+<app-home-cards></app-home-cards>
+
+<!-- City Section -->
+<section class="container my-5 text-center">
+  <h2 class="fw-bold text-dark">
+    Find Your Perfect Stay in Egypt, Smarter.
+  </h2>
+
+  <p class="text-muted mb-4">
+    Customize your search by browsing property styles and verified hosts
+    chosen solely for your lifestyle.
+  </p>
+
+  <div
+    class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-5 g-3"
+  >
+    @for (city of citiesList; track city.id) {
+      <div class="col">
+        <app-city-card
+          [cityData]="city"
+        ></app-city-card>
+      </div>
+    }
+  </div>
+</section>
+
+<!-- Stays Section -->
+<section
+  id="properties-section"
+  class="container my-5"
+  style="scroll-margin-top: 120px;"
+>
+  <h2 class="mb-4 fw-bold">
+    Popular Stays
+  </h2>
+
+  <div class="row">
+    @for (
+      stay of staysList | slice: 0 : 3;
+      track stay.id
+    ) {
+      <div class="col-lg-4 col-md-6 mb-4">
+        <app-stay-card
+          [stayData]="stay"
+        ></app-stay-card>
+      </div>
+    } @empty {
+      <div class="col-12 text-center py-5">
+        <div class="text-muted mb-3">
+          <i class="bi bi-house-exclamation fs-1 text-info"></i>
+        </div>
+
+        <h4 class="fw-semibold text-secondary">
+          No stays available right now
+        </h4>
+
+        <p class="text-muted">
+          Please check back later or try altering your filters.
+        </p>
+      </div>
+    }
+  </div>
+
+  @if (staysList && staysList.length > 0) {
+    <div class="text-center mt-4">
+      <button
+        type="button"
+        class="btn btn-outline-info px-5 py-2 rounded-3 fw-bold view-all-btn"
+        routerLink="/all-stays"
+      >
+        View All
+      </button>
+    </div>
+  }
+</section>
+
+<app-reviews />

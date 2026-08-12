@@ -1,0 +1,578 @@
+<div class="property-details-page">
+  <div
+    *ngIf="propertyLoading"
+    class="property-loading-state"
+    aria-live="polite"
+  >
+    <div
+      class="spinner-border text-info"
+      role="status"
+      aria-hidden="true"
+    ></div>
+
+    <strong>Loading property details...</strong>
+
+    <span>
+      We are retrieving the latest property information.
+    </span>
+  </div>
+
+  <section
+    *ngIf="!propertyLoading && propertyErrorMessage"
+    class="property-error-state"
+    aria-live="assertive"
+  >
+    <i class="bi bi-exclamation-triangle"></i>
+
+    <h2>Unable to load this property</h2>
+
+    <p>
+      {{ propertyErrorMessage }}
+    </p>
+
+    <button
+      type="button"
+      class="retry-property-btn"
+      (click)="loadProperty()"
+    >
+      <i class="bi bi-arrow-clockwise"></i>
+      Try Again
+    </button>
+  </section>
+
+  <ng-container
+    *ngIf="
+      !propertyLoading &&
+      property() as currentProperty
+    "
+  >
+    <div class="container-xl px-3 py-4">
+      <app-property-header
+        [property]="currentProperty"
+      ></app-property-header>
+
+      <div class="my-4">
+        <app-property-gallery
+          [images]="currentProperty.images"
+        ></app-property-gallery>
+      </div>
+
+      <div class="row gx-4 gy-4">
+        <div class="col-12 col-lg-8">
+          <section class="property-description mb-4">
+            <h3>
+              About this
+              {{ currentProperty.propertyType }}
+            </h3>
+
+            <p class="text-muted lh-base property-description-text">
+              {{ currentProperty.description }}
+            </p>
+          </section>
+
+          <section class="property-features mb-5">
+            <h3>Features</h3>
+
+            <ng-container
+              *ngIf="
+                currentProperty.amenities.length;
+                else noAmenities
+              "
+            >
+              <div class="d-flex flex-wrap gap-2 mt-3">
+                <span
+                  *ngFor="
+                    let amenity of currentProperty.amenities;
+                    trackBy: trackAmenityById
+                  "
+                  class="badge bg-light text-dark border rounded-pill py-2 px-3"
+                  [attr.title]="amenity.category"
+                >
+                  <i
+                    [class]="getAmenityIconClass(amenity)"
+                    aria-hidden="true"
+                  ></i>
+
+                  {{ amenity.name }}
+                </span>
+              </div>
+            </ng-container>
+
+            <ng-template #noAmenities>
+              <p class="text-muted mt-3">
+                No specific features or amenities are listed for this
+                property.
+              </p>
+            </ng-template>
+          </section>
+
+          <app-extra-services></app-extra-services>
+        </div>
+
+        <aside class="col-12 col-lg-4">
+          <div class="property-sidebar">
+            <app-booking-widget
+              [property]="currentProperty"
+            ></app-booking-widget>
+
+            <app-host-profile
+              [host]="currentProperty.host"
+            ></app-host-profile>
+          </div>
+        </aside>
+      </div>
+
+      <section class="my-5">
+        <app-location-map
+          [latitude]="currentProperty.latitude"
+          [longitude]="currentProperty.longitude"
+          [address]="currentProperty.fullAddress"
+        ></app-location-map>
+      </section>
+
+      <section
+        class="property-reviews-section"
+        aria-labelledby="property-reviews-title"
+      >
+        <header class="property-reviews-header">
+          <div>
+            <span class="reviews-eyebrow">
+              Verified guest feedback
+            </span>
+
+            <h2 id="property-reviews-title">
+              Guest Reviews
+            </h2>
+
+            <p>
+              Read published feedback from guests who completed a stay at
+              this property.
+            </p>
+          </div>
+
+          <button
+            type="button"
+            class="refresh-reviews-btn"
+            (click)="refreshReviews()"
+            [disabled]="
+              reviewsLoading ||
+              !!helpfulLoadingReviewId
+            "
+          >
+            <i class="bi bi-arrow-clockwise"></i>
+
+            {{
+              reviewsLoading
+                ? 'Refreshing...'
+                : 'Refresh Reviews'
+            }}
+          </button>
+        </header>
+
+        <div
+          *ngIf="reviewsErrorMessage"
+          class="reviews-message reviews-error-message"
+          aria-live="assertive"
+        >
+          <i class="bi bi-exclamation-circle"></i>
+
+          <span>
+            {{ reviewsErrorMessage }}
+          </span>
+        </div>
+
+        <div
+          *ngIf="reviewsSuccessMessage"
+          class="reviews-message reviews-success-message"
+          aria-live="polite"
+        >
+          <i class="bi bi-check-circle"></i>
+
+          <span>
+            {{ reviewsSuccessMessage }}
+          </span>
+        </div>
+
+        <div
+          *ngIf="ratingSummary() as summary"
+          class="rating-summary-card"
+        >
+          <div class="rating-overview">
+            <strong>
+              {{
+                summary.averageRating
+                  | number: '1.1-1'
+              }}
+            </strong>
+
+            <div
+              class="rating-overview-stars"
+              [attr.aria-label]="
+                summary.averageRating +
+                ' out of 5 stars'
+              "
+            >
+              <i
+                *ngFor="let star of starOptions"
+                class="bi bi-star-fill"
+                [class.active]="
+                  star <=
+                  summary.averageRating
+                "
+              ></i>
+            </div>
+
+            <span>
+              Based on
+              {{ summary.reviewsCount }}
+
+              {{
+                summary.reviewsCount === 1
+                  ? 'review'
+                  : 'reviews'
+              }}
+            </span>
+          </div>
+
+          <div class="rating-distribution">
+            <div
+              *ngFor="
+                let rating of ratingDistributionOrder
+              "
+              class="rating-distribution-row"
+            >
+              <span class="rating-distribution-label">
+                {{ rating }}
+
+                <i class="bi bi-star-fill"></i>
+              </span>
+
+              <div
+                class="rating-progress"
+                role="progressbar"
+                [attr.aria-label]="
+                  rating +
+                  ' star reviews'
+                "
+                [attr.aria-valuenow]="
+                  getRatingPercentage(
+                    rating
+                  )
+                "
+                aria-valuemin="0"
+                aria-valuemax="100"
+              >
+                <span
+                  [style.width.%]="
+                    getRatingPercentage(
+                      rating
+                    )
+                  "
+                ></span>
+              </div>
+
+              <span class="rating-distribution-count">
+                {{
+                  getRatingCount(
+                    rating
+                  )
+                }}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div
+          *ngIf="reviewsLoading"
+          class="property-reviews-loading"
+          aria-live="polite"
+        >
+          <div
+            class="spinner-border text-info"
+            role="status"
+            aria-hidden="true"
+          ></div>
+
+          <strong>
+            Loading guest reviews...
+          </strong>
+
+          <span>
+            We are retrieving the latest published feedback.
+          </span>
+        </div>
+
+        <section
+          *ngIf="
+            !reviewsLoading &&
+            reviews().length === 0
+          "
+          class="property-reviews-empty"
+        >
+          <div class="property-reviews-empty-icon">
+            <i class="bi bi-chat-square-heart"></i>
+          </div>
+
+          <h3>
+            No published reviews yet
+          </h3>
+
+          <p>
+            Reviews from completed stays will appear here after moderation.
+          </p>
+        </section>
+
+        <div
+          *ngIf="
+            !reviewsLoading &&
+            reviews().length > 0
+          "
+          class="property-reviews-list"
+        >
+          <article
+            *ngFor="
+              let review of reviews();
+              trackBy: trackReviewById
+            "
+            class="property-review-card"
+          >
+            <header class="property-review-card-header">
+              <div class="review-author">
+                <img
+                  [src]="
+                    review.author.profileImageUrl ||
+                    '/Images/default-avatar.png'
+                  "
+                  [alt]="review.author.displayName"
+                  loading="lazy"
+                  (error)="useDefaultProfileImage($event)"
+                />
+
+                <div>
+                  <div class="review-author-name-row">
+                    <strong>
+                      {{ review.author.displayName }}
+                    </strong>
+
+                    <span class="verified-stay-badge">
+                      <i class="bi bi-patch-check-fill"></i>
+                      Verified stay
+                    </span>
+                  </div>
+
+                  <time
+                    [attr.datetime]="
+                      getReviewDisplayDate(
+                        review
+                      )
+                    "
+                  >
+                    {{
+                      getReviewDisplayDate(
+                        review
+                      )
+                        | date: 'mediumDate'
+                    }}
+                  </time>
+                </div>
+              </div>
+
+              <div
+                class="property-review-rating"
+                [attr.aria-label]="
+                  review.rating +
+                  ' out of 5 stars'
+                "
+              >
+                <i
+                  *ngFor="let star of starOptions"
+                  class="bi bi-star-fill"
+                  [class.active]="
+                    star <= review.rating
+                  "
+                ></i>
+
+                <strong>
+                  {{ review.rating }} / 5
+                </strong>
+              </div>
+            </header>
+
+            <div class="property-review-comments">
+              <section
+                *ngIf="review.positiveComment"
+                class="property-review-comment positive-review-comment"
+              >
+                <h4>
+                  <i class="bi bi-hand-thumbs-up"></i>
+                  What went well
+                </h4>
+
+                <p>
+                  {{ review.positiveComment }}
+                </p>
+              </section>
+
+              <section
+                *ngIf="review.negativeComment"
+                class="property-review-comment negative-review-comment"
+              >
+                <h4>
+                  <i class="bi bi-lightbulb"></i>
+                  What could be improved
+                </h4>
+
+                <p>
+                  {{ review.negativeComment }}
+                </p>
+              </section>
+            </div>
+
+            <section
+              *ngIf="review.reply"
+              class="property-review-host-reply"
+            >
+              <img
+                [src]="
+                  review.reply.hostProfileImageUrl ||
+                  '/Images/default-avatar.png'
+                "
+                [alt]="review.reply.hostDisplayName"
+                loading="lazy"
+                (error)="useDefaultProfileImage($event)"
+              />
+
+              <div>
+                <div class="host-reply-heading">
+                  <div>
+                    <span>
+                      Response from host
+                    </span>
+
+                    <strong>
+                      {{
+                        review.reply.hostDisplayName
+                      }}
+                    </strong>
+                  </div>
+
+                  <time
+                    [attr.datetime]="
+                      review.reply.createdAt
+                    "
+                  >
+                    {{
+                      review.reply.createdAt
+                        | date: 'mediumDate'
+                    }}
+                  </time>
+                </div>
+
+                <p>
+                  {{ review.reply.content }}
+                </p>
+              </div>
+            </section>
+
+            <footer class="property-review-card-footer">
+              <span>
+                {{ review.helpfulCount }}
+
+                {{
+                  review.helpfulCount === 1
+                    ? 'person'
+                    : 'people'
+                }}
+
+                found this helpful
+              </span>
+
+              <button
+                type="button"
+                class="helpful-review-btn"
+                [class.active]="
+                  review.isHelpfulByCurrentUser
+                "
+                (click)="toggleHelpful(review)"
+                [disabled]="
+                  reviewsLoading ||
+                  !!helpfulLoadingReviewId
+                "
+              >
+                <span
+                  *ngIf="
+                    isHelpfulLoading(
+                      review.id
+                    )
+                  "
+                  class="spinner-border spinner-border-sm"
+                  aria-hidden="true"
+                ></span>
+
+                <i
+                  *ngIf="
+                    !isHelpfulLoading(
+                      review.id
+                    )
+                  "
+                  class="bi bi-hand-thumbs-up"
+                ></i>
+
+                {{
+                  isHelpfulLoading(
+                    review.id
+                  )
+                    ? 'Updating...'
+                    : review.isHelpfulByCurrentUser
+                      ? 'Helpful'
+                      : 'Mark Helpful'
+                }}
+              </button>
+            </footer>
+          </article>
+        </div>
+
+        <nav
+          *ngIf="
+            !reviewsLoading &&
+            reviewsTotalPages > 1
+          "
+          class="property-reviews-pagination"
+          aria-label="Property reviews pagination"
+        >
+          <button
+            type="button"
+            (click)="goToPreviousReviewsPage()"
+            [disabled]="
+              reviewsPage <= 1 ||
+              !!helpfulLoadingReviewId
+            "
+          >
+            <i class="bi bi-chevron-left"></i>
+            Previous
+          </button>
+
+          <span>
+            Page {{ reviewsPage }}
+            of {{ reviewsTotalPages }}
+            · {{ reviewsTotalCount }}
+            reviews
+          </span>
+
+          <button
+            type="button"
+            (click)="goToNextReviewsPage()"
+            [disabled]="
+              reviewsPage >=
+                reviewsTotalPages ||
+              !!helpfulLoadingReviewId
+            "
+          >
+            Next
+            <i class="bi bi-chevron-right"></i>
+          </button>
+        </nav>
+      </section>
+    </div>
+  </ng-container>
+</div>

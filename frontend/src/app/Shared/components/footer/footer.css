@@ -1,0 +1,63 @@
+.footer {
+  background: rgba(20, 20, 20, 0.55) !important;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.08);
+  padding: 20px 0 12px;
+  color: #ffffff;
+  border-top-left-radius: 13px;
+  border-top-right-radius: 13px;
+}
+.footer-heading {
+  font-weight: 700;
+  margin-bottom: 8px;
+  font-size: 0.95rem;
+  color: #59d6d6;;
+}
+
+.footer-links {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.footer-links li {
+  margin-bottom: 4px; /* كانت 8px */
+}
+
+.footer-links a {
+  text-decoration: none;
+  color: white;
+  font-size: 0.875rem;
+  transition: color 0.2s ease;
+}
+
+.footer-links a:hover {
+  color: #59d6d6;
+  text-decoration: none;
+}
+
+.social-icons a {
+  color: hsl(0, 1%, 21%);
+  font-size: 1.3rem;
+  margin-right: 12px;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.social-icons a:hover {
+  color: #59d6d6;
+  opacity: 1;
+}
+
+.footer-divider {
+  border-color: rgba(255, 255, 255, 0.1);
+  margin: 16px 0 10px; /* كانت 30px 0 16px */
+}
+
+.footer-copy {
+  font-size: 0.85rem;
+  color: hsl(0, 1%, 21%);
+  margin: 0;
+}

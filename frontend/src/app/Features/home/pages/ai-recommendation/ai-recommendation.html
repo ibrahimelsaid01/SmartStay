@@ -1,0 +1,55 @@
+<section class="ai-recommendation-page">
+	<div class="recommendation-header">
+		<div>
+			<p class="recommendation-label">SmartStay AI</p>
+			<h1>Recommended places near your stay</h1>
+			<p class="recommendation-subtitle">
+				Select a category and the AI will recommend the best nearby places for your booking.
+			</p>
+		</div>
+	</div>
+
+	<div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
+
+	<div *ngIf="!recommendationRequested && !errorMessage" class="recommendation-selection">
+		<label for="recommendation-category">Choose a category</label>
+		<select id="recommendation-category" class="form-select" [(ngModel)]="selectedCategory"
+			(ngModelChange)="changeCategory($event)">
+			<option value="coffee">Coffee</option>
+			<option value="restaurant">Restaurant</option>
+			<option value="pharmacy">Pharmacy</option>
+		</select>
+		<button class="btn btn-primary mt-3" type="button" (click)="requestRecommendations()">
+			Show recommendations
+		</button>
+	</div>
+
+	<div *ngIf="recommendationRequested && isLoading" class="recommendation-state">Loading recommendations...</div>
+
+	<div *ngIf="recommendationRequested && !isLoading && !errorMessage && recommendations.length === 0"
+		class="recommendation-empty">
+		<div class="empty-message">
+			<p>We couldn't find recommendations for this location right now.</p>
+			<button class="btn btn-primary" type="button" (click)="retryRecommendations()">
+				Try again
+			</button>
+		</div>
+	</div>
+
+	<div *ngIf="recommendations.length > 0" class="recommendation-list">
+		<div class="recommendation-card" *ngFor="let item of recommendations">
+			<div class="recommendation-card__body">
+				<h3>{{ item.name || item.title || 'Nearby place' }}</h3>
+				<p>{{ item.address || item.location || 'Nearby recommendation' }}</p>
+			</div>
+			<div *ngIf="item.distance !== undefined" class="recommendation-distance">
+				{{ item.distance }}
+			</div>
+		</div>
+	</div>
+
+	<div class="recommendation-actions">
+		<a routerLink="/" class="btn btn-outline-secondary">Back to home</a>
+		<a routerLink="/profile/bookings/all" class="btn btn-primary">View my bookings</a>
+	</div>
+</section>

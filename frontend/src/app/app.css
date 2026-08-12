@@ -1,0 +1,8 @@
+:root {
+  --navbar-height: 80px;
+}
+
+.app-shell {
+  position: relative;
+  min-height: 100vh;
+}

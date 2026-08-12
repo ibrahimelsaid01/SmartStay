@@ -1,0 +1,10 @@
+<div class="city-card position-relative overflow-hidden rounded-4 shadow-sm border-0 h-100"
+  [routerLink]="['/all-stays']" [queryParams]="{ location: cityData.name }">
+
+  <img [src]="cityData.image" class="city-img w-100 h-100" [alt]="cityData.name">
+
+  <div class="gradient-overlay position-absolute bottom-0 start-0 w-100 p-3 d-flex flex-column justify-content-end">
+    <h5 class="text-white fw-bold mb-0">{{ cityData.name }}</h5>
+    <p class="text-white-50 small mb-0">{{ cityData.propertiesCount }} Places Available</p>
+  </div>
+</div>

@@ -1,0 +1,14 @@
+<div class="extra-services-section mt-5">
+  <h3 class="mb-4">Extra Services</h3>
+  <div class="service-list">
+    @for (service of services; track $index) {
+    <div class="d-flex align-items-center mb-4 p-2 border-bottom">
+      <img [src]="service.image" class="rounded" width="80" height="80" style="object-fit: cover;">
+      <div class="ms-4 flex-grow-1">
+        <h5 class="m-0">{{ service.name }}</h5>
+      </div>
+      <div class="fw-bold">{{ service.price }}</div>
+    </div>
+    }
+  </div>
+</div>

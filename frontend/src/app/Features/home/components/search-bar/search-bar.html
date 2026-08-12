@@ -1,0 +1,228 @@
+
+<section class="hero-section">
+  <div class="hero-bg"></div>
+  <div class="hero-overlay"></div>
+
+  <div class="hero-content">
+
+    <!-- LEFT CARD -->
+    <div class="explore-card">
+
+      <div class="card-header">
+        <i class="bi bi-stars"></i>
+        <span>Start Exploring</span>
+      </div>
+
+      <!-- Destination -->
+      <div class="input-box" (click)="toggleWhere()">
+        <i class="bi bi-geo-alt"></i>
+        <span>
+          {{ selectedDestination || 'Destination' }}
+        </span>
+      </div>
+
+      <!-- Dates -->
+      <div class="input-box" (click)="toggleWhen()">
+        <i class="bi bi-calendar3"></i>
+        <span>
+          {{ selectedDatesLabel || 'Dates' }}
+        </span>
+      </div>
+       
+      <!-- Guests -->
+      <div class="guests-box">
+
+        <span class="guest-label">
+          Guests
+        </span>
+
+        <div class="guest-counter">
+
+          <button
+            type="button"
+            (click)="decreaseGuests(); $event.stopPropagation()">
+            -
+          </button>
+
+          <span>{{ guests }}</span>
+
+          <button
+            type="button"
+            (click)="increaseGuests(); $event.stopPropagation()">
+            +
+          </button>
+
+        </div>
+
+      </div>
+
+      <button class="explore-btn" (click)="onSearch()">
+        Start Explore
+        <i class="bi bi-arrow-right"></i>
+      </button>
+
+      <!-- WHERE DROPDOWN -->
+      <div
+        class="dropdown-panel where-dropdown"
+        *ngIf="showWhere"
+        (click)="$event.stopPropagation()"
+      >
+        <div class="where-dropdown-content">
+
+          <section class="dropdown-section">
+            <h3 class="section-title">Recent searches</h3>
+
+            <ul class="item-list">
+              <li
+                class="destination-item"
+                *ngFor="let item of recentSearches"
+                (click)="selectDestination(item.name)"
+              >
+                <div class="icon-box">
+                  <i class="ti ti-building-cottage"></i>
+                </div>
+
+                <div class="item-info">
+                  <span class="item-name">{{ item.name }}</span>
+                  <span class="item-sub">{{ item.dates }}</span>
+                </div>
+              </li>
+            </ul>
+          </section>
+
+          <section class="dropdown-section">
+            <h3 class="section-title">Suggested destinations</h3>
+
+            <ul class="item-list">
+              <li
+                class="destination-item"
+                *ngFor="let dest of suggestedDestinations"
+                (click)="selectDestination(dest.name)"
+              >
+                <div class="icon-box" [style.background]="dest.iconBg">
+                  <i
+                    class="ti {{ dest.icon }}"
+                    [style.color]="dest.iconColor">
+                  </i>
+                </div>
+
+                <div class="item-info">
+                  <span class="item-name">{{ dest.name }}</span>
+                  <span class="item-sub">{{ dest.description }}</span>
+                </div>
+              </li>
+            </ul>
+          </section>
+
+        </div>
+      </div>
+
+      <!-- WHEN DROPDOWN -->
+      <div
+        class="dropdown-panel when-dropdown"
+        *ngIf="showWhen"
+      >
+        <div class="calendars">
+
+          <button
+            class="nav-arrow nav-prev"
+            (click)="prevMonth(); $event.stopPropagation()">
+            <i class="ti ti-chevron-left"></i>
+          </button>
+
+          <div class="calendar">
+
+            <h3 class="month-label">
+              {{ getMonthLabel(currentMonth) }}
+            </h3>
+
+            <div class="day-headers">
+              <span *ngFor="let d of dayHeaders">{{ d }}</span>
+            </div>
+
+            <div class="day-grid">
+
+              <ng-container *ngFor="let date of getDaysInMonth(currentMonth)">
+
+                <div
+                  *ngIf="date"
+                  class="day-cell"
+                  [class.past]="isPast(date)"
+                  [class.selected]="isSelected(date)"
+                  [class.in-range]="isInRange(date)"
+                  [class.range-start]="isRangeStart(date)"
+                  [class.range-end]="isRangeEnd(date)"
+                  (click)="onDateClick(date)"
+                >
+                  {{ date.getDate() }}
+                </div>
+
+              </ng-container>
+
+            </div>
+          </div>
+
+          <div class="calendar">
+
+            <h3 class="month-label">
+              {{ getMonthLabel(nextMonth) }}
+            </h3>
+
+            <div class="day-headers">
+              <span *ngFor="let d of dayHeaders">{{ d }}</span>
+            </div>
+
+            <div class="day-grid">
+
+              <ng-container *ngFor="let date of getDaysInMonth(nextMonth)">
+
+                <div
+                  *ngIf="date"
+                  class="day-cell"
+                  [class.past]="isPast(date)"
+                  [class.selected]="isSelected(date)"
+                  [class.in-range]="isInRange(date)"
+                  [class.range-start]="isRangeStart(date)"
+                  [class.range-end]="isRangeEnd(date)"
+                  (click)="onDateClick(date)"
+                >
+                  {{ date.getDate() }}
+                </div>
+
+              </ng-container>
+
+            </div>
+
+          </div>
+
+          <button
+            class="nav-arrow nav-next"
+            (click)="nextMonthNav(); $event.stopPropagation()">
+            <i class="ti ti-chevron-right"></i>
+          </button>
+
+        </div>
+      </div>
+
+    </div>
+
+    <!-- RIGHT TEXT -->
+
+    <div class="hero-text">
+
+      <h1>
+        Travel Smarter.
+        <br>
+        <span>Stay Better.</span>
+      </h1>
+
+      <p>
+        Experience organic precision in every journey.
+        Curated stays designed for modern travelers.
+      </p>
+
+    </div>
+
+  </div>
+</section>
+

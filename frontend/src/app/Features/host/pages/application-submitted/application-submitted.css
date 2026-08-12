@@ -1,0 +1,39 @@
+.result-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 60px 20px;
+  max-width: 420px;
+  margin: 0 auto;
+}
+.icon-circle {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40px;
+  margin-bottom: 24px;
+}
+.icon-circle.info {
+  background: #e6faf9;
+  color: #2ecccc;
+}
+h2 {
+  margin-bottom: 8px;
+}
+p {
+  color: #666;
+  margin-bottom: 32px;
+}
+button {
+  padding: 12px 32px;
+  border: none;
+  border-radius: 8px;
+  background: #2ecccc;
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+}

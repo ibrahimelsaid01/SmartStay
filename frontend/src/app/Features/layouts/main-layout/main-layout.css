@@ -1,0 +1,62 @@
+/* البانر العايم تحت على اليمين بشكل شيك وهادي */
+.cookie-banner-fix {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  width: calc(100% - 48px); /* يسيب مسافة من الجوانب على الموبايل */
+  max-width: 500px; /* مقاس الكارت يكون ملموم وميغطيش الشاشة */
+  background-color: #ffffff !important;
+  border: 1px solid #eef2f3 !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08) !important;
+  z-index: 99999 !important; /* فوق أي حاجة في الموقع */
+  transition: all 0.3s ease-in-out;
+}
+
+/* دائرة الأيقونة اللبني الهادية */
+.cookie-icon {
+  width: 44px;
+  height: 44px;
+  background-color: #eef9fa !important;
+  color: #3ec3c6 !important;
+  font-size: 1.25rem;
+  flex-shrink: 0;
+}
+
+/* تظبيط اللينك بتاع البوليسي */
+.brand-link {
+  color: #3ec3c6 !important;
+  font-weight: 500;
+  text-decoration: none;
+}
+.brand-link:hover {
+  text-decoration: underline;
+}
+
+/* الأزرار */
+.btn-brand-solid {
+  background-color: #3ec3c6 !important;
+  border: none !important;
+  color: #ffffff !important;
+  font-size: 0.85rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+.btn-brand-solid:hover {
+  background-color: #34b3b6 !important;
+}
+
+.btn-custom-secondary {
+  background-color: #f8fafc !important;
+  border: 1px solid #e2e8f0 !important;
+  color: #475569 !important;
+  font-size: 0.85rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+.btn-custom-secondary:hover {
+  background-color: #f1f5f9 !important;
+}
+
+.leading-normal {
+  line-height: 1.5;
+}

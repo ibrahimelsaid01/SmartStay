@@ -1,0 +1,29 @@
+<div class="result-screen">
+  <div class="icon-circle success">✓</div>
+
+  <h2>Congratulations!</h2>
+
+  <p class="bold">You are now a host</p>
+
+  <p>You can now add your properties and start hosting on SmartStay.</p>
+
+  <p
+    class="role-refresh-error"
+    *ngIf="state.error()"
+    role="alert"
+  >
+    {{ state.error() }}
+  </p>
+
+  <button
+    type="button"
+    (click)="goToHostDashboard()"
+    [disabled]="state.activatingHostSession()"
+  >
+    {{
+      state.activatingHostSession()
+        ? 'Activating Host access...'
+        : 'Go to Host Dashboard'
+    }}
+  </button>
+</div>

@@ -1,0 +1,1394 @@
+<div
+  class="support-container container-fluid p-4 position-relative"
+  style="min-height: 85vh"
+>
+  <div class="header-section mb-4">
+    <h2 class="fw-bold text-dark">Help and feedback</h2>
+
+    <p class="text-muted mb-0">
+      Create a support request, attach verified image evidence, and track the
+      admin decision from one place.
+    </p>
+  </div>
+
+  <div class="support-options-list d-flex flex-column gap-3 mb-4">
+    @for (option of supportOptions; track option.id) {
+      <button
+        type="button"
+        class="support-item d-flex justify-content-between align-items-center p-3 rounded-3 border-0 text-start"
+        (click)="handleOptionClick(option)"
+      >
+        <div class="d-flex align-items-center gap-3">
+          <div
+            class="support-icon-box d-flex align-items-center justify-content-center"
+          >
+            <i class="bi {{ option.icon }} fs-5"></i>
+          </div>
+
+          <div>
+            <span class="fw-semibold text-dark d-block">
+              {{ option.title }}
+            </span>
+
+            <span class="text-muted small">
+              {{ option.subtitle }}
+            </span>
+          </div>
+        </div>
+
+        <i class="bi bi-chevron-right text-muted small"></i>
+      </button>
+    }
+  </div>
+
+  <section
+    id="support-tickets-section"
+    class="tickets-section bg-white rounded-4 shadow-sm p-3 p-lg-4"
+  >
+    <div
+      class="d-flex flex-column flex-lg-row justify-content-between gap-3 mb-4"
+    >
+      <div>
+        <h4 class="fw-bold text-dark mb-1">
+          My support requests
+        </h4>
+
+        <p class="text-muted mb-0 small">
+          Track complaint status, support replies, decisions, and evidence
+          uploads.
+        </p>
+      </div>
+
+      <button
+        type="button"
+        class="btn btn-submit rounded-pill px-4 fw-semibold"
+        (click)="toggleReportModal(true)"
+        [disabled]="isSubmitting"
+      >
+        <i class="bi bi-plus-lg me-1"></i>
+
+        New report
+      </button>
+    </div>
+
+    <div class="row g-2 mb-4">
+      <div class="col-12 col-lg-7">
+        <input
+          type="text"
+          class="form-control custom-input py-2"
+          placeholder="Search by subject or reference code..."
+          [(ngModel)]="ticketSearch"
+          [disabled]="isTicketsLoading"
+          (keyup.enter)="loadTickets()"
+        />
+      </div>
+
+      <div class="col-12 col-lg-3">
+        <select
+          class="form-select custom-input py-2"
+          [(ngModel)]="ticketStatusFilter"
+          [disabled]="isTicketsLoading"
+          (change)="loadTickets()"
+        >
+          @for (status of ticketStatuses; track status) {
+            <option [ngValue]="status">
+              {{ formatStatus(status) }}
+            </option>
+          }
+        </select>
+      </div>
+
+      <div class="col-12 col-lg-2 d-grid">
+        <button
+          type="button"
+          class="btn btn-cancel rounded-pill fw-semibold"
+          (click)="loadTickets()"
+          [disabled]="isTicketsLoading"
+        >
+          @if (isTicketsLoading) {
+            <span class="spinner-border spinner-border-sm me-1"></span>
+          } @else {
+            <i class="bi bi-arrow-clockwise me-1"></i>
+          }
+
+          Refresh
+        </button>
+      </div>
+    </div>
+
+    @if (isTicketsLoading) {
+      <div
+        class="text-center py-5"
+        aria-live="polite"
+      >
+        <span class="spinner-border text-turquoise"></span>
+
+        <p class="text-muted small mt-2 mb-0">
+          Loading your support requests...
+        </p>
+      </div>
+    } @else if (tickets.length === 0) {
+      <div class="empty-state text-center py-5">
+        <i class="bi bi-inbox display-5 text-muted"></i>
+
+        <h6 class="fw-bold text-dark mt-3 mb-1">
+          No support requests yet
+        </h6>
+
+        <p class="text-muted small mb-3">
+          Create your first report and attach evidence when needed.
+        </p>
+
+        <button
+          type="button"
+          class="btn btn-submit rounded-pill px-4"
+          (click)="toggleReportModal(true)"
+        >
+          Create report
+        </button>
+      </div>
+    } @else {
+      <div class="tickets-list d-flex flex-column gap-3">
+        @for (ticket of tickets; track ticket.ticketId) {
+          <button
+            type="button"
+            class="ticket-card text-start border-0 rounded-4 p-3"
+            [class.active]="selectedTicket?.ticketId === ticket.ticketId"
+            [disabled]="isTicketDetailsLoading"
+            (click)="openTicket(ticket.ticketId)"
+          >
+            <div
+              class="d-flex flex-column flex-lg-row justify-content-between gap-3"
+            >
+              <div class="flex-grow-1">
+                <div
+                  class="d-flex flex-wrap align-items-center gap-2 mb-2"
+                >
+                  <span class="ticket-reference fw-bold">
+                    #{{ ticket.referenceCode }}
+                  </span>
+
+                  <span
+                    class="status-badge"
+                    [ngClass]="getStatusBadgeClass(ticket.status)"
+                  >
+                    {{ formatStatus(ticket.status) }}
+                  </span>
+
+                  <span
+                    class="urgency-badge"
+                    [ngClass]="getUrgencyBadgeClass(ticket.urgency)"
+                  >
+                    {{ formatUrgency(ticket.urgency) }}
+                  </span>
+
+                  @if (selectedTicketIdLoading === ticket.ticketId) {
+                    <span
+                      class="spinner-border spinner-border-sm text-turquoise"
+                      aria-hidden="true"
+                    ></span>
+                  }
+                </div>
+
+                <h6 class="fw-bold text-dark mb-1">
+                  {{ ticket.subject }}
+                </h6>
+
+                <p class="text-muted small mb-2">
+                  {{ formatCategory(ticket.category) }}
+
+                  @if (ticket.propertyTitle) {
+                    <span>
+                      • {{ ticket.propertyTitle }}
+                    </span>
+                  }
+                </p>
+
+                <div class="d-flex flex-wrap gap-3 small text-muted">
+                  <span>
+                    <i class="bi bi-chat-dots me-1"></i>
+
+                    {{ ticket.messagesCount }} messages
+                  </span>
+
+                  <span>
+                    <i class="bi bi-clock me-1"></i>
+
+                    Updated
+                    {{ ticket.updatedAt | date: "medium" }}
+                  </span>
+                </div>
+              </div>
+
+              <div class="text-lg-end small text-muted">
+                <div>
+                  Created
+                </div>
+
+                <div class="fw-semibold text-dark">
+                  {{ ticket.createdAt | date: "mediumDate" }}
+                </div>
+              </div>
+            </div>
+          </button>
+        }
+      </div>
+
+      @if (ticketsTotalPages > 1) {
+        <div
+          class="d-flex flex-wrap justify-content-between align-items-center gap-3 mt-4"
+        >
+          <span class="text-muted small">
+            Total requests: {{ ticketsTotalCount }}
+          </span>
+
+          <div class="d-flex gap-2">
+            <button
+              type="button"
+              class="btn btn-cancel btn-sm rounded-pill"
+              [disabled]="ticketsPage === 1 || isTicketsLoading"
+              (click)="goToTicketsPage(ticketsPage - 1)"
+            >
+              Previous
+            </button>
+
+            @for (page of getTicketPages(); track page) {
+              <button
+                type="button"
+                class="btn btn-sm rounded-circle page-btn"
+                [class.active]="page === ticketsPage"
+                [disabled]="isTicketsLoading"
+                (click)="goToTicketsPage(page)"
+              >
+                {{ page }}
+              </button>
+            }
+
+            <button
+              type="button"
+              class="btn btn-cancel btn-sm rounded-pill"
+              [disabled]="
+                ticketsPage === ticketsTotalPages ||
+                isTicketsLoading
+              "
+              (click)="goToTicketsPage(ticketsPage + 1)"
+            >
+              Next
+            </button>
+          </div>
+        </div>
+      }
+    }
+  </section>
+
+  @if (selectedTicket) {
+    <section
+      class="ticket-details-panel bg-white rounded-4 shadow-sm p-3 p-lg-4 mt-4"
+    >
+      <div
+        class="d-flex flex-column flex-lg-row justify-content-between gap-3 mb-4"
+      >
+        <div>
+          <div
+            class="d-flex flex-wrap align-items-center gap-2 mb-2"
+          >
+            <span class="ticket-reference fw-bold">
+              #{{ selectedTicket.referenceCode }}
+            </span>
+
+            <span
+              class="status-badge"
+              [ngClass]="getStatusBadgeClass(selectedTicket.status)"
+            >
+              {{ formatStatus(selectedTicket.status) }}
+            </span>
+
+            <span
+              class="urgency-badge"
+              [ngClass]="getUrgencyBadgeClass(selectedTicket.urgency)"
+            >
+              {{ formatUrgency(selectedTicket.urgency) }}
+            </span>
+          </div>
+
+          <h4 class="fw-bold text-dark mb-1">
+            {{ selectedTicket.subject }}
+          </h4>
+
+          <p class="text-muted small mb-0">
+            {{ formatCategory(selectedTicket.category) }}
+
+            • Created
+
+            {{ selectedTicket.createdAt | date: "medium" }}
+          </p>
+        </div>
+
+        <button
+          type="button"
+          class="btn btn-cancel rounded-pill px-4 align-self-start"
+          (click)="closeTicketDetails()"
+          [disabled]="
+            isTicketDetailsLoading ||
+            isMessageSubmitting ||
+            isAttachmentUploading
+          "
+        >
+          Close details
+        </button>
+      </div>
+
+      <div class="row g-4">
+        <div class="col-12 col-xl-7">
+          <div class="details-box rounded-4 p-3 mb-3">
+            <h6 class="fw-bold text-dark mb-2">
+              Original description
+            </h6>
+
+            <p class="text-muted mb-0 white-space-pre-line">
+              {{ selectedTicket.description }}
+            </p>
+          </div>
+
+          @if (selectedTicket.decisionStatus !== "NoDecision") {
+            <div class="decision-box rounded-4 p-3 mb-3">
+              <h6 class="fw-bold mb-2">
+                <i class="bi bi-shield-check me-1"></i>
+
+                Admin decision
+              </h6>
+
+              <div class="small mb-1">
+                Status:
+
+                <span class="fw-semibold">
+                  {{ formatStatus(selectedTicket.decisionStatus) }}
+                </span>
+              </div>
+
+              <div class="small mb-1">
+                Action:
+
+                <span class="fw-semibold">
+                  {{ formatStatus(selectedTicket.decisionAction) }}
+                </span>
+              </div>
+
+              @if (selectedTicket.decidedByAdminName) {
+                <div class="small mb-1">
+                  Reviewed by:
+
+                  <span class="fw-semibold">
+                    {{ selectedTicket.decidedByAdminName }}
+                  </span>
+                </div>
+              }
+
+              @if (selectedTicket.decidedAt) {
+                <div class="small mb-1">
+                  Reviewed at:
+
+                  <span class="fw-semibold">
+                    {{ selectedTicket.decidedAt | date: "medium" }}
+                  </span>
+                </div>
+              }
+
+              @if (selectedTicket.decisionNote) {
+                <p class="small mb-0 mt-2 white-space-pre-line">
+                  {{ selectedTicket.decisionNote }}
+                </p>
+              }
+            </div>
+          }
+
+          <div class="messages-box rounded-4 p-3">
+            <h6 class="fw-bold text-dark mb-3">
+              Conversation
+            </h6>
+
+            @if (selectedTicket.messages.length === 0) {
+              <p class="text-muted small mb-0">
+                No messages yet.
+              </p>
+            } @else {
+              <div class="d-flex flex-column gap-3">
+                @for (
+                  message of selectedTicket.messages;
+                  track message.messageId
+                ) {
+                  <div
+                    class="ticket-message"
+                    [ngClass]="
+                      message.isAdminMessage
+                        ? 'admin-message'
+                        : 'user-message'
+                    "
+                  >
+                    <div
+                      class="d-flex justify-content-between gap-3 mb-1"
+                    >
+                      <span class="fw-semibold small">
+                        {{ message.senderName }}
+                      </span>
+
+                      <span class="text-muted small">
+                        {{ message.createdAt | date: "short" }}
+                      </span>
+                    </div>
+
+                    <p class="mb-0 small white-space-pre-line">
+                      {{ message.message }}
+                    </p>
+                  </div>
+                }
+              </div>
+            }
+
+            @if (!isSelectedTicketReadOnly) {
+              <div class="mt-4">
+                <label class="form-label fw-semibold small">
+                  Add a message
+                </label>
+
+                <textarea
+                  class="form-control custom-textarea p-3"
+                  rows="3"
+                  maxlength="4000"
+                  placeholder="Write a follow-up message..."
+                  [(ngModel)]="newTicketMessage"
+                  [disabled]="
+                    isMessageSubmitting ||
+                    isAttachmentUploading
+                  "
+                ></textarea>
+
+                <div
+                  class="d-flex justify-content-between align-items-center mt-2"
+                >
+                  <span class="text-muted small">
+                    {{ newTicketMessage.length }} / 4000
+                  </span>
+
+                  <button
+                    type="button"
+                    class="btn btn-submit rounded-pill px-4 btn-sm fw-semibold"
+                    [disabled]="
+                      !newTicketMessage.trim() ||
+                      isMessageSubmitting ||
+                      isAttachmentUploading
+                    "
+                    (click)="sendTicketMessage()"
+                  >
+                    @if (isMessageSubmitting) {
+                      <span
+                        class="spinner-border spinner-border-sm me-1"
+                      ></span>
+
+                      Sending...
+                    } @else {
+                      Send message
+                    }
+                  </button>
+                </div>
+              </div>
+            } @else {
+              <div class="alert alert-light border mt-4 mb-0 small">
+                This ticket is
+                {{ formatStatus(selectedTicket.status) }}.
+
+                New messages and evidence uploads are disabled.
+              </div>
+            }
+          </div>
+        </div>
+
+        <div class="col-12 col-xl-5">
+          <div class="attachments-box rounded-4 p-3 mb-3">
+            <h6 class="fw-bold text-dark mb-3">
+              Evidence images
+            </h6>
+
+            @if (selectedTicket.attachments.length === 0) {
+              <p class="text-muted small mb-3">
+                No evidence has been uploaded for this request yet.
+              </p>
+            } @else {
+              <div class="d-flex flex-column gap-2 mb-3">
+                @for (
+                  attachment of selectedTicket.attachments;
+                  track getAttachmentId($index, attachment)
+                ) {
+                  <a
+                    class="attachment-card rounded-3 p-2 text-decoration-none"
+                    [href]="attachment.url"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <div class="d-flex align-items-center gap-2">
+                      <i class="bi bi-image text-turquoise"></i>
+
+                      <div class="flex-grow-1 overflow-hidden">
+                        <div
+                          class="fw-semibold text-dark small text-truncate"
+                        >
+                          {{ attachment.fileName }}
+                        </div>
+
+                        <div class="text-muted small">
+                          {{ formatAttachmentType(attachment.type) }}
+
+                          •
+
+                          {{
+                            formatFileSize(
+                              attachment.fileSizeInBytes
+                            )
+                          }}
+                        </div>
+                      </div>
+
+                      <i
+                        class="bi bi-box-arrow-up-right text-muted small"
+                      ></i>
+                    </div>
+                  </a>
+                }
+              </div>
+            }
+
+            @if (!isSelectedTicketReadOnly) {
+              <div class="upload-box rounded-3 p-3">
+                <label class="form-label fw-semibold small">
+                  Evidence type
+                </label>
+
+                <select
+                  class="form-select custom-input mb-2"
+                  [(ngModel)]="selectedAttachmentType"
+                  [disabled]="isAttachmentUploading"
+                >
+                  @for (
+                    option of attachmentTypeOptions;
+                    track option.value
+                  ) {
+                    <option [ngValue]="option.value">
+                      {{ option.label }}
+                    </option>
+                  }
+                </select>
+
+                <p class="text-muted small mb-3">
+                  {{ selectedTicketAttachmentDescription }}
+                </p>
+
+                <label class="form-label fw-semibold small">
+                  Upload image evidence
+                </label>
+
+                <input
+                  type="file"
+                  class="form-control custom-input"
+                  multiple
+                  accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp"
+                  [disabled]="isAttachmentUploading"
+                  (change)="onTicketFilesSelected($event)"
+                />
+
+                <p class="text-muted small mt-2 mb-2">
+                  JPG, JPEG, PNG, or WebP only. Maximum 5 MB per image
+                  and 5 images per batch.
+                </p>
+
+                @if (selectedTicketFiles.length > 0) {
+                  <div
+                    class="selected-files d-flex flex-column gap-2 mb-3"
+                  >
+                    @for (
+                      file of selectedTicketFiles;
+                      track file.name
+                    ) {
+                      <div
+                        class="selected-file rounded-3 px-2 py-1 d-flex justify-content-between align-items-center gap-2"
+                      >
+                        <span class="small text-truncate">
+                          {{ file.name }}
+
+                          •
+
+                          {{ formatFileSize(file.size) }}
+                        </span>
+
+                        <button
+                          type="button"
+                          class="btn btn-sm border-0"
+                          [disabled]="isAttachmentUploading"
+                          (click)="removeTicketFile($index)"
+                        >
+                          <i class="bi bi-x-lg"></i>
+                        </button>
+                      </div>
+                    }
+                  </div>
+                }
+
+                <button
+                  type="button"
+                  class="btn btn-submit rounded-pill px-4 btn-sm fw-semibold w-100"
+                  [disabled]="
+                    selectedTicketFiles.length === 0 ||
+                    isAttachmentUploading
+                  "
+                  (click)="uploadTicketAttachments()"
+                >
+                  @if (isAttachmentUploading) {
+                    <span
+                      class="spinner-border spinner-border-sm me-1"
+                    ></span>
+
+                    Uploading...
+                  } @else {
+                    Upload evidence
+                  }
+                </button>
+              </div>
+            }
+          </div>
+
+          <div class="details-box rounded-4 p-3">
+            <h6 class="fw-bold text-dark mb-3">
+              Related data
+            </h6>
+
+            <div class="small text-muted d-flex flex-column gap-2">
+              <div>
+                Booking ID:
+
+                <span class="fw-semibold text-dark">
+                  {{ selectedTicket.bookingId || "Not linked" }}
+                </span>
+              </div>
+
+              <div>
+                Property ID:
+
+                <span class="fw-semibold text-dark">
+                  {{ selectedTicket.propertyId || "Not linked" }}
+                </span>
+              </div>
+
+              <div>
+                Property:
+
+                <span class="fw-semibold text-dark">
+                  {{ selectedTicket.propertyTitle || "Not linked" }}
+                </span>
+              </div>
+
+              @if (selectedTicket.resolvedAt) {
+                <div>
+                  Resolved at:
+
+                  <span class="fw-semibold text-dark">
+                    {{ selectedTicket.resolvedAt | date: "medium" }}
+                  </span>
+                </div>
+              }
+            </div>
+
+            @if (selectedTicket.resolutionNote) {
+              <hr />
+
+              <p class="small text-muted mb-0 white-space-pre-line">
+                {{ selectedTicket.resolutionNote }}
+              </p>
+            }
+          </div>
+        </div>
+      </div>
+    </section>
+  }
+
+  @if (!isChatOpen) {
+    <button
+      type="button"
+      class="fab-btn d-flex align-items-center justify-content-center border-0 shadow"
+      (click)="toggleChat()"
+      aria-label="Open SmartStay assistant"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="28"
+        height="28"
+        fill="currentColor"
+        viewBox="0 0 16 16"
+        class="ai-sparkle-icon"
+      >
+        <path
+          d="M8 0a.5.5 0 0 1 .5.5v3.793l2.146-2.147a.5.5 0 0 1 .708.708L9.207 5h3.793a.5.5 0 0 1 0 1H9.207l2.147 2.146a.5.5 0 0 1-.708.708L8.5 6.707v3.793a.5.5 0 0 1-1 0V6.707L5.354 8.854a.5.5 0 1 1-.708-.708L6.793 6H3a.5.5 0 0 1 0-1h3.793L4.646 2.854a.5.5 0 1 1 .708-.708L7.5 4.293V.5A.5.5 0 0 1 8 0z"
+        />
+      </svg>
+    </button>
+  }
+
+  @if (isFeedbackModalOpen) {
+    <div
+      class="modal-backdrop-custom"
+      (click)="toggleFeedbackModal(false)"
+    ></div>
+
+    <div
+      class="modal fade show d-block"
+      tabindex="-1"
+      role="dialog"
+    >
+      <div
+        class="modal-dialog modal-dialog-centered"
+        role="document"
+      >
+        <div
+          class="modal-content border-0 p-4 shadow-lg"
+          style="
+            border-radius: 20px;
+            max-width: 480px;
+            margin: auto;
+          "
+        >
+          <div class="modal-body text-center p-0">
+            <h6
+              class="fw-semibold text-dark mb-4 lh-base px-2"
+              style="font-size: 1.05rem"
+            >
+              How likely are you to recommend SmartStay to a friend or
+              colleague?
+            </h6>
+
+            <div class="d-flex justify-content-center gap-3 mb-4">
+              @for (score of ratingOptions; track score) {
+                <button
+                  type="button"
+                  class="rating-circle d-flex align-items-center justify-content-center fw-medium"
+                  [class.active]="selectedRating === score"
+                  [disabled]="isSubmitting"
+                  (click)="selectRating(score)"
+                >
+                  {{ score }}
+                </button>
+              }
+            </div>
+
+            <div class="text-start mb-2">
+              <label
+                class="form-label text-secondary fw-medium small"
+              >
+                Additional comments
+              </label>
+            </div>
+
+            <textarea
+              class="form-control custom-textarea p-3 mb-1"
+              rows="4"
+              maxlength="3500"
+              placeholder="Enter your comments here..."
+              [(ngModel)]="feedbackComments"
+              [disabled]="isSubmitting"
+            ></textarea>
+
+            <div class="text-muted small text-end mb-4">
+              {{ feedbackComments.length }} / 3500
+            </div>
+
+            <div class="text-start mb-4">
+              <p class="mb-1 text-dark fw-semibold small">
+                Email address
+              </p>
+
+              <p
+                class="text-muted text-start mb-0"
+                style="
+                  font-size: 0.8rem;
+                  line-height: 1.4;
+                "
+              >
+                Support can follow up through
+
+                <span class="fw-semibold text-dark">
+                  {{
+                    userEmail ||
+                    "your SmartStay account email"
+                  }}
+                </span>.
+              </p>
+            </div>
+          </div>
+
+          <div class="d-flex justify-content-end gap-3">
+            <button
+              type="button"
+              class="btn btn-not-now rounded-pill px-4 btn-sm fw-medium"
+              [disabled]="isSubmitting"
+              (click)="toggleFeedbackModal(false)"
+            >
+              Not now
+            </button>
+
+            <button
+              type="button"
+              class="btn btn-send-feedback rounded-pill px-4 btn-sm fw-medium"
+              [disabled]="
+                selectedRating === 0 ||
+                isSubmitting
+              "
+              (click)="submitFeedback()"
+            >
+              @if (isSubmitting) {
+                <span
+                  class="spinner-border spinner-border-sm me-1"
+                ></span>
+
+                Sending...
+              } @else {
+                Send feedback
+              }
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+
+  @if (isReportModalOpen) {
+    <div
+      class="modal-backdrop-custom"
+      (click)="toggleReportModal(false)"
+    ></div>
+
+    <div
+      class="modal fade show d-block"
+      tabindex="-1"
+      role="dialog"
+    >
+      <div
+        class="modal-dialog modal-dialog-centered modal-lg"
+        role="document"
+      >
+        <div
+          class="modal-content border-0 p-3 shadow-lg"
+          style="border-radius: 16px"
+        >
+          <div class="modal-header border-0 pb-0">
+            <div>
+              <h5 class="modal-title fw-bold text-dark mb-1">
+                Report an issue
+              </h5>
+
+              <p class="text-muted small mb-0">
+                Link the correct booking when the issue concerns a
+                payment, booking, or refund.
+              </p>
+            </div>
+
+            <button
+              type="button"
+              class="btn-close"
+              [disabled]="isSubmitting"
+              (click)="toggleReportModal(false)"
+              aria-label="Close report form"
+            ></button>
+          </div>
+
+          <div class="modal-body py-3">
+            @if (reportFormError) {
+              <div
+                class="alert alert-danger py-2 small"
+                aria-live="assertive"
+              >
+                {{ reportFormError }}
+              </div>
+            }
+
+            <div class="row g-3">
+              <div class="col-12">
+                <label
+                  class="form-label text-dark fw-medium small"
+                >
+                  Subject
+                </label>
+
+                <input
+                  type="text"
+                  class="form-control custom-input py-2"
+                  maxlength="200"
+                  placeholder="e.g., Property was not as shown"
+                  [(ngModel)]="reportSubject"
+                  [disabled]="isSubmitting"
+                />
+
+                <div class="text-muted small text-end mt-1">
+                  {{ reportSubject.length }} / 200
+                </div>
+              </div>
+
+              <div class="col-12 col-md-6">
+                <label
+                  class="form-label text-dark fw-medium small"
+                >
+                  Category
+                </label>
+
+                <select
+                  class="form-select custom-input py-2"
+                  [(ngModel)]="reportCategory"
+                  [disabled]="isSubmitting"
+                  (ngModelChange)="onReportCategoryChanged()"
+                >
+                  @for (category of categories; track category) {
+                    <option [ngValue]="category">
+                      {{ formatCategory(category) }}
+                    </option>
+                  }
+                </select>
+              </div>
+
+              <div class="col-12 col-md-6">
+                <label
+                  class="form-label text-dark fw-medium small"
+                >
+                  Urgency
+                </label>
+
+                <select
+                  class="form-select custom-input py-2"
+                  [(ngModel)]="reportUrgency"
+                  [disabled]="isSubmitting"
+                >
+                  @for (urgency of urgencies; track urgency) {
+                    <option [ngValue]="urgency">
+                      {{ formatUrgency(urgency) }}
+                    </option>
+                  }
+                </select>
+              </div>
+
+              <div class="col-12">
+                <label
+                  class="form-label text-dark fw-medium small"
+                >
+                  Booking
+
+                  {{
+                    reportCategoryRequiresBooking
+                      ? "(required)"
+                      : "(optional)"
+                  }}
+                </label>
+
+                <select
+                  class="form-select custom-input py-2"
+                  [(ngModel)]="reportBookingId"
+                  [disabled]="
+                    isSubmitting ||
+                    isBookingsLoading
+                  "
+                  (ngModelChange)="onReportBookingIdChanged()"
+                >
+                  <option value="">
+                    {{
+                      reportCategoryRequiresBooking
+                        ? "Select one of your bookings"
+                        : "Not linked to a booking"
+                    }}
+                  </option>
+
+                  @for (
+                    booking of userBookings;
+                    track booking.bookingId
+                  ) {
+                    <option [value]="booking.bookingId">
+                      {{ getBookingOptionLabel(booking) }}
+                    </option>
+                  }
+                </select>
+
+                @if (isBookingsLoading) {
+                  <p class="text-muted small mt-2 mb-0">
+                    <span
+                      class="spinner-border spinner-border-sm me-1"
+                    ></span>
+
+                    Loading your bookings...
+                  </p>
+                } @else if (bookingLoadError) {
+                  <div
+                    class="alert alert-warning py-2 small mt-2 mb-0 d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-2"
+                  >
+                    <span>
+                      {{ bookingLoadError }}
+                    </span>
+
+                    <button
+                      type="button"
+                      class="btn btn-sm btn-outline-warning fw-semibold"
+                      [disabled]="
+                        isSubmitting ||
+                        isBookingsLoading
+                      "
+                      (click)="loadUserBookings()"
+                    >
+                      Retry
+                    </button>
+                  </div>
+                } @else if (selectedReportBooking) {
+                  <div
+                    class="alert alert-light border py-2 small mt-2 mb-0"
+                  >
+                    <strong>
+                      {{ selectedReportBooking.property.title }}
+                    </strong>
+
+                    •
+
+                    {{ selectedReportBooking.checkInDate }}
+
+                    to
+
+                    {{ selectedReportBooking.checkOutDate }}
+
+                    •
+
+                    {{ selectedReportBooking.status }}
+
+                    <div class="text-muted mt-1">
+                      The property is linked automatically from this
+                      booking and verified by the server.
+                    </div>
+                  </div>
+                } @else if (reportCategoryRequiresBooking) {
+                  <p class="text-warning small mt-2 mb-0">
+                    This category must be linked to a booking owned by
+                    your account.
+                  </p>
+                }
+              </div>
+
+              <div class="col-12">
+                <label
+                  class="form-label text-dark fw-medium small"
+                >
+                  Description
+                </label>
+
+                <textarea
+                  class="form-control custom-textarea p-3"
+                  rows="5"
+                  maxlength="4000"
+                  placeholder="Describe what happened, when it happened, and what outcome you expect..."
+                  [(ngModel)]="reportDescription"
+                  [disabled]="isSubmitting"
+                ></textarea>
+
+                <div class="text-muted small text-end mt-1">
+                  {{ reportDescription.length }} / 4000
+                </div>
+              </div>
+
+              <div class="col-12 col-md-6">
+                <label
+                  class="form-label text-dark fw-medium small"
+                >
+                  Evidence type
+                </label>
+
+                <select
+                  class="form-select custom-input py-2"
+                  [(ngModel)]="reportAttachmentType"
+                  [disabled]="isSubmitting"
+                >
+                  @for (
+                    option of attachmentTypeOptions;
+                    track option.value
+                  ) {
+                    <option [ngValue]="option.value">
+                      {{ option.label }}
+                    </option>
+                  }
+                </select>
+              </div>
+
+              <div
+                class="col-12 col-md-6 d-flex align-items-end"
+              >
+                <p class="text-muted small mb-2">
+                  {{ selectedReportAttachmentDescription }}
+                </p>
+              </div>
+
+              <div class="col-12">
+                <label
+                  class="form-label text-dark fw-medium small"
+                >
+                  Evidence images (optional)
+                </label>
+
+                <input
+                  type="file"
+                  class="form-control custom-input"
+                  multiple
+                  accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp"
+                  [disabled]="isSubmitting"
+                  (change)="onReportFilesSelected($event)"
+                />
+
+                <p class="text-muted small mt-2 mb-2">
+                  JPG, JPEG, PNG, or WebP only. Maximum 5 MB per image
+                  and 5 images per batch. PDF and document files are
+                  not supported by the current secure image storage.
+                </p>
+
+                @if (selectedReportFiles.length > 0) {
+                  <div class="selected-files d-flex flex-column gap-2">
+                    @for (
+                      file of selectedReportFiles;
+                      track file.name
+                    ) {
+                      <div
+                        class="selected-file rounded-3 px-2 py-1 d-flex justify-content-between align-items-center gap-2"
+                      >
+                        <span class="small text-truncate">
+                          {{ file.name }}
+
+                          •
+
+                          {{ formatFileSize(file.size) }}
+                        </span>
+
+                        <button
+                          type="button"
+                          class="btn btn-sm border-0"
+                          [disabled]="isSubmitting"
+                          (click)="removeReportFile($index)"
+                        >
+                          <i class="bi bi-x-lg"></i>
+                        </button>
+                      </div>
+                    }
+                  </div>
+                }
+              </div>
+            </div>
+
+            <div
+              class="text-start text-muted bg-light p-2 rounded-2 d-flex align-items-center gap-2 mt-3"
+              style="font-size: 0.75rem"
+            >
+              <i class="bi bi-person-circle"></i>
+
+              <span>
+                Sending report as:
+
+                <span class="fw-semibold text-dark">
+                  {{
+                    userEmail ||
+                    "Current SmartStay user"
+                  }}
+                </span>
+              </span>
+            </div>
+          </div>
+
+          <div
+            class="modal-footer border-0 pt-0 d-flex justify-content-end gap-2"
+          >
+            <button
+              type="button"
+              class="btn btn-cancel rounded-pill px-4 btn-sm fw-medium"
+              [disabled]="isSubmitting"
+              (click)="toggleReportModal(false)"
+            >
+              Cancel
+            </button>
+
+            <button
+              type="button"
+              class="btn btn-submit rounded-pill px-4 btn-sm fw-medium"
+              [disabled]="
+                !reportSubject.trim() ||
+                !reportDescription.trim() ||
+                isSubmitting
+              "
+              (click)="submitReport()"
+            >
+              @if (isSubmitting) {
+                <span
+                  class="spinner-border spinner-border-sm me-1"
+                ></span>
+
+                Sending...
+              } @else {
+                Submit report
+              }
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+</div>
+
+@if (toast.show) {
+  <div
+    class="custom-toast d-flex align-items-center gap-3 shadow-lg"
+    [ngClass]="toast.type"
+    aria-live="polite"
+  >
+    <div
+      class="toast-icon-box d-flex align-items-center justify-content-center"
+    >
+      <i
+        class="bi"
+        [ngClass]="
+          toast.type === 'success'
+            ? 'bi-check-circle-fill'
+            : 'bi-exclamation-triangle-fill'
+        "
+      ></i>
+    </div>
+
+    <div class="toast-content flex-grow-1 text-start">
+      <h6 class="toast-title fw-bold mb-0 text-capitalize">
+        {{ toast.type }}
+      </h6>
+
+      <span class="toast-message small text-secondary">
+        {{ toast.message }}
+      </span>
+    </div>
+
+    <button
+      type="button"
+      class="btn-close-toast border-0 bg-transparent p-0 ms-2"
+      (click)="toast.show = false"
+      aria-label="Close notification"
+    >
+      <i class="bi bi-x fs-5"></i>
+    </button>
+  </div>
+}
+
+<div
+  class="chatbot-sidebar shadow-lg"
+  [class.open]="isChatOpen"
+>
+  <div
+    class="chat-header d-flex justify-content-between align-items-center p-3 border-bottom"
+  >
+    <div class="d-flex align-items-center gap-2">
+      <div
+        class="bot-avatar-icon d-flex align-items-center justify-content-center text-white fw-bold"
+      >
+        <i class="bi bi-robot"></i>
+      </div>
+
+      <div>
+        <h6 class="fw-bold text-dark mb-0">
+          Hi there!
+        </h6>
+
+        <small class="text-muted">
+          SmartStay assistant
+        </small>
+      </div>
+    </div>
+
+    <button
+      type="button"
+      class="btn-close-chat border-0 bg-transparent"
+      (click)="isChatOpen = false"
+      aria-label="Close assistant"
+    >
+      <i class="bi bi-x-lg fs-5 text-secondary"></i>
+    </button>
+  </div>
+
+  <div class="chat-body p-3">
+    @for (message of chatMessages; track message.timestamp) {
+      <div
+        class="d-flex flex-column mb-3"
+        [ngClass]="
+          message.isBot
+            ? 'align-items-start'
+            : 'align-items-end'
+        "
+      >
+        <div
+          class="chat-bubble"
+          [ngClass]="
+            message.isBot
+              ? 'bot-bubble'
+              : 'user-bubble'
+          "
+        >
+          {{ message.text }}
+        </div>
+      </div>
+    }
+
+    @if (isBotTyping) {
+      <div class="d-flex align-items-start mb-3">
+        <div class="chat-bubble bot-bubble text-muted py-2 px-3">
+          <span
+            class="spinner-grow spinner-grow-sm me-1"
+            role="status"
+          ></span>
+
+          Typing...
+        </div>
+      </div>
+    }
+
+    @if (!isBotTyping && chatMessages.length <= 2) {
+      <div class="row g-2 mt-4 px-1">
+        @for (question of suggestedQuestions; track question) {
+          <div class="col-6">
+            <button
+              type="button"
+              class="btn btn-suggested text-start w-100 p-2 text-wrap"
+              (click)="sendUserMessage(question)"
+            >
+              {{ question }}
+
+              <i
+                class="bi bi-chevron-right float-end small mt-1 text-muted"
+              ></i>
+            </button>
+          </div>
+        }
+      </div>
+    }
+  </div>
+
+  <div class="chat-footer p-3 border-top">
+    <div class="input-group">
+      <input
+        type="text"
+        class="form-control chat-input border-0 bg-light p-2"
+        placeholder="Type a message..."
+        [(ngModel)]="newMessage"
+        [disabled]="isBotTyping"
+        (keyup.enter)="sendUserMessage(newMessage)"
+      />
+
+      <button
+        type="button"
+        class="btn btn-send-chat border-0 bg-light"
+        [disabled]="
+          !newMessage.trim() ||
+          isBotTyping
+        "
+        (click)="sendUserMessage(newMessage)"
+      >
+        <i class="bi bi-send-fill text-turquoise"></i>
+      </button>
+    </div>
+  </div>
+</div>

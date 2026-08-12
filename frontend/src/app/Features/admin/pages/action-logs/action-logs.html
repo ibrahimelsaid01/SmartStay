@@ -1,0 +1,309 @@
+<section class="action-logs-page">
+  <div class="page-header">
+    <div>
+      <h2>Admin Action Logs</h2>
+      <p>
+        Audit all admin actions across payouts, complaints, decisions, users, bookings, and platform
+        operations.
+      </p>
+    </div>
+
+    <button
+      type="button"
+      class="refresh-btn"
+      (click)="refresh()"
+      [disabled]="loading || detailsLoading"
+    >
+      <i class="bi bi-arrow-clockwise"></i>
+      Refresh
+    </button>
+  </div>
+
+  <div *ngIf="errorMessage" class="alert alert-danger py-2" aria-live="assertive">
+    {{ errorMessage }}
+  </div>
+
+  <div *ngIf="filterErrorMessage" class="alert alert-warning py-2" aria-live="assertive">
+    {{ filterErrorMessage }}
+  </div>
+
+  <div class="filters-card">
+    <div class="filter-group search-group">
+      <label>Search</label>
+      <input
+        type="text"
+        class="form-control"
+        placeholder="Search summary, details, reference..."
+        [(ngModel)]="search"
+        [disabled]="loading"
+        (keyup.enter)="applyFilters()"
+      />
+    </div>
+
+    <div class="filter-group">
+      <label>Action</label>
+      <select class="form-select" [(ngModel)]="actionType" [disabled]="loading">
+        <option *ngFor="let option of actionTypeOptions" [ngValue]="option.value">
+          {{ option.label }}
+        </option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label>Target</label>
+      <select class="form-select" [(ngModel)]="targetType" [disabled]="loading">
+        <option *ngFor="let option of targetTypeOptions" [ngValue]="option.value">
+          {{ option.label }}
+        </option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label>Admin User ID</label>
+      <input
+        type="text"
+        class="form-control"
+        placeholder="Admin user id"
+        [(ngModel)]="adminUserId"
+        [disabled]="loading"
+      />
+    </div>
+
+    <div class="filter-group">
+      <label>Target ID</label>
+      <input
+        type="text"
+        class="form-control"
+        placeholder="Target id"
+        [(ngModel)]="targetId"
+        [disabled]="loading"
+      />
+    </div>
+
+    <div class="filter-group">
+      <label>From</label>
+      <input type="date" class="form-control" [(ngModel)]="from" [disabled]="loading" />
+    </div>
+
+    <div class="filter-group">
+      <label>To</label>
+      <input type="date" class="form-control" [(ngModel)]="to" [disabled]="loading" />
+    </div>
+
+    <div class="filter-actions">
+      <button type="button" class="apply-btn" (click)="applyFilters()" [disabled]="loading">
+        Apply
+      </button>
+
+      <button type="button" class="reset-btn" (click)="resetFilters()" [disabled]="loading">
+        Reset
+      </button>
+    </div>
+  </div>
+
+  <div class="summary-row">
+    <div class="summary-card">
+      <span>Total logs</span>
+      <strong>{{ totalCount }}</strong>
+    </div>
+
+    <div class="summary-card">
+      <span>Current page</span>
+      <strong>{{ page }} / {{ totalPages }}</strong>
+    </div>
+
+    <div class="summary-card">
+      <span>Page size</span>
+      <strong>{{ pageSize }}</strong>
+    </div>
+  </div>
+
+  <div *ngIf="loading" class="loading-state">
+    <div class="spinner-border spinner-border-sm" style="color: #4dd9d5"></div>
+    <span class="ms-2">Loading admin action logs...</span>
+  </div>
+
+  <div *ngIf="!loading && logs.length === 0" class="empty-state">
+    <i class="bi bi-journal-x"></i>
+    <h4>No action logs found</h4>
+    <p>No logs match the current filters.</p>
+  </div>
+
+  <div *ngIf="!loading && logs.length > 0" class="table-responsive logs-table-wrapper">
+    <table class="table table-hover align-middle mb-0">
+      <thead>
+        <tr>
+          <th>Action</th>
+          <th>Target</th>
+          <th>Summary</th>
+          <th>Admin</th>
+          <th>Reference</th>
+          <th>Target ID</th>
+          <th>IP</th>
+          <th>Created</th>
+          <th>Details</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let log of logs; trackBy: trackLog">
+          <td>
+            <span class="action-pill" [ngClass]="getActionClass(log.actionType)">
+              {{ formatActionType(log.actionType) }}
+            </span>
+          </td>
+
+          <td>
+            <span class="target-pill" [ngClass]="getTargetClass(log.targetType)">
+              {{ formatTargetType(log.targetType) }}
+            </span>
+          </td>
+
+          <td>
+            <strong class="summary-title">{{ log.summary }}</strong>
+            <span class="muted-text">{{ log.details || 'No extra details' }}</span>
+          </td>
+
+          <td>
+            <strong>{{ getAdminDisplayName(log) }}</strong>
+            <span class="muted-text">{{ log.adminEmail || log.adminUserId }}</span>
+          </td>
+
+          <td>
+            {{ log.targetReference || '—' }}
+          </td>
+
+          <td>
+            <span class="id-text">{{ log.targetId || '—' }}</span>
+          </td>
+
+          <td>
+            {{ log.ipAddress || '—' }}
+          </td>
+
+          <td>
+            {{ log.createdAt | date: 'MMM d, y, h:mm a' }}
+          </td>
+
+          <td>
+            <button
+              type="button"
+              class="btn btn-sm btn-outline-secondary fw-bold"
+              (click)="viewDetails(log)"
+              [disabled]="detailsLoading"
+            >
+              <span
+                *ngIf="selectedDetailsLogId === log.logId"
+                class="spinner-border spinner-border-sm me-1"
+                aria-hidden="true"
+              ></span>
+              View
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div *ngIf="totalPages > 1" class="pagination-box">
+    <button type="button" (click)="goToPreviousPage()" [disabled]="page <= 1 || loading">
+      Previous
+    </button>
+
+    <span>Page {{ page }} of {{ totalPages }}</span>
+
+    <button type="button" (click)="goToNextPage()" [disabled]="page >= totalPages || loading">
+      Next
+    </button>
+  </div>
+
+  <div *ngIf="detailsLoading" class="details-loading">
+    <div class="spinner-border spinner-border-sm" style="color: #4dd9d5"></div>
+    <span class="ms-2">Loading log details...</span>
+  </div>
+
+  <section *ngIf="selectedLog" class="details-panel">
+    <div class="details-header">
+      <div>
+        <h3>Action Log Details</h3>
+        <p>{{ selectedLog.logId }}</p>
+      </div>
+
+      <button
+        type="button"
+        class="btn btn-sm btn-outline-secondary"
+        (click)="closeDetails()"
+        [disabled]="detailsLoading"
+      >
+        Close
+      </button>
+    </div>
+
+    <div class="details-grid">
+      <div>
+        <span>Action Type</span>
+        <strong>{{ formatActionType(selectedLog.actionType) }}</strong>
+      </div>
+
+      <div>
+        <span>Target Type</span>
+        <strong>{{ formatTargetType(selectedLog.targetType) }}</strong>
+      </div>
+
+      <div>
+        <span>Admin</span>
+        <strong>{{ getAdminDisplayName(selectedLog) }}</strong>
+      </div>
+
+      <div>
+        <span>Admin Email</span>
+        <strong>{{ selectedLog.adminEmail || '—' }}</strong>
+      </div>
+
+      <div>
+        <span>Admin User ID</span>
+        <strong>{{ selectedLog.adminUserId }}</strong>
+      </div>
+
+      <div>
+        <span>Target ID</span>
+        <strong>{{ selectedLog.targetId || '—' }}</strong>
+      </div>
+
+      <div>
+        <span>Target Reference</span>
+        <strong>{{ selectedLog.targetReference || '—' }}</strong>
+      </div>
+
+      <div>
+        <span>IP Address</span>
+        <strong>{{ selectedLog.ipAddress || '—' }}</strong>
+      </div>
+
+      <div>
+        <span>Created At</span>
+        <strong>{{ selectedLog.createdAt | date: 'medium' }}</strong>
+      </div>
+    </div>
+
+    <div class="details-box">
+      <h5>Summary</h5>
+      <p>{{ selectedLog.summary }}</p>
+    </div>
+
+    <div class="details-box">
+      <h5>Details</h5>
+      <p>{{ selectedLog.details || 'No extra details were recorded.' }}</p>
+    </div>
+
+    <div class="details-box">
+      <h5>Metadata JSON</h5>
+      <pre>{{ formatMetadata(selectedLog.metadataJson) }}</pre>
+    </div>
+
+    <div class="details-box">
+      <h5>User Agent</h5>
+      <p class="user-agent-text">{{ selectedLog.userAgent || '—' }}</p>
+    </div>
+  </section>
+</section>

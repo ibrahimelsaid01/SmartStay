@@ -1,0 +1,28 @@
+<h2>Profile Image</h2>
+<p>Upload a clear photo of yourself.</p>
+
+<label class="dropzone" for="profileFile">
+  <img *ngIf="previewUrl()" [src]="previewUrl()" class="preview" />
+  <ng-container *ngIf="!previewUrl()">
+    <div class="icon">👤</div>
+    <div class="cta">Click to upload</div>
+    <div class="hint">JPG, PNG or WebP, Max 5MB</div>
+  </ng-container>
+</label>
+<input
+  id="profileFile"
+  type="file"
+  accept="image/jpeg,image/png,image/webp"
+  (change)="onFileSelected($event)"
+  hidden
+/>
+
+<p class="error" *ngIf="validationError()">{{ validationError() }}</p>
+<p class="error" *ngIf="state.error()">{{ state.error() }}</p>
+
+<div class="actions">
+  <button type="button" (click)="state.goBack()">Back</button>
+  <button type="button" [disabled]="!selectedFile() || state.loading()" (click)="save()">
+    {{ state.loading() ? 'Uploading...' : 'Save & Continue' }}
+  </button>
+</div>

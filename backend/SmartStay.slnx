@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="SmartStay.Api/SmartStay.Api.csproj" />
+  <Project Path="SmartStayBLL/SmartStayBLL.csproj" />
+  <Project Path="SmartStayDAL/SmartStayDAL.csproj" />
+</Solution>

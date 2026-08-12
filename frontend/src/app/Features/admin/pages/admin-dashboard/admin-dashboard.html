@@ -1,0 +1,264 @@
+<section class="admin-dashboard-page">
+  <div class="dashboard-header">
+    <div>
+      <h2>Admin Dashboard</h2>
+      <p>Platform overview and pending host verification requests.</p>
+    </div>
+
+    <button type="button" class="refresh-btn" (click)="loadDashboard()" [disabled]="isAnyLoading">
+      <i class="bi bi-arrow-clockwise"></i>
+      Refresh
+    </button>
+  </div>
+
+  <div *ngIf="errorMessage" class="alert alert-danger py-2">
+    {{ errorMessage }}
+  </div>
+
+  <div *ngIf="successMessage" class="alert alert-success py-2">
+    {{ successMessage }}
+  </div>
+
+  <div class="dashboard-cards">
+    <article class="dashboard-card">
+      <div class="card-icon">
+        <i class="bi bi-people"></i>
+      </div>
+
+      <div>
+        <span>Total Users</span>
+        <strong>{{ summary?.totalUsers ?? 0 }}</strong>
+      </div>
+    </article>
+
+    <article class="dashboard-card">
+      <div class="card-icon">
+        <i class="bi bi-person-check"></i>
+      </div>
+
+      <div>
+        <span>Total Hosts</span>
+        <strong>{{ summary?.totalHosts ?? 0 }}</strong>
+      </div>
+    </article>
+
+    <article class="dashboard-card warning">
+      <div class="card-icon">
+        <i class="bi bi-clock-history"></i>
+      </div>
+
+      <div>
+        <span>Pending Host Applications</span>
+        <strong>{{ pendingCount }}</strong>
+      </div>
+    </article>
+
+    <article class="dashboard-card">
+      <div class="card-icon">
+        <i class="bi bi-house-check"></i>
+      </div>
+
+      <div>
+        <span>Published Properties</span>
+        <strong>{{ summary?.publishedProperties ?? 0 }}</strong>
+      </div>
+    </article>
+
+    <article class="dashboard-card">
+      <div class="card-icon">
+        <i class="bi bi-calendar-check"></i>
+      </div>
+
+      <div>
+        <span>Total Bookings</span>
+        <strong>{{ summary?.totalBookings ?? 0 }}</strong>
+      </div>
+    </article>
+  </div>
+
+  <section class="pending-section">
+    <div class="section-header">
+      <div>
+        <h3>Pending Host Verifications</h3>
+        <p>Host applications waiting for admin review.</p>
+      </div>
+
+      <a routerLink="/admin/user-management" class="view-link">
+        Go to User Management
+      </a>
+    </div>
+
+    <div *ngIf="applicationsLoading" class="loading-state">
+      <div class="spinner-border" style="color: #4dd9d5;"></div>
+      <p class="text-muted small mt-3 mb-0">
+        Loading pending applications...
+      </p>
+    </div>
+
+    <div *ngIf="!applicationsLoading && pendingApplications.length === 0" class="empty-state">
+      <i class="bi bi-check-circle"></i>
+      <h4>No pending host applications</h4>
+      <p>All host requests have been reviewed.</p>
+    </div>
+
+    <div *ngIf="!applicationsLoading && pendingApplications.length > 0" class="table-responsive rounded-3 border">
+      <table class="table table-hover mb-0 align-middle">
+        <thead>
+          <tr>
+            <th>Applicant</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Location</th>
+            <th>Submitted</th>
+            <th>Document</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let app of pendingApplications">
+            <td>
+              <div class="applicant-cell">
+                <img [src]="app.profileImageUrl || 'Images/default-avatar.png'" alt="avatar" />
+
+                <div>
+                  <strong>{{ app.userFullName || app.displayName }}</strong>
+                  <span>{{ app.displayName }}</span>
+                </div>
+              </div>
+            </td>
+
+            <td>{{ app.email }}</td>
+
+            <td>{{ app.phoneNumber || '—' }}</td>
+
+            <td>{{ app.city }}, {{ app.country }}</td>
+
+            <td>
+              {{ app.submittedAt ? (app.submittedAt | date: 'MMM d, y') : '—' }}
+            </td>
+
+            <td>
+              <span class="document-pill" [class.has-document]="app.hasIdentityDocument">
+                {{ app.hasIdentityDocument ? 'Uploaded' : 'Missing' }}
+              </span>
+            </td>
+
+            <td>
+              <div class="d-flex gap-2 flex-wrap">
+                <button type="button" class="btn btn-sm btn-outline-secondary fw-bold" (click)="viewDetails(app.id)">
+                  View
+                </button>
+
+                <button type="button" class="btn btn-sm btn-teal fw-bold" (click)="approve(app.id)"
+                  [disabled]="actionLoadingId === app.id">
+                  {{ actionLoadingId === app.id ? 'Approving...' : 'Approve' }}
+                </button>
+
+                <button type="button" class="btn btn-sm btn-outline-danger fw-bold" (click)="openRejectModal(app)"
+                  [disabled]="actionLoadingId === app.id">
+                  Reject
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div *ngIf="loadingDetails" class="text-center py-4">
+      <div class="spinner-border spinner-border-sm" style="color: #4dd9d5;"></div>
+      <span class="text-muted small ms-2">Loading application details...</span>
+    </div>
+
+    <div *ngIf="selectedApp" class="details-panel mt-4">
+      <div class="d-flex justify-content-between align-items-start gap-3 mb-3">
+        <div>
+          <h5 class="fw-bold mb-1">
+            {{ selectedApp.userFullName }}
+          </h5>
+
+          <p class="text-muted small mb-0">
+            {{ selectedApp.email }} · {{ selectedApp.phoneNumber }}
+          </p>
+        </div>
+
+        <button type="button" class="btn btn-sm btn-outline-secondary" (click)="closeDetails()">
+          Close
+        </button>
+      </div>
+
+      <div class="row g-3">
+        <div class="col-md-6">
+          <div class="details-item">
+            <small>Display Name</small>
+            <strong>{{ selectedApp.displayName }}</strong>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="details-item">
+            <small>Location</small>
+            <strong>{{ selectedApp.city }}, {{ selectedApp.country }}</strong>
+          </div>
+        </div>
+
+        <div class="col-12">
+          <div class="details-item">
+            <small>Bio</small>
+            <p class="mb-0">{{ selectedApp.bio || 'No bio provided.' }}</p>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="details-item">
+            <small>Profile Image</small>
+            <strong>
+              {{ selectedApp.hasProfileImage ? 'Uploaded' : 'Missing' }}
+            </strong>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="details-item">
+            <small>Identity Document</small>
+            <strong>
+              {{ selectedApp.hasIdentityDocument ? 'Uploaded' : 'Missing' }}
+            </strong>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div *ngIf="showRejectModal" class="modal-overlay">
+    <div class="modal-box">
+      <h5 class="fw-bold mb-2">Reject Host Application</h5>
+
+      <p class="text-muted small mb-3">
+        Please provide a clear reason for rejecting
+        <strong>{{ appToReject?.userFullName || appToReject?.displayName }}</strong>.
+      </p>
+
+      <textarea class="form-control mb-3" rows="4" placeholder="Write rejection reason..."
+        [(ngModel)]="rejectionReason"></textarea>
+
+      <div class="d-flex justify-content-end gap-2">
+        <button type="button" class="btn btn-outline-secondary" (click)="closeRejectModal()">
+          Cancel
+        </button>
+
+        <button type="button" class="btn btn-danger fw-bold" (click)="confirmReject()" [disabled]="
+            rejectionReason.trim().length < 10 ||
+            actionLoadingId === appToReject?.id
+          ">
+          {{
+          actionLoadingId === appToReject?.id
+          ? 'Rejecting...'
+          : 'Confirm Reject'
+          }}
+        </button>
+      </div>
+    </div>
+  </div>
+</section>

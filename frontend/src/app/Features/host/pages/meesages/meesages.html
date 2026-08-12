@@ -1,0 +1,39 @@
+<div class="container-fluid chat-main-wrapper p-3">
+  <div class="row h-100 g-3">
+
+    <div class="col-12 col-lg-3 h-100" [ngClass]="chatService.activeThread() ? 'd-none d-lg-block' : 'd-block'">
+      <app-chat-sidebar></app-chat-sidebar>
+    </div>
+
+    <div class="col-12 col-lg-6 h-100" [ngClass]="chatService.activeThread() ? 'd-block' : 'd-none d-lg-block'">
+
+      @if (chatService.activeThread()) {
+      <app-chat-window></app-chat-window>
+      } @else {
+      <div
+        class="h-100 d-flex flex-column align-items-center justify-content-center text-muted p-4 bg-white border rounded-4">
+        <i class="bi bi-chat-dots fs-1 mb-2 text-secondary opacity-50"></i>
+        <p class="small">Select a conversation to start messaging</p>
+      </div>
+      }
+    </div>
+
+    <div class="d-none d-lg-block col-lg-3 h-100">
+      <app-chat-details></app-chat-details>
+    </div>
+
+  </div>
+</div>
+
+<div class="offcanvas offcanvas-end rounded-start-4" [ngClass]="{'show': chatService.isMobileDetailsOpen()}"
+  tabindex="-1" style="visibility: visible;" *ngIf="chatService.isMobileDetailsOpen()">
+  <div class="offcanvas-header border-bottom py-3">
+    <h6 class="offcanvas-title fw-bold text-dark mb-0">Reservation Details</h6>
+    <button type="button" class="btn-close shadow-none" (click)="chatService.isMobileDetailsOpen.set(false)"></button>
+  </div>
+  <div class="offcanvas-body p-0">
+    <app-chat-details></app-chat-details>
+  </div>
+</div>
+<div class="offcanvas-backdrop fade show" *ngIf="chatService.isMobileDetailsOpen()"
+  (click)="chatService.isMobileDetailsOpen.set(false)"></div>

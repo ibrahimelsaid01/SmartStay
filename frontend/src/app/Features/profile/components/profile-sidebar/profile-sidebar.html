@@ -1,0 +1,427 @@
+<div class="profile-sidebar" [class.is-collapsed]="isCollapsed">
+  @if (!isAdminMenu) {
+    <div
+      class="sidebar-header d-flex align-items-center justify-content-between flex-nowrap position-relative w-100"
+    >
+      <div class="d-flex align-items-center gap-3 user-info-box">
+        <img
+          [src]="user?.profileImageUrl || 'Images/default-avatar.png'"
+          alt="Profile avatar"
+          class="profile-avatar-img"
+        />
+
+        <div class="text-fields">
+          <h4 class="mb-0 user-name">
+            {{ user?.firstName }} {{ user?.lastName }}
+          </h4>
+
+          <p class="mb-0 user-role">
+            {{ currentRole }}
+          </p>
+        </div>
+      </div>
+
+      <button
+        type="button"
+        (click)="toggleSidebar()"
+        class="btn-toggle-sidebar d-none d-md-flex align-items-center justify-content-center shadow-sm"
+        [attr.aria-label]="isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'"
+      >
+        <i
+          class="bi"
+          [class.bi-chevron-left]="!isCollapsed"
+          [class.bi-chevron-right]="isCollapsed"
+        ></i>
+      </button>
+    </div>
+
+    <hr class="separator-line my-3" />
+  }
+
+  @if (isAdminMenu) {
+    <div class="nav-menu d-flex flex-column gap-1">
+      <p class="sidebar-context-label menu-text mb-2">Admin Console</p>
+
+      <a
+        routerLink="/admin/dashboard"
+        routerLinkActive="active-link"
+        [routerLinkActiveOptions]="{ exact: true }"
+        class="nav-item d-flex align-items-center gap-3 py-2 px-3"
+        title="Dashboard"
+        (click)="closeMobileSidebar()"
+      >
+        <i class="bi bi-grid icon-slate"></i>
+        <span class="menu-text">Dashboard</span>
+      </a>
+
+      <a
+        routerLink="/admin/bookings"
+        routerLinkActive="active-link"
+        [routerLinkActiveOptions]="{ exact: true }"
+        class="nav-item d-flex align-items-center gap-3 py-2 px-3"
+        title="Bookings"
+        (click)="closeMobileSidebar()"
+      >
+        <i class="bi bi-calendar-check icon-slate"></i>
+        <span class="menu-text">Bookings</span>
+      </a>
+
+      <a
+        routerLink="/admin/user-management"
+        routerLinkActive="active-link"
+        [routerLinkActiveOptions]="{ exact: true }"
+        class="nav-item d-flex align-items-center gap-3 py-2 px-3"
+        title="User Management"
+        (click)="closeMobileSidebar()"
+      >
+        <i class="bi bi-people icon-slate"></i>
+        <span class="menu-text">User Management</span>
+      </a>
+
+      <a
+        routerLink="/admin/property-verifications"
+        routerLinkActive="active-link"
+        [routerLinkActiveOptions]="{ exact: true }"
+        class="nav-item d-flex align-items-center gap-3 py-2 px-3"
+        title="Property Verifications"
+        (click)="closeMobileSidebar()"
+      >
+        <i class="bi bi-shield-check icon-slate"></i>
+        <span class="menu-text">Property Verifications</span>
+      </a>
+
+      <a
+        routerLink="/admin/complaints-support"
+        routerLinkActive="active-link"
+        [routerLinkActiveOptions]="{ exact: true }"
+        class="nav-item d-flex align-items-center gap-3 py-2 px-3"
+        title="Complaints and Support"
+        (click)="closeMobileSidebar()"
+      >
+        <i class="bi bi-headset icon-slate"></i>
+        <span class="menu-text">Complaints & Support</span>
+      </a>
+
+      <a
+        routerLink="/admin/reviews-moderation"
+        routerLinkActive="active-link"
+        [routerLinkActiveOptions]="{ exact: true }"
+        class="nav-item d-flex align-items-center gap-3 py-2 px-3"
+        title="Reviews Moderation"
+        (click)="closeMobileSidebar()"
+      >
+        <i class="bi bi-star icon-slate"></i>
+        <span class="menu-text">Reviews Moderation</span>
+      </a>
+
+      <a
+        routerLink="/admin/action-logs"
+        routerLinkActive="active-link"
+        [routerLinkActiveOptions]="{ exact: true }"
+        class="nav-item d-flex align-items-center gap-3 py-2 px-3"
+        title="Action Logs"
+        (click)="closeMobileSidebar()"
+      >
+        <i class="bi bi-journal-text icon-slate"></i>
+        <span class="menu-text">Action Logs</span>
+      </a>
+
+      <a
+        routerLink="/admin/messages"
+        routerLinkActive="active-link"
+        [routerLinkActiveOptions]="{ exact: true }"
+        class="nav-item d-flex align-items-center gap-3 py-2 px-3"
+        title="Messages"
+        (click)="closeMobileSidebar()"
+      >
+        <i class="bi bi-envelope icon-slate"></i>
+        <span class="menu-text">Messages</span>
+      </a>
+
+      <a
+        routerLink="/admin/financials-payouts"
+        routerLinkActive="active-link"
+        [routerLinkActiveOptions]="{ exact: true }"
+        class="nav-item d-flex align-items-center gap-3 py-2 px-3"
+        title="Financials and Payouts"
+        (click)="closeMobileSidebar()"
+      >
+        <i class="bi bi-cash-stack icon-slate"></i>
+        <span class="menu-text">Financials & Payouts</span>
+      </a>
+    </div>
+  } @else if (isHostMenu) {
+    <div class="nav-menu d-flex flex-column gap-1">
+      <p class="sidebar-context-label menu-text mb-2">Hosting</p>
+
+      <a
+        routerLink="/host/dashboard"
+        routerLinkActive="active-link"
+        [routerLinkActiveOptions]="{ exact: true }"
+        class="nav-item d-flex align-items-center gap-3 py-2 px-3"
+        title="Dashboard"
+        (click)="closeMobileSidebar()"
+      >
+        <i class="bi bi-grid icon-slate"></i>
+        <span class="menu-text">Dashboard</span>
+      </a>
+
+      <a
+        routerLink="/host/my-listings"
+        routerLinkActive="active-link"
+        [routerLinkActiveOptions]="{ exact: true }"
+        class="nav-item d-flex align-items-center gap-3 py-2 px-3"
+        title="My Listings"
+        (click)="closeMobileSidebar()"
+      >
+        <i class="bi bi-building icon-slate"></i>
+        <span class="menu-text">My Listings</span>
+      </a>
+
+      <a
+        routerLink="/host/listings/add"
+        routerLinkActive="active-link"
+        [routerLinkActiveOptions]="{ exact: true }"
+        class="nav-item d-flex align-items-center gap-3 py-2 px-3"
+        title="Add Listing"
+        (click)="closeMobileSidebar()"
+      >
+        <i class="bi bi-plus-circle icon-slate"></i>
+        <span class="menu-text">Add Listing</span>
+      </a>
+
+      <a
+        routerLink="/host/messages"
+        routerLinkActive="active-link"
+        [routerLinkActiveOptions]="{ exact: true }"
+        class="nav-item d-flex align-items-center gap-3 py-2 px-3"
+        title="Messages"
+        (click)="closeMobileSidebar()"
+      >
+        <i class="bi bi-envelope icon-slate"></i>
+        <span class="menu-text">Messages</span>
+      </a>
+
+      <a
+        routerLink="/host/settings"
+        routerLinkActive="active-link"
+        [routerLinkActiveOptions]="{ exact: true }"
+        class="nav-item d-flex align-items-center gap-3 py-2 px-3"
+        title="Host Settings"
+        (click)="closeMobileSidebar()"
+      >
+        <i class="bi bi-sliders icon-slate"></i>
+        <span class="menu-text">Host Settings</span>
+      </a>
+
+      <hr class="separator-line my-3" />
+      <p class="sidebar-context-label menu-text mb-2">Personal Account</p>
+
+      <a
+        routerLink="/profile/personal-data"
+        class="nav-item d-flex align-items-center gap-3 py-2 px-3"
+        title="Personal Profile"
+        (click)="closeMobileSidebar()"
+      >
+        <i class="bi bi-person icon-slate"></i>
+        <span class="menu-text">Personal Profile</span>
+      </a>
+
+      <a
+        routerLink="/profile/bookings/all"
+        class="nav-item d-flex align-items-center gap-3 py-2 px-3"
+        title="My Bookings"
+        (click)="closeMobileSidebar()"
+      >
+        <i class="bi bi-briefcase icon-slate"></i>
+        <span class="menu-text">My Bookings</span>
+      </a>
+
+      <a
+        routerLink="/profile/wishlist"
+        class="nav-item d-flex align-items-center gap-3 py-2 px-3"
+        title="Wish Lists"
+        (click)="closeMobileSidebar()"
+      >
+        <i class="bi bi-heart icon-slate"></i>
+        <span class="menu-text">Wish Lists</span>
+      </a>
+
+      <a
+        routerLink="/profile/support"
+        class="nav-item d-flex align-items-center gap-3 py-2 px-3"
+        title="Support"
+        (click)="closeMobileSidebar()"
+      >
+        <i class="bi bi-headset icon-slate"></i>
+        <span class="menu-text">Support</span>
+      </a>
+    </div>
+  } @else {
+    <div class="nav-menu d-flex flex-column gap-1">
+      <p class="sidebar-context-label menu-text mb-2">My Account</p>
+
+      <a
+        routerLink="/profile/personal-data"
+        routerLinkActive="active-link"
+        [routerLinkActiveOptions]="{ exact: true }"
+        class="nav-item d-flex align-items-center gap-3 py-2 px-3"
+        title="Personal Data"
+        (click)="closeMobileSidebar()"
+      >
+        <i class="bi bi-person icon-slate"></i>
+        <span class="menu-text">Personal Data</span>
+      </a>
+
+      <a
+        routerLink="/profile/payment-account"
+        routerLinkActive="active-link"
+        [routerLinkActiveOptions]="{ exact: true }"
+        class="nav-item d-flex align-items-center gap-3 py-2 px-3"
+        title="Payment Account"
+        (click)="closeMobileSidebar()"
+      >
+        <i class="bi bi-credit-card icon-slate"></i>
+        <span class="menu-text">Payment Account</span>
+      </a>
+
+      <div class="w-100">
+        <button
+          type="button"
+          (click)="toggleBookings()"
+          class="nav-item border-0 bg-transparent text-start d-flex justify-content-between align-items-center py-2 px-3"
+          [class.active-parent]="isBookingsOpen || isBookingsRoute"
+          title="Bookings"
+          [attr.aria-expanded]="isBookingsOpen || isBookingsRoute"
+        >
+          <span class="d-flex align-items-center gap-3">
+            <i class="bi bi-briefcase icon-slate"></i>
+            <span class="menu-text">Bookings</span>
+          </span>
+
+          <i
+            class="bi small arrow-icon menu-text"
+            [class.bi-chevron-down]="!(isBookingsOpen || isBookingsRoute)"
+            [class.bi-chevron-up]="isBookingsOpen || isBookingsRoute"
+          ></i>
+        </button>
+
+        @if (isBookingsOpen || isBookingsRoute) {
+          <div class="sub-menu d-flex flex-column gap-1 mt-1">
+            <a
+              routerLink="/profile/bookings/all"
+              routerLinkActive="sub-active"
+              [routerLinkActiveOptions]="{ exact: true }"
+              class="sub-item d-block py-2 px-3"
+              (click)="closeMobileSidebar()"
+            >
+              All
+            </a>
+
+            <a
+              routerLink="/profile/bookings/active"
+              routerLinkActive="sub-active"
+              [routerLinkActiveOptions]="{ exact: true }"
+              class="sub-item d-block py-2 px-3"
+              (click)="closeMobileSidebar()"
+            >
+              Active
+            </a>
+
+            <a
+              routerLink="/profile/bookings/completed"
+              routerLinkActive="sub-active"
+              [routerLinkActiveOptions]="{ exact: true }"
+              class="sub-item d-block py-2 px-3"
+              (click)="closeMobileSidebar()"
+            >
+              Completed
+            </a>
+
+            <a
+              routerLink="/profile/bookings/canceled"
+              routerLinkActive="sub-active"
+              [routerLinkActiveOptions]="{ exact: true }"
+              class="sub-item d-block py-2 px-3"
+              (click)="closeMobileSidebar()"
+            >
+              Canceled
+            </a>
+          </div>
+        }
+      </div>
+
+      <a
+        routerLink="/profile/wishlist"
+        routerLinkActive="active-link"
+        [routerLinkActiveOptions]="{ exact: true }"
+        class="nav-item d-flex align-items-center gap-3 py-2 px-3"
+        title="Wish Lists"
+        (click)="closeMobileSidebar()"
+      >
+        <i class="bi bi-heart icon-slate"></i>
+        <span class="menu-text">Wish Lists</span>
+      </a>
+
+      <a
+        routerLink="/profile/messages"
+        routerLinkActive="active-link"
+        [routerLinkActiveOptions]="{ exact: true }"
+        class="nav-item d-flex align-items-center gap-3 py-2 px-3"
+        title="Messages"
+        (click)="closeMobileSidebar()"
+      >
+        <i class="bi bi-envelope icon-slate"></i>
+        <span class="menu-text">Messages</span>
+      </a>
+
+      <a
+        routerLink="/profile/my-reviews"
+        routerLinkActive="active-link"
+        [routerLinkActiveOptions]="{ exact: true }"
+        class="nav-item d-flex align-items-center gap-3 py-2 px-3"
+        title="My Reviews"
+        (click)="closeMobileSidebar()"
+      >
+        <i class="bi bi-chat-left-text icon-slate"></i>
+        <span class="menu-text">My Reviews</span>
+      </a>
+
+      <a
+        routerLink="/profile/support"
+        routerLinkActive="active-link"
+        [routerLinkActiveOptions]="{ exact: true }"
+        class="nav-item d-flex align-items-center gap-3 py-2 px-3"
+        title="Support"
+        (click)="closeMobileSidebar()"
+      >
+        <i class="bi bi-headset icon-slate"></i>
+        <span class="menu-text">Support</span>
+      </a>
+
+      <a
+        routerLink="/profile/settings"
+        routerLinkActive="active-link"
+        [routerLinkActiveOptions]="{ exact: true }"
+        class="nav-item d-flex align-items-center gap-3 py-2 px-3"
+        title="Settings"
+        (click)="closeMobileSidebar()"
+      >
+        <i class="bi bi-gear icon-slate"></i>
+        <span class="menu-text">Settings</span>
+      </a>
+    </div>
+  }
+
+  <hr class="separator-line my-3" />
+
+  <button
+    type="button"
+    (click)="logout()"
+    class="nav-item logout-btn border-0 bg-transparent text-start d-flex align-items-center gap-3 py-2 px-3"
+    title="Log out"
+  >
+    <i class="bi bi-box-arrow-left icon-slate"></i>
+    <span class="menu-text">Log out</span>
+  </button>
+</div>

@@ -1,0 +1,109 @@
+<div class="chat-card-base h-100 p-3">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h4
+      class="fw-bold text-dark mb-0"
+      style="font-family: sans-serif;"
+    >
+      Messages
+    </h4>
+
+    <button
+      type="button"
+      class="btn btn-link text-dark p-0"
+      aria-label="Message filters"
+    >
+      <i class="bi bi-sliders fs-5"></i>
+    </button>
+  </div>
+
+  <div class="search-wrapper position-relative mb-3">
+    <i
+      class="bi bi-search position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"
+      aria-hidden="true"
+    ></i>
+
+    <input
+      type="text"
+      class="form-control ps-5 py-2.5 rounded-3 bg-light border-0 small"
+      placeholder="Search guests or properties..."
+      [ngModel]="chatService.searchQuery()"
+      (ngModelChange)="onSearchChange($event)"
+    >
+  </div>
+
+  <div class="threads-list flex-grow-1 overflow-y-auto">
+    @for (
+      thread of chatService.filteredThreads();
+      track thread.id
+    ) {
+      <div
+        class="thread-item d-flex gap-3 p-3 mb-2 rounded-4 cursor-pointer transition-all"
+        [ngClass]="{
+          'active-thread':
+            chatService.selectedThreadId() === thread.id
+        }"
+        (click)="chatService.selectThread(thread.id)"
+      >
+        <div class="avatar-container position-relative flex-shrink-0">
+          <img
+            #sidebarAvatar
+            [src]="thread.avatar || '/Images/default-avatar.png'"
+            [alt]="thread.name + ' profile image'"
+            class="rounded-circle"
+            style="
+              width: 48px;
+              height: 48px;
+              object-fit: cover;
+            "
+            (error)="sidebarAvatar.src = '/Images/default-avatar.png'"
+          >
+
+          @if (thread.status === 'Online now') {
+            <span
+              class="position-absolute bottom-0 end-0 bg-success border border-white rounded-circle"
+              style="width: 12px; height: 12px;"
+              aria-label="Online now"
+            ></span>
+          }
+        </div>
+
+        <div class="flex-grow-1 min-w-0">
+          <div class="d-flex justify-content-between align-items-baseline mb-1">
+            <h6
+              class="mb-0 fw-bold text-dark text-truncate-custom"
+              style="font-size: 0.9rem;"
+            >
+              {{ thread.name }}
+            </h6>
+
+            <span class="text-muted small ms-2 flex-shrink-0">
+              {{ thread.lastMessageTime }}
+            </span>
+          </div>
+
+          <p
+            class="mb-0 text-info-custom small text-truncate-custom"
+            style="font-size: 0.8rem;"
+          >
+            {{ thread.propertyName }}
+            •
+            {{ thread.bookingDates }}
+          </p>
+
+          <p
+            class="mb-0 text-muted small text-truncate-custom mt-1"
+            [ngClass]="{
+              'fw-bold text-dark': thread.isUnread
+            }"
+          >
+            {{ thread.lastMessage }}
+          </p>
+        </div>
+      </div>
+    } @empty {
+      <div class="text-center text-muted my-5 small">
+        No conversations found.
+      </div>
+    }
+  </div>
+</div>

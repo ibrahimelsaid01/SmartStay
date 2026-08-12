@@ -1,0 +1,224 @@
+<div id="pdf-content" class="container py-5 page-container">
+<br>
+   <br>
+   <br>
+  <header
+    class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-5 border-bottom pb-4">
+    <div>
+      <h1 class="fw-bold h2 text-dark mb-1">Cookie Policy</h1>
+      <p class="text-muted small mb-0">Last Updated: July 3, 2026</p>
+    </div>
+    <div class="d-flex gap-2">
+      <button (click)="printPage()"
+        class="btn btn-outline-light-custom text-dark small-btn d-flex align-items-center gap-2 px-3 py-2 rounded-3 border">
+        <i class="bi bi-printer"></i> Print
+      </button>
+      <button (click)="downloadPDF()"
+        class="btn btn-brand text-white small-btn d-flex align-items-center gap-2 px-3 py-2 rounded-3 shadow-sm">
+        <i class="bi bi-download"></i> Download PDF
+      </button>
+    </div>
+  </header>
+
+  <div class="d-flex flex-column gap-4">
+
+    <section class="policy-card bg-white p-4 p-md-5 rounded-4 shadow-sm">
+      <div class="d-flex align-items-center gap-3 mb-3">
+        <div class="icon-box rounded-circle d-flex align-items-center justify-content-center">
+          <i class="bi bi-info-circle-fill"></i>
+        </div>
+        <h2 class="h5 fw-bold text-dark m-0">01 What are Cookies?</h2>
+      </div>
+      <p class="text-muted small leading-relaxed mb-0">
+        Cookies are small text files that are stored on your computer or mobile device when you visit a website. They
+        are widely used to make websites work more efficiently, as well as to provide information to the owners of the
+        site. At Smart Stay, we use cookies to recognize your device and store information about your preferences or
+        past actions.
+      </p>
+    </section>
+
+    <section class="policy-card bg-white p-4 p-md-5 rounded-4 shadow-sm">
+      <div class="d-flex align-items-center gap-3 mb-4">
+        <div class="icon-box rounded-circle d-flex align-items-center justify-content-center">
+          <i class="bi bi-eye-fill"></i>
+        </div>
+        <h2 class="h5 fw-bold text-dark m-0">02 How We Use Cookies</h2>
+      </div>
+
+      <div class="row g-4">
+        <div class="col-md-6">
+          <h6 class="brand-color text-uppercase fw-bold mb-2 sub-title">Authentication</h6>
+          <p class="text-muted small leading-relaxed mb-0">To verify your account and determine when you're logged in so
+            we can make it easier for you to access the Smart Stay services.</p>
+        </div>
+        <div class="col-md-6">
+          <h6 class="brand-color text-uppercase fw-bold mb-2 sub-title">Security</h6>
+          <p class="text-muted small leading-relaxed mb-0">To help us keep your account and our services safe and secure
+            by detecting malicious activity.</p>
+        </div>
+        <div class="col-md-6">
+          <h6 class="brand-color text-uppercase fw-bold mb-2 sub-title">Preferences</h6>
+          <p class="text-muted small leading-relaxed mb-0">To remember your settings and preferences, such as your
+            preferred language or region.</p>
+        </div>
+        <div class="col-md-6">
+          <h6 class="brand-color text-uppercase fw-bold mb-2 sub-title">Analytics</h6>
+          <p class="text-muted small leading-relaxed mb-0">To understand how visitors interact with our website by
+            collecting and reporting information anonymously.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="policy-card bg-white p-4 p-md-5 rounded-4 shadow-sm">
+      <div class="d-flex align-items-center gap-3 mb-4">
+        <div class="icon-box rounded-circle d-flex align-items-center justify-content-center">
+          <i class="bi bi-grid-fill"></i>
+        </div>
+        <h2 class="h5 fw-bold text-dark m-0">03 Types of Cookies We Use</h2>
+      </div>
+
+      <div class="d-flex flex-column gap-3">
+        <div class="inner-gray-card p-3 rounded-3 d-flex flex-column flex-sm-row align-items-start gap-3">
+          <i class="bi bi-exclamation-lg brand-color fs-5 mt-1"></i>
+          <div>
+            <h4 class="h6 fw-bold text-dark mb-1">Essential / Necessary</h4>
+            <p class="text-muted small mb-0">Required for the website to function. They cannot be switched off in our
+              systems.</p>
+          </div>
+        </div>
+        <div class="inner-gray-card p-3 rounded-3 d-flex flex-column flex-sm-row align-items-start gap-3">
+          <i class="bi bi-sliders brand-color fs-5 mt-1"></i>
+          <div>
+            <h4 class="h6 fw-bold text-dark mb-1">Functional</h4>
+            <p class="text-muted small mb-0">Enable enhanced functionality and personalization, such as videos and live
+              chat.</p>
+          </div>
+        </div>
+        <div class="inner-gray-card p-3 rounded-3 d-flex flex-column flex-sm-row align-items-start gap-3">
+          <i class="bi bi-graph-up-arrow brand-color fs-5 mt-1"></i>
+          <div>
+            <h4 class="h6 fw-bold text-dark mb-1">Performance</h4>
+            <p class="text-muted small mb-0">Allow us to count visits and traffic sources so we can measure and improve
+              the performance of our site.</p>
+          </div>
+        </div>
+        <div class="inner-gray-card p-3 rounded-3 d-flex flex-column flex-sm-row align-items-start gap-3">
+          <i class="bi bi-bullseye brand-color fs-5 mt-1"></i>
+          <div>
+            <h4 class="h6 fw-bold text-dark mb-1">Targeting / Marketing</h4>
+            <p class="text-muted small mb-0">Set by our advertising partners to build a profile of your interests and
+              show you relevant ads.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="policy-card bg-white p-4 p-md-5 rounded-4 shadow-sm">
+      <div class="d-flex align-items-center gap-3 mb-3">
+        <div class="icon-box rounded-circle d-flex align-items-center justify-content-center">
+          <i class="bi bi-shield-lock-fill"></i>
+        </div>
+        <h2 class="h5 fw-bold text-dark m-0">04 Managing Your Preferences</h2>
+      </div>
+      <p class="text-muted small leading-relaxed mb-4">
+        Most web browsers allow some control of most cookies through the browser settings. To find out more about
+        cookies, including how to see what cookies have been set and how to manage and delete them, visit <a
+          href="https://allaboutcookies.org" target="_blank"
+          class="brand-color text-decoration-none">allaboutcookies.org</a>. Please note that if you choose to disable
+        cookies, some parts of our platform may not function correctly.
+      </p>
+
+      <div
+        class="inner-banner rounded-4 p-4 d-flex flex-column flex-md-row justify-content-between align-items-center gap-3">
+        <div>
+          <h4 class="h6 fw-bold text-dark mb-1">Customize your experience</h4>
+          <p class="text-muted small mb-0">You can adjust which non-essential cookies we use at any time.</p>
+        </div>
+        <button data-bs-toggle="modal" data-bs-target="#cookieSettingsModal"
+          class="btn btn-brand text-white fw-medium rounded-pill px-4 py-2 shadow-sm shrink-0">
+          Cookie Preferences
+        </button>
+      </div>
+    </section>
+
+    <section class="policy-card bg-white p-4 p-md-5 rounded-4 shadow-sm">
+      <div class="d-flex align-items-center gap-3 mb-3">
+        <div class="icon-box rounded-circle d-flex align-items-center justify-content-center">
+          <i class="bi bi-people-fill"></i>
+        </div>
+        <h2 class="h5 fw-bold text-dark m-0">05 Third-Party Cookies</h2>
+      </div>
+      <p class="text-muted small leading-relaxed mb-0">
+        In some special cases we also use cookies provided by trusted third parties. This site uses Google Analytics
+        which is one of the most widespread and trusted analytics solution on the web for helping us to understand how
+        you use the site and ways that we can improve your experience. These cookies may track things such as how long
+        you spend on the site and the pages that you visit.
+      </p>
+    </section>
+
+    <section class="policy-card bg-white p-4 p-md-5 rounded-4 shadow-sm">
+      <div class="d-flex align-items-center gap-3 mb-3">
+        <div class="icon-box rounded-circle d-flex align-items-center justify-content-center">
+          <i class="bi bi-arrow-clockwise"></i>
+        </div>
+        <h2 class="h5 fw-bold text-dark m-0">06 Policy Updates</h2>
+      </div>
+      <p class="text-muted small leading-relaxed mb-0">
+        We may update this Cookie Policy from time to time in order to reflect, for example, changes to the cookies we
+        use or for other operational, legal, or regulatory reasons. Please therefore re-visit this Cookie Policy
+        regularly to stay informed about our use of cookies and related technologies.
+      </p>
+    </section>
+
+  </div>
+</div>
+<div class="modal fade" id="cookieSettingsModal" tabindex="-1" aria-labelledby="cookieSettingsModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content rounded-4 border-0 shadow">
+      <div class="modal-header border-bottom-0 pb-0">
+        <h5 class="modal-title fw-bold text-dark" id="cookieSettingsModalLabel">Cookie Preferences</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body py-4">
+        <p class="text-muted small mb-4">Customize how Smart Stay uses cookies on your device.</p>
+
+        <div class="d-flex justify-content-between align-items-center mb-3 p-3 bg-light rounded-3">
+          <div>
+            <h6 class="fw-bold text-dark mb-1 small">Essential Cookies</h6>
+            <p class="text-muted mb-0" style="font-size: 11px;">Required for the site to function properly.</p>
+          </div>
+          <div class="form-check form-switch">
+            <input class="form-check-input" type="checkbox" checked disabled>
+          </div>
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center mb-3 p-3 bg-light rounded-3">
+          <div>
+            <h6 class="fw-bold text-dark mb-1 small">Analytics & Performance</h6>
+            <p class="text-muted mb-0" style="font-size: 11px;">Helps us improve our platform experience.</p>
+          </div>
+          <div class="form-check form-switch">
+            <input class="form-check-input" type="checkbox" id="analyticsCookies" checked>
+          </div>
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center p-3 bg-light rounded-3">
+          <div>
+            <h6 class="fw-bold text-dark mb-1 small">Marketing & Targeting</h6>
+            <p class="text-muted mb-0" style="font-size: 11px;">Used to deliver relevant advertisements.</p>
+          </div>
+          <div class="form-check form-switch">
+            <input class="form-check-input" type="checkbox" id="marketingCookies">
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer border-top-0 pt-0">
+        <button type="button" class="btn btn-secondary rounded-pill px-4 py-2 small" data-bs-dismiss="modal"
+          style="font-size: 12px; background-color: #64748b; border: none;">Cancel</button>
+        <button type="button" class="btn btn-brand text-white rounded-pill px-4 py-2 small" data-bs-dismiss="modal"
+          (click)="saveCookiePreferences()" style="font-size: 12px;">Save Choices</button>
+      </div>
+    </div>
+  </div>
+</div>

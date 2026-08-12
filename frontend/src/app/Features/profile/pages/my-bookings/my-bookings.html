@@ -1,0 +1,555 @@
+<section class="my-bookings-page">
+  <div class="bookings-header">
+    <div>
+      <h2>My Bookings</h2>
+
+      <p>
+        Track pending payments, confirmed stays, completed stays,
+        reviews, and cancellation results.
+      </p>
+    </div>
+
+    <button
+      type="button"
+      class="refresh-btn"
+      (click)="refreshBookings()"
+      [disabled]="
+        isLoading ||
+        !!cancelRequestBookingId ||
+        !!reviewNavigationBookingId
+      "
+    >
+      <span
+        *ngIf="isLoading"
+        class="spinner-border spinner-border-sm"
+        aria-hidden="true"
+      ></span>
+
+      <i
+        *ngIf="!isLoading"
+        class="bi bi-arrow-clockwise"
+      ></i>
+
+      {{ isLoading ? 'Refreshing...' : 'Refresh' }}
+    </button>
+  </div>
+
+  <div class="filter-tabs">
+    <a
+      routerLink="/profile/bookings/all"
+      routerLinkActive="active-tab"
+      [routerLinkActiveOptions]="{ exact: true }"
+    >
+      All
+    </a>
+
+    <a
+      routerLink="/profile/bookings/pending"
+      routerLinkActive="active-tab"
+      [routerLinkActiveOptions]="{ exact: true }"
+    >
+      Pending payment
+    </a>
+
+    <a
+      routerLink="/profile/bookings/active"
+      routerLinkActive="active-tab"
+      [routerLinkActiveOptions]="{ exact: true }"
+    >
+      Confirmed
+    </a>
+
+    <a
+      routerLink="/profile/bookings/completed"
+      routerLinkActive="active-tab"
+      [routerLinkActiveOptions]="{ exact: true }"
+    >
+      Completed
+    </a>
+
+    <a
+      routerLink="/profile/bookings/canceled"
+      routerLinkActive="active-tab"
+      [routerLinkActiveOptions]="{ exact: true }"
+    >
+      Canceled
+    </a>
+  </div>
+
+  <div
+    *ngIf="errorMessage"
+    class="alert alert-danger"
+    aria-live="assertive"
+  >
+    {{ errorMessage }}
+  </div>
+
+  <div
+    *ngIf="successMessage"
+    class="alert alert-success"
+    aria-live="polite"
+  >
+    {{ successMessage }}
+  </div>
+
+  <div
+    *ngIf="isLoading"
+    class="loading-state"
+    aria-live="polite"
+  >
+    <div
+      class="spinner-border text-info"
+      role="status"
+    >
+      <span class="visually-hidden">
+        Loading bookings...
+      </span>
+    </div>
+
+    <p class="mb-0 mt-3">
+      Loading bookings...
+    </p>
+  </div>
+
+  <div
+    *ngIf="!isLoading && bookings.length === 0"
+    class="empty-state"
+  >
+    <i class="bi bi-calendar-x"></i>
+
+    <h3>No bookings found</h3>
+
+    <p>
+      Your bookings will appear here after you reserve a stay.
+    </p>
+
+    <a
+      routerLink="/all-stays"
+      class="btn btn-info text-white mt-2"
+    >
+      Explore stays
+    </a>
+  </div>
+
+  <div
+    *ngIf="!isLoading && bookings.length > 0"
+    class="booking-list"
+  >
+    <article
+      *ngFor="
+        let booking of bookings;
+        trackBy: trackBookingById
+      "
+      class="booking-card"
+    >
+      <a
+        class="booking-cover-link"
+        [routerLink]="[
+          '/property-details',
+          booking.property.id
+        ]"
+      >
+        <img
+          class="booking-cover"
+          [src]="
+            booking.property.coverImageUrl ||
+            'Images/section1.jpg'
+          "
+          [alt]="booking.property.title"
+        />
+      </a>
+
+      <div class="booking-content">
+        <div class="booking-top">
+          <div>
+            <h3>
+              <a
+                [routerLink]="[
+                  '/property-details',
+                  booking.property.id
+                ]"
+                class="property-title-link"
+              >
+                {{ booking.property.title }}
+              </a>
+            </h3>
+
+            <p class="location">
+              <i class="bi bi-geo-alt"></i>
+
+              {{ booking.property.city }},
+              {{ booking.property.country }}
+            </p>
+          </div>
+
+          <span
+            class="status-pill"
+            [ngClass]="getStatusClass(booking.status)"
+          >
+            {{ booking.status }}
+          </span>
+        </div>
+
+        <div class="booking-info-grid">
+          <div>
+            <span>Check-in</span>
+
+            <strong>
+              {{
+                booking.checkInDate
+                  | date: 'mediumDate'
+              }}
+            </strong>
+          </div>
+
+          <div>
+            <span>Check-out</span>
+
+            <strong>
+              {{
+                booking.checkOutDate
+                  | date: 'mediumDate'
+              }}
+            </strong>
+          </div>
+
+          <div>
+            <span>Nights</span>
+            <strong>{{ booking.nights }}</strong>
+          </div>
+
+          <div>
+            <span>Guests</span>
+            <strong>{{ booking.guestsCount }}</strong>
+          </div>
+        </div>
+
+        <div
+          *ngIf="booking.status === 'Pending'"
+          class="payment-window-box"
+        >
+          <ng-container
+            *ngIf="
+              canContinuePayment(booking);
+              else expiredPayment
+            "
+          >
+            <i class="bi bi-clock-history"></i>
+
+            <span>
+              Payment is still pending.
+
+              <ng-container *ngIf="booking.expiresAt">
+                Complete it before
+                {{
+                  booking.expiresAt
+                    | date: 'medium'
+                }}.
+              </ng-container>
+            </span>
+          </ng-container>
+
+          <ng-template #expiredPayment>
+            <i class="bi bi-exclamation-circle"></i>
+
+            <span>
+              The payment window has expired. The booking will be marked
+              as Expired by the booking lifecycle process.
+            </span>
+          </ng-template>
+        </div>
+
+        <div
+          *ngIf="booking.hasReview"
+          class="booking-review-status"
+          [ngClass]="
+            getReviewStatusClass(
+              booking.reviewStatus
+            )
+          "
+        >
+          <div class="booking-review-status-icon">
+            <i
+              *ngIf="booking.reviewStatus === 'Pending'"
+              class="bi bi-hourglass-split"
+            ></i>
+
+            <i
+              *ngIf="booking.reviewStatus === 'Posted'"
+              class="bi bi-check-circle"
+            ></i>
+
+            <i
+              *ngIf="booking.reviewStatus === 'Rejected'"
+              class="bi bi-exclamation-triangle"
+            ></i>
+
+            <i
+              *ngIf="!booking.reviewStatus"
+              class="bi bi-chat-square-text"
+            ></i>
+          </div>
+
+          <div class="booking-review-status-content">
+            <div class="booking-review-status-heading">
+              <strong>Your review</strong>
+
+              <span>
+                {{ booking.reviewStatus || 'Available' }}
+              </span>
+            </div>
+
+            <p>
+              {{
+                getReviewStatusDescription(
+                  booking.reviewStatus
+                )
+              }}
+            </p>
+          </div>
+        </div>
+
+        <div
+          *ngIf="
+            booking.status === 'Completed' &&
+            booking.canReview &&
+            !booking.hasReview
+          "
+          class="booking-review-invitation"
+        >
+          <i class="bi bi-star"></i>
+
+          <div>
+            <strong>How was your stay?</strong>
+
+            <p>
+              Share your experience to help future guests and the host.
+            </p>
+          </div>
+        </div>
+
+        <div class="booking-bottom">
+          <div class="amount">
+            {{
+              booking.totalAmount
+                | number: '1.2-2'
+            }}
+
+            {{ booking.currency }}
+          </div>
+
+          <div class="booking-actions">
+            <button
+              *ngIf="canContinuePayment(booking)"
+              type="button"
+              class="continue-payment-btn"
+              (click)="continuePayment(booking.bookingId)"
+              [disabled]="
+                !!cancelRequestBookingId ||
+                !!reviewNavigationBookingId
+              "
+            >
+              Continue payment
+            </button>
+
+            <button
+              *ngIf="booking.canCancel"
+              type="button"
+              class="cancel-btn"
+              (click)="openCancelBox(booking.bookingId)"
+              [disabled]="
+                !!cancelRequestBookingId ||
+                !!reviewNavigationBookingId
+              "
+            >
+              Cancel booking
+            </button>
+
+            <button
+              *ngIf="
+                booking.status === 'Completed' &&
+                booking.canReview &&
+                !booking.hasReview
+              "
+              type="button"
+              class="write-review-btn"
+              (click)="writeReview(booking)"
+              [disabled]="
+                !!cancelRequestBookingId ||
+                !!reviewNavigationBookingId
+              "
+            >
+              <span
+                *ngIf="isOpeningReview(booking.bookingId)"
+                class="spinner-border spinner-border-sm"
+                aria-hidden="true"
+              ></span>
+
+              <i
+                *ngIf="!isOpeningReview(booking.bookingId)"
+                class="bi bi-star"
+              ></i>
+
+              {{
+                isOpeningReview(booking.bookingId)
+                  ? 'Opening...'
+                  : 'Write Review'
+              }}
+            </button>
+
+            <button
+              *ngIf="booking.hasReview"
+              type="button"
+              class="view-review-btn"
+              (click)="viewReview(booking)"
+              [disabled]="
+                !!cancelRequestBookingId ||
+                !!reviewNavigationBookingId
+              "
+            >
+              <span
+                *ngIf="isOpeningReview(booking.bookingId)"
+                class="spinner-border spinner-border-sm"
+                aria-hidden="true"
+              ></span>
+
+              <i
+                *ngIf="!isOpeningReview(booking.bookingId)"
+                class="bi bi-chat-square-text"
+              ></i>
+
+              {{
+                isOpeningReview(booking.bookingId)
+                  ? 'Opening...'
+                  : booking.reviewStatus === 'Rejected'
+                    ? 'Edit Review'
+                    : 'View Review'
+              }}
+            </button>
+          </div>
+        </div>
+
+        <div
+          *ngIf="
+            cancellingBookingId ===
+            booking.bookingId
+          "
+          class="cancel-box"
+        >
+          <label
+            class="form-label"
+            [for]="
+              'cancel-reason-' +
+              booking.bookingId
+            "
+          >
+            Cancellation reason
+          </label>
+
+          <textarea
+            [id]="
+              'cancel-reason-' +
+              booking.bookingId
+            "
+            class="form-control"
+            rows="3"
+            maxlength="500"
+            [disabled]="
+              isCancelling(
+                booking.bookingId
+              )
+            "
+            [(ngModel)]="cancelReason"
+            placeholder="Optional reason..."
+          ></textarea>
+
+          <div class="reason-counter">
+            {{ cancelReason.length }} / 500
+          </div>
+
+          <div class="cancel-actions">
+            <button
+              type="button"
+              class="confirm-cancel-btn"
+              (click)="
+                confirmCancelBooking(
+                  booking.bookingId
+                )
+              "
+              [disabled]="
+                isCancelling(
+                  booking.bookingId
+                )
+              "
+            >
+              <span
+                *ngIf="
+                  isCancelling(
+                    booking.bookingId
+                  )
+                "
+                class="spinner-border spinner-border-sm me-2"
+                aria-hidden="true"
+              ></span>
+
+              {{
+                isCancelling(
+                  booking.bookingId
+                )
+                  ? 'Cancelling...'
+                  : 'Confirm cancellation'
+              }}
+            </button>
+
+            <button
+              type="button"
+              class="close-cancel-btn"
+              (click)="closeCancelBox()"
+              [disabled]="
+                isCancelling(
+                  booking.bookingId
+                )
+              "
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      </div>
+    </article>
+  </div>
+
+  <div
+    *ngIf="!isLoading && totalPages > 1"
+    class="pagination-box"
+  >
+    <button
+      type="button"
+      (click)="goToPreviousPage()"
+      [disabled]="
+        page <= 1 ||
+        !!cancelRequestBookingId ||
+        !!reviewNavigationBookingId
+      "
+    >
+      Previous
+    </button>
+
+    <span>
+      Page {{ page }} of {{ totalPages }}
+      · {{ totalCount }} results
+    </span>
+
+    <button
+      type="button"
+      (click)="goToNextPage()"
+      [disabled]="
+        page >= totalPages ||
+        !!cancelRequestBookingId ||
+        !!reviewNavigationBookingId
+      "
+    >
+      Next
+    </button>
+  </div>
+</section>

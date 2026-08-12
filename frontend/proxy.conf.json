@@ -1,0 +1,17 @@
+{
+  "/api": {
+    "target": "https://smartstay-1.runasp.net",
+    "secure": true,
+    "changeOrigin": true,
+    "logLevel": "debug"
+  },
+  "/ai-api": {
+    "target": "https://smartstayaifeatures-production-123.up.railway.app",
+    "secure": true,
+    "changeOrigin": true,
+    "pathRewrite": {
+      "^/ai-api": "/api"
+    },
+    "logLevel": "debug"
+  }
+}

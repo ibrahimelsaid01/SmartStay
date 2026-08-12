@@ -1,0 +1,219 @@
+<div class="personal-data-container w-100">
+
+  <div class="d-flex justify-content-between align-items-center mb-5 pb-3 border-bottom">
+    <div class="d-flex align-items-center gap-3">
+      <div class="avatar-header-wrapper position-relative">
+        <img [src]="avatarPreview"
+          (error)="avatarPreview = 'https://ui-avatars.com/api/?name=' + (profileForm.get('firstName')?.value || 'User')"
+          alt="Profile" class="profile-avatar-img">
+        <label for="avatarUpload"
+          class="camera-btn shadow position-absolute d-flex align-items-center justify-content-center">
+          <i class="bi bi-camera-fill"></i>
+        </label>
+        <input type="file" id="avatarUpload" class="d-none" accept="image/*" (change)="onFileSelected($event)">
+      </div>
+      <div>
+        <h4 class="fw-bold text-dark mb-1" style="font-size: 22px;">My Profile</h4>
+        <p class="text-muted small mb-0">Real-time information and activities of your prototype.</p>
+      </div>
+    </div>
+  </div>
+
+  <form [formGroup]="profileForm" (ngSubmit)="onSubmit()" class="w-100">
+    <div class="row g-4">
+
+      <div class="col-md-6">
+        <label class="form-label fw-semibold text-secondary small mb-2">First Name</label>
+        <div class="input-group align-items-stretch" style="height: 42px;">
+          <span class="input-group-text bg-white border-end-0 text-muted px-3"
+            style="border-top-left-radius: 8px; border-bottom-left-radius: 8px;"><i class="bi bi-person"></i></span>
+          <input type="text" formControlName="firstName" class="form-control border-start-0 ps-1"
+            style="border-top-right-radius: 8px; border-bottom-right-radius: 8px; box-shadow: none;">
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <label class="form-label fw-semibold text-secondary small mb-2">Last Name</label>
+        <div class="input-group align-items-stretch" style="height: 42px;">
+          <span class="input-group-text bg-white border-end-0 text-muted px-3"
+            style="border-top-left-radius: 8px; border-bottom-left-radius: 8px;"><i class="bi bi-person"></i></span>
+          <input type="text" formControlName="lastName" class="form-control border-start-0 ps-1"
+            style="border-top-right-radius: 8px; border-bottom-right-radius: 8px; box-shadow: none;">
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <label class="form-label fw-semibold text-secondary small mb-2">Email Address</label>
+        <div class="input-group align-items-stretch" style="height: 42px;">
+          <span class="input-group-text bg-white border-end-0 text-muted px-3"
+            style="border-top-left-radius: 8px; border-bottom-left-radius: 8px;"><i class="bi bi-envelope"></i></span>
+          <input type="email" formControlName="email" class="form-control border-start-0 ps-1 bg-light"
+            style="border-top-right-radius: 8px; border-bottom-right-radius: 8px; box-shadow: none;">
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <label class="form-label fw-semibold text-secondary small mb-2">Phone Number</label>
+        <div class="position-relative">
+          <div class="input-group d-flex align-items-stretch bg-white" style="height: 42px; border-radius: 8px;">
+            <div #phoneBtn (click)="togglePhoneDropdown()"
+              class="d-flex align-items-center gap-1 px-3 text-secondary fw-semibold small cursor-pointer user-select-none bg-light"
+              style="border-top-left-radius: 8px; border-bottom-left-radius: 8px; min-width: 90px; border-right: 1px solid #cbd5e1;"
+              tabindex="0">
+              <i class="bi bi-telephone text-muted small me-1"></i>
+              <span>{{ selectedPhoneCode() }}</span>
+              <i class="bi bi-chevron-down text-muted" style="font-size: 10px;"></i>
+            </div>
+            <input type="text" formControlName="phoneNumber" class="form-control border-0 h-100 ps-3"
+              placeholder="Enter phone number"
+              style="box-shadow: none; border-top-right-radius: 8px; border-bottom-right-radius: 8px; font-size: 14px;">
+
+          </div>
+
+          @if (isPhoneDropdownOpen()) {
+          <div class="custom-dropdown-menu shadow-lg position-absolute start-0 bg-white border rounded-3 mt-1"
+            style="width: 260px; max-height: 280px; top: 100%; z-index: 9999; display: block !important;"
+            (click)="$event.stopPropagation()">
+            <div class="p-2 border-bottom sticky-top bg-white rounded-top-3">
+              <div class="input-group input-group-sm rounded-2 border">
+                <span class="input-group-text bg-transparent border-0 pe-1"><i class="bi bi-search small"></i></span>
+                <input type="text" class="form-control border-0 ps-1 py-1" style="font-size: 13px; box-shadow: none;"
+                  placeholder="Search code or country..." (input)="onSearchPhoneCode($event)">
+              </div>
+            </div>
+            <ul class="list-unstyled mb-0 overflow-y-auto" style="max-height: 220px;">
+              @for (country of filteredPhoneCountries; track country.code) {
+              <li (click)="selectPhoneCode(country.phoneCode)"
+                [class.active-item]="selectedPhoneCode() === country.phoneCode"
+                class="dropdown-item-custom d-flex align-items-center justify-content-between px-3 py-2 cursor-pointer">
+                <div class="d-flex align-items-center gap-2">
+                  <img [src]="'https://flagcdn.com/16x12/' + country.code + '.png'"
+                    (error)="$event.target.style.display='none'" class="rounded-1"
+                    style="width: 16px; height: 12px; object-fit: cover;" alt="flag">
+                  <span class="text-truncate" style="max-width: 130px; font-size: 13px;">{{ country.name }}</span>
+                </div>
+                <span class="fw-semibold text-muted small">{{ country.phoneCode }}</span>
+              </li>
+              }
+            </ul>
+          </div>
+          }
+        </div>
+      </div>
+
+      <div class="col-md-3">
+        <label class="form-label fw-semibold text-secondary small mb-2">Gender</label>
+        <div class="input-group align-items-stretch" style="height: 42px;">
+          <span class="input-group-text bg-white border-end-0 text-muted px-3"
+            style="border-top-left-radius: 8px; border-bottom-left-radius: 8px;">
+            <i class="bi bi-gender-ambiguous fs-5"></i>
+          </span>
+          <select formControlName="gender" class="form-select border-start-0 ps-1 text-dark"
+            style="border-top-right-radius: 8px; border-bottom-right-radius: 8px; box-shadow: none;">
+            <option value="" disabled selected hidden>Gender</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="col-md-3">
+        <label class="form-label fw-semibold text-secondary small mb-2">Birthday</label>
+        <div class="input-group align-items-stretch" style="height: 42px;">
+          <span class="input-group-text bg-white border-end-0 text-muted px-3"
+            style="border-top-left-radius: 8px; border-bottom-left-radius: 8px;">
+            <i class="bi bi-calendar3 fs-5"></i>
+          </span>
+          <input type="date" formControlName="birthday" class="form-control border-start-0 ps-1 text-dark"
+            style="border-top-right-radius: 8px; border-bottom-right-radius: 8px; box-shadow: none;">
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <label class="form-label fw-semibold text-secondary small mb-2">Country</label>
+        <div class="custom-dropdown-container position-relative" (clickOutside)="closeDropdown()">
+          <div class="input-group custom-dropdown-trigger align-items-stretch" style="height: 42px;"
+            (click)="toggleDropdown($event)">
+            <span class="input-group-text bg-white border-end-0 text-muted px-3"
+              style="border-top-left-radius: 8px; border-bottom-left-radius: 8px;"><i class="bi bi-geo-alt"></i></span>
+            <div
+              class="form-control border-start-0 ps-1 d-flex justify-content-between align-items-center cursor-pointer"
+              style="border-top-right-radius: 8px; border-bottom-right-radius: 8px;">
+              <span [class.text-muted]="!profileForm.get('country')?.value">
+                {{ profileForm.get('country')?.value || 'Select Country' }}
+              </span>
+              <i class="bi bi-chevron-down small text-muted transition-arrow" [class.rotated]="isDropdownOpen()"></i>
+            </div>
+          </div>
+
+          @if (isDropdownOpen()) {
+          <div class="custom-dropdown-menu shadow-lg position-absolute w-100 mt-1 bg-white">
+            <div class="p-2 border-bottom sticky-top bg-white">
+              <div class="input-group input-group-sm rounded-2 border">
+                <span class="input-group-text bg-transparent border-0 pe-1"><i class="bi bi-search small"></i></span>
+                <input type="text" class="form-control border-0 ps-1 py-1" style="font-size: 13px;"
+                  placeholder="Search country..." (input)="onSearchCountry($event)" (click)="$event.stopPropagation()">
+              </div>
+            </div>
+            <ul class="list-unstyled mb-0 custom-dropdown-list">
+              @for (country of filteredCountries; track country.code) {
+              <li (click)="selectCountry(country.name)"
+                [class.active-item]="profileForm.get('country')?.value === country.name"
+                class="dropdown-item-custom d-flex align-items-center gap-2 px-3 py-2">
+                <img [src]="'https://flagcdn.com/16x12/' + country.code.toLowerCase() + '.png'"
+                  class="rounded-1 flag-img" alt="flag">
+                <span class="country-name-text">{{ country.name }}</span>
+              </li>
+              } @empty {
+              <li class="text-muted text-center py-3 small">No countries found</li>
+              }
+            </ul>
+          </div>
+          }
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <label class="form-label fw-semibold text-secondary small mb-2">Zip Code</label>
+        <div class="input-group align-items-stretch" style="height: 42px;">
+          <span class="input-group-text bg-white border-end-0 text-muted px-3"
+            style="border-top-left-radius: 8px; border-bottom-left-radius: 8px;"><i class="bi bi-mailbox"></i></span>
+          <input type="text" formControlName="zipCode" class="form-control border-start-0 ps-1 text-dark"
+            style="border-top-right-radius: 8px; border-bottom-right-radius: 8px; box-shadow: none;">
+        </div>
+      </div>
+
+      <div class="col-6">
+        <label class="form-label fw-semibold text-secondary small mb-2">Address</label>
+        <div class="input-group align-items-stretch" style="height: 42px;">
+          <span class="input-group-text bg-white border-end-0 text-muted px-3"
+            style="border-top-left-radius: 8px; border-bottom-left-radius: 8px;"><i class="bi bi-geo"></i></span>
+          <input type="text" formControlName="address" class="form-control border-start-0 ps-1 text-dark"
+            style="border-top-right-radius: 8px; border-bottom-right-radius: 8px; box-shadow: none;">
+        </div>
+      </div>
+      <div class="col-12 d-flex justify-content-end gap-3 mt-5">
+        <button type="button" (click)="onDiscard()"
+          class="btn btn-light border px-4 py-2 rounded-3 fw-semibold text-secondary">
+          Discard
+        </button>
+        <button type="submit" class="btn text-white px-4 py-2 rounded-3 fw-semibold" style="background-color: #42CCCC;">
+          Save changes
+        </button>
+      </div>
+
+    </div>
+  </form>
+</div>
+
+@if (successMessage) {
+<div class="alert alert-success d-flex align-items-center mt-3" role="alert">
+  <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Success:">
+    <path
+      d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z" />
+  </svg>
+  <div>
+    {{ successMessage }}
+  </div>
+</div>
+}

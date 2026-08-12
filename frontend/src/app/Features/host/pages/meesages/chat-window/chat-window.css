@@ -1,0 +1,65 @@
+.bg-messages-area {
+  background-color: #f8fafc;
+}
+.x-small {
+  font-size: 0.72rem;
+}
+.bg-guest-bubble {
+  background-color: #e2e8f0;
+  border-bottom-start-radius: 4px !important;
+}
+.bg-my-bubble {
+  background-color: #0f172a;
+  border-bottom-end-radius: 4px !important;
+}
+.btn-send {
+  background-color: #42cccc;
+  border: none;
+  transition: opacity 0.2s;
+}
+.btn-send:hover {
+  opacity: 0.9;
+}
+.btn-send:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+:host {
+  display: block;
+  height: 100%;
+}
+.chat-card-base {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.bg-messages-area {
+  flex-grow: 1;
+  overflow-y: auto;
+  background-color: #f8fafc;
+  padding: 16px;
+}
+.input-area-footer {
+  flex-shrink: 0;
+  background: #ffffff;
+  border-top: 1px solid #e2e8f0;
+  padding: 16px;
+}
+
+/* ستايل زرار الدبوس / المرفقات */
+.attachment-btn {
+  background: transparent;
+  border: none;
+  color: #64748b;
+  padding: 8px;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+.attachment-btn:hover {
+  color: #42cccc;
+}

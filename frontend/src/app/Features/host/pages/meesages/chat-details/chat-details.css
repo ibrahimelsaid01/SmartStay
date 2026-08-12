@@ -1,0 +1,83 @@
+:host {
+  display: block;
+  height: 100%;
+}
+
+.chat-details-container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  height: calc(100vh - 130px);
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+.chat-details-container::-webkit-scrollbar {
+  width: 5px;
+}
+.chat-details-container::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+
+.x-small {
+  font-size: 0.75rem;
+}
+.text-custom-color {
+  color: #42cccc;
+}
+.tracking-widest {
+  letter-spacing: 0.15em;
+}
+.section-title {
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+}
+
+.guest-large-avatar {
+  width: 84px;
+  height: 84px;
+  object-fit: cover;
+}
+
+.btn-custom {
+  background-color: #42cccc;
+  border: none;
+  color: #ffffff;
+  transition: opacity 0.2s;
+}
+.btn-custom:hover {
+  opacity: 0.9;
+  color: #ffffff;
+}
+
+.btn-outline-custom {
+  color: #42cccc;
+  border: 1px solid #42cccc;
+  background: transparent;
+  transition: all 0.2s ease;
+}
+.btn-outline-custom:hover {
+  background-color: #42cccc;
+  color: #ffffff;
+}
+
+.property-mini-card {
+  background-color: #f8fafc;
+}
+.property-mini-card .icon-box {
+  width: 42px;
+  height: 42px;
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  color: #42cccc;
+  flex-shrink: 0;
+}
+
+.entry-code-card {
+  background-color: #f8fafc !important;
+  border-color: #e2e8f0 !important;
+}

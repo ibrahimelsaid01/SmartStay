@@ -1,0 +1,67 @@
+.privacy-container {
+  max-width: 800px;
+  margin: 40px auto;
+  padding: 0 20px;
+}
+
+.teal-line {
+  border-color: #4dd9d5;
+  border-width: 3px;
+  opacity: 1;
+  width: 60px;
+}
+
+.section-number {
+  color: #1a202c;
+  font-size: 1.1rem;
+  margin-bottom: 16px;
+}
+
+.data-card {
+  background: #f8fffe;
+  border-color: #e0f5f5 !important;
+}
+
+.rights-card {
+  background: #f8fffe;
+  border-color: #e0f5f5 !important;
+}
+
+.text-teal {
+  color: #4dd9d5;
+}
+
+.btn-teal {
+  background-color: #4dd9d5;
+  color: white;
+  border: none;
+  font-weight: 600;
+}
+
+.btn-teal:hover {
+  background-color: #3bc4c0;
+  color: white;
+}
+
+.blockquote-teal {
+  border-left: 4px solid #4dd9d5;
+  background: #f8fffe;
+  font-style: italic;
+}
+
+.header-actions {
+  position: absolute;
+  top: 40px;
+  right: 20px;
+}
+
+.privacy-header {
+  position: relative;
+}
+@media print {
+  .header-actions,
+  app-navbar,
+  app-footer {
+    display: none !important;
+  }
+}

@@ -1,0 +1,81 @@
+.ai-recommendation-page {
+  padding: 48px 24px 64px;
+  max-width: 980px;
+  margin: 0 auto;
+}
+
+.recommendation-header {
+  margin-bottom: 40px;
+}
+
+.recommendation-label {
+  margin-bottom: 8px;
+  color: #42cccc;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 0.8rem;
+}
+
+.recommendation-subtitle {
+  color: #5a6b6b;
+  max-width: 720px;
+}
+
+.recommendation-state,
+.recommendation-empty {
+  padding: 24px;
+  border-radius: 18px;
+  background: #f4fdfd;
+  color: #345151;
+  font-size: 0.98rem;
+  margin-bottom: 20px;
+  min-height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.recommendation-list {
+  display: grid;
+  gap: 18px;
+  margin-top: 18px;
+}
+
+.recommendation-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #ffffff;
+  border: 1px solid #dceaea;
+  border-radius: 18px;
+  padding: 22px 24px;
+  box-shadow: 0 12px 34px rgba(66, 204, 204, 0.08);
+}
+
+.recommendation-card__body h3 {
+  margin: 0 0 6px;
+  font-size: 1rem;
+}
+
+.recommendation-card__body p {
+  margin: 0;
+  color: #607d7d;
+}
+
+.recommendation-distance {
+  color: #42cccc;
+  font-weight: 700;
+}
+
+.recommendation-actions {
+  margin-top: 40px;
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.recommendation-actions .btn {
+  min-width: 160px;
+}

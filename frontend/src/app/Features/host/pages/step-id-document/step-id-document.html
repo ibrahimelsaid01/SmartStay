@@ -1,0 +1,48 @@
+<h2>National ID</h2>
+<p>Upload a clear photo of the front and back of your national ID.</p>
+
+<h4>Front Side</h4>
+<label class="dropzone" for="frontFile">
+  <img *ngIf="frontPreview()" [src]="frontPreview()" class="preview" />
+  <ng-container *ngIf="!frontPreview()">
+    <div class="cta">Click to upload front side</div>
+    <div class="hint">JPG, PNG or WebP, Max 5MB</div>
+  </ng-container>
+</label>
+<input
+  id="frontFile"
+  type="file"
+  accept="image/jpeg,image/png,image/webp"
+  hidden
+  (change)="onFileSelected($event, 'front')"
+/>
+
+<h4>Back Side</h4>
+<label class="dropzone" for="backFile">
+  <img *ngIf="backPreview()" [src]="backPreview()" class="preview" />
+  <ng-container *ngIf="!backPreview()">
+    <div class="cta">Click to upload back side</div>
+    <div class="hint">JPG, PNG or WebP, Max 5MB</div>
+  </ng-container>
+</label>
+<input
+  id="backFile"
+  type="file"
+  accept="image/jpeg,image/png,image/webp"
+  hidden
+  (change)="onFileSelected($event, 'back')"
+/>
+
+<p class="error" *ngIf="validationError()">{{ validationError() }}</p>
+<p class="error" *ngIf="state.error()">{{ state.error() }}</p>
+
+<div class="actions">
+  <button type="button" (click)="state.goBack()">Back</button>
+  <button
+    type="button"
+    [disabled]="!frontFile() || !backFile() || state.loading()"
+    (click)="save()"
+  >
+    {{ state.loading() ? 'Uploading...' : 'Save & Continue' }}
+  </button>
+</div>

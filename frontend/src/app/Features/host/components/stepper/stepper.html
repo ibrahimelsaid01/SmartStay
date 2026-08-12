@@ -1,0 +1,16 @@
+<div class="stepper">
+  <ng-container *ngFor="let s of steps; let last = last">
+    <div class="step">
+      <div
+        class="circle"
+        [class.done]="s.step < currentStep"
+        [class.active]="s.step === currentStep"
+      >
+        <ng-container *ngIf="s.step < currentStep; else stepNumber">✓</ng-container>
+        <ng-template #stepNumber>{{ s.step }}</ng-template>
+      </div>
+      <span class="label">{{ s.label }}</span>
+    </div>
+    <div class="connector" *ngIf="!last" [class.done]="s.step < currentStep"></div>
+  </ng-container>
+</div>

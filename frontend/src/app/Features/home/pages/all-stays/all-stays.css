@@ -1,0 +1,19 @@
+.all-stays-page {
+  margin-top: 1rem;
+}
+
+.all-stays-page .bg-light {
+  border: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.filter-select {
+  min-height: 48px;
+  padding: 0.9rem 0.85rem;
+  font-size: 0.95rem;
+}
+
+@media (min-width: 992px) {
+  .all-stays-page {
+    margin-top: 1.5rem;
+  }
+}

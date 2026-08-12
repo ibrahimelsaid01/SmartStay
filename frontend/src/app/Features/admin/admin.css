@@ -1,0 +1,20 @@
+.profile-main-layout {
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
+}
+
+.desktop-sidebar-container {
+  flex-shrink: 0;
+}
+
+.admin-dashboard-page {
+  width: 100%;
+}
+
+.admin-dashboard-page .dashboard-header {
+  margin-top: 0;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgba(15, 23, 42, 0.1);
+}

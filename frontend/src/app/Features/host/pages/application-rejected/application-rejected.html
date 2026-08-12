@@ -1,0 +1,10 @@
+<div class="result-screen">
+  <div class="icon-circle error">✕</div>
+  <h2>Application Rejected</h2>
+  <p>Unfortunatily. Your application was not approved</p>
+  <div class="reason-box">
+    <strong>Reason</strong>
+    <p>{{ state.rejectionReason() }}</p>
+  </div>
+  <button (click)="editApplication()">Edit application</button>
+</div>

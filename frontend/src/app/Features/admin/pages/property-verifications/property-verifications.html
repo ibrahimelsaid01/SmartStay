@@ -1,0 +1,573 @@
+<div class="property-verifications-page p-4">
+  <div class="d-flex justify-content-between align-items-start gap-3 mb-4">
+    <div>
+      <h1 class="page-title mb-1">Property Verifications</h1>
+      <p class="page-subtitle mb-0">
+        Review submitted properties and verify ownership documents before publishing.
+      </p>
+    </div>
+
+    <button
+      type="button"
+      class="btn btn-outline-secondary"
+      (click)="refresh()"
+      [disabled]="loading"
+    >
+      Refresh
+    </button>
+  </div>
+
+  @if (errorMessage) {
+  <div class="alert alert-danger py-2">
+    {{ errorMessage }}
+  </div>
+  }
+
+  @if (successMessage) {
+  <div class="alert alert-success py-2">
+    {{ successMessage }}
+  </div>
+  }
+
+  <div class="row g-3 mb-4">
+    <div class="col-md-3">
+      <div class="card p-3 border-0 shadow-sm rounded-4">
+        <span class="text-muted small fw-bold">Pending Properties</span>
+        <strong class="fs-4">{{ totalCount }}</strong>
+      </div>
+    </div>
+
+    <div class="col-md-3">
+      <div class="card p-3 border-0 shadow-sm rounded-4">
+        <span class="text-muted small fw-bold">Current Page</span>
+        <strong class="fs-4">{{ page }} / {{ totalPages }}</strong>
+      </div>
+    </div>
+  </div>
+
+  <div class="card border-0 shadow-sm rounded-4 mb-4">
+    <div class="table-responsive">
+      <table class="table align-middle mb-0">
+        <thead>
+          <tr>
+            <th class="px-3 py-3">Property</th>
+            <th class="py-3">Host</th>
+            <th class="py-3">Type</th>
+            <th class="py-3">Space</th>
+            <th class="py-3">Price</th>
+            <th class="py-3">Submitted</th>
+            <th class="py-3">Created</th>
+            <th class="px-3 py-3 text-end">Action</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          @if (loading) {
+          <tr>
+            <td colspan="8" class="text-center py-5">
+              Loading pending properties...
+            </td>
+          </tr>
+          } @else {
+            @for (property of properties; track property.id) {
+            <tr>
+              <td class="px-3 py-3">
+                <div class="d-flex align-items-center gap-3">
+                  <img
+                    [src]="getPropertyCoverImage(property)"
+                    [alt]="property.title"
+                    style="width: 52px; height: 52px; object-fit: cover; border-radius: 12px;"
+                  />
+
+                  <div>
+                    <strong class="d-block">{{ property.title }}</strong>
+                    <span class="text-muted small">{{ property.city || 'No city' }}</span>
+                  </div>
+                </div>
+              </td>
+
+              <td class="py-3">
+                <strong class="d-block">{{ property.hostName }}</strong>
+                <span class="text-muted small">{{ property.hostEmail }}</span>
+              </td>
+
+              <td class="py-3">{{ property.propertyType }}</td>
+              <td class="py-3">{{ property.spaceType }}</td>
+
+              <td class="py-3">
+                <strong>{{ property.pricePerNight | number }} {{ property.currency }}</strong>
+              </td>
+
+              <td class="py-3">{{ property.submittedAt | date: 'medium' }}</td>
+              <td class="py-3">{{ property.createdAt | date: 'mediumDate' }}</td>
+
+              <td class="px-3 py-3 text-end">
+                <button
+                  type="button"
+                  class="btn btn-sm btn-outline-dark"
+                  (click)="viewDetails(property)"
+                >
+                  View
+                </button>
+              </td>
+            </tr>
+            } @empty {
+            <tr>
+              <td colspan="8" class="text-center py-5 text-muted">
+                No pending properties found.
+              </td>
+            </tr>
+            }
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <div class="d-flex justify-content-center align-items-center gap-3 p-3 border-top">
+      <button
+        type="button"
+        class="btn btn-outline-secondary btn-sm"
+        (click)="goToPreviousPage()"
+        [disabled]="page <= 1 || loading"
+      >
+        Previous
+      </button>
+
+      <span class="text-muted small fw-bold">
+        Page {{ page }} of {{ totalPages }}
+      </span>
+
+      <button
+        type="button"
+        class="btn btn-outline-secondary btn-sm"
+        (click)="goToNextPage()"
+        [disabled]="page >= totalPages || loading"
+      >
+        Next
+      </button>
+    </div>
+  </div>
+
+  @if (detailsLoading) {
+  <div class="card border-0 shadow-sm rounded-4 p-5 text-center">
+    Loading property details...
+  </div>
+  }
+
+  @if (selectedProperty) {
+  <div class="card border-0 shadow-sm rounded-4 p-4">
+    <div class="d-flex justify-content-between align-items-start mb-4">
+      <div>
+        <h2 class="mb-1">{{ selectedProperty.title }}</h2>
+        <p class="text-muted mb-0">
+          {{ selectedProperty.propertyType }} ·
+          {{ selectedProperty.spaceType }} ·
+          {{ selectedProperty.status }}
+        </p>
+      </div>
+
+      <button
+        type="button"
+        class="btn btn-sm btn-outline-secondary"
+        (click)="closeDetails()"
+      >
+        Close
+      </button>
+    </div>
+
+    <div class="card bg-light border-0 rounded-4 p-3 mb-4">
+      <div class="d-flex gap-3 align-items-start flex-wrap">
+        <img
+          [src]="getDetailsCoverImage(selectedProperty)"
+          [alt]="selectedProperty.title"
+          style="width: 180px; height: 130px; object-fit: cover; border-radius: 16px;"
+        />
+
+        <div class="flex-grow-1">
+          <span class="badge bg-warning text-dark mb-2">
+            {{ selectedProperty.status }}
+          </span>
+
+          <h3 class="mb-2">{{ selectedProperty.title }}</h3>
+
+          <p class="text-muted mb-3">
+            {{ selectedProperty.description }}
+          </p>
+
+          <div class="d-flex gap-2 flex-wrap">
+            <span class="badge bg-white text-dark border">
+              {{ selectedProperty.city }}, {{ selectedProperty.country }}
+            </span>
+
+            <span class="badge bg-white text-dark border">
+              {{ selectedProperty.pricePerNight | number }} {{ selectedProperty.currency }} / night
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Host Info -->
+    <section class="mb-4">
+      <h3 class="h5 mb-3">Host Info</h3>
+
+      <div class="row g-3">
+        <div class="col-md-3">
+          <div class="card border-0 bg-light p-3 rounded-4 h-100">
+            <span class="text-muted small fw-bold">Host Name</span>
+            <strong>{{ selectedProperty.host.fullName }}</strong>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div class="card border-0 bg-light p-3 rounded-4 h-100">
+            <span class="text-muted small fw-bold">Host Email</span>
+            <strong>{{ selectedProperty.host.email }}</strong>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div class="card border-0 bg-light p-3 rounded-4 h-100">
+            <span class="text-muted small fw-bold">Host Phone</span>
+            <strong>{{ selectedProperty.host.phoneNumber || '—' }}</strong>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div class="card border-0 bg-light p-3 rounded-4 h-100">
+            <span class="text-muted small fw-bold">Host Status</span>
+            <strong>{{ selectedProperty.host.hostStatus }}</strong>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Host Identity Document -->
+    <section class="mb-4">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+          <h3 class="h5 mb-1">Host Identity Document</h3>
+          <p class="text-muted small mb-0">
+            Admin should visually compare this ID card with the property contract below.
+          </p>
+        </div>
+
+        @if (hostIdentityFrontUrl) {
+        <button
+          type="button"
+          class="btn btn-sm btn-outline-dark"
+          (click)="openHostIdentityDocument()"
+        >
+          Open full page
+        </button>
+        }
+      </div>
+
+      <div class="card border-0 bg-light rounded-4 p-3">
+        @if (hostIdentityLoading) {
+        <div class="text-center py-5 text-muted">
+          Loading host identity document...
+        </div>
+        } @else if (hostIdentityFrontUrl) {
+        <img
+          [src]="hostIdentityFrontUrl"
+          alt="Host identity document front"
+          style="width: 100%; max-height: 520px; object-fit: contain; background: #e2e8f0; border-radius: 14px;"
+        />
+        } @else {
+        <div class="text-center py-5 text-muted">
+          {{ hostIdentityError || 'Host identity document is not available.' }}
+        </div>
+        }
+      </div>
+    </section>
+
+    <!-- Property Details -->
+    <section class="mb-4">
+      <h3 class="h5 mb-3">Property Details</h3>
+
+      <div class="row g-3">
+        <div class="col-md-12">
+          <div class="card border-0 bg-light p-3 rounded-4">
+            <span class="text-muted small fw-bold">Full Address</span>
+            <strong>{{ getFullAddress(selectedProperty) }}</strong>
+            <span class="text-muted small mt-1">
+              Coordinates:
+              {{ selectedProperty.latitude || '—' }},
+              {{ selectedProperty.longitude || '—' }}
+            </span>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div class="card border-0 bg-light p-3 rounded-4">
+            <span class="text-muted small fw-bold">Max Guests</span>
+            <strong>{{ selectedProperty.maxGuests }}</strong>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div class="card border-0 bg-light p-3 rounded-4">
+            <span class="text-muted small fw-bold">Bedrooms</span>
+            <strong>{{ selectedProperty.bedrooms }}</strong>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div class="card border-0 bg-light p-3 rounded-4">
+            <span class="text-muted small fw-bold">Beds</span>
+            <strong>{{ selectedProperty.beds }}</strong>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div class="card border-0 bg-light p-3 rounded-4">
+            <span class="text-muted small fw-bold">Bathrooms</span>
+            <strong>{{ selectedProperty.bathrooms }}</strong>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div class="card border-0 bg-light p-3 rounded-4">
+            <span class="text-muted small fw-bold">Check-in</span>
+            <strong>{{ selectedProperty.checkInTime }}</strong>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div class="card border-0 bg-light p-3 rounded-4">
+            <span class="text-muted small fw-bold">Check-out</span>
+            <strong>{{ selectedProperty.checkOutTime }}</strong>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div class="card border-0 bg-light p-3 rounded-4">
+            <span class="text-muted small fw-bold">Cancellation Policy</span>
+            <strong>{{ selectedProperty.cancellationPolicy }}</strong>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div class="card border-0 bg-light p-3 rounded-4">
+            <span class="text-muted small fw-bold">Submitted</span>
+            <strong>{{ selectedProperty.submittedAt | date: 'medium' }}</strong>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- House Rules -->
+    <section class="mb-4">
+      <h3 class="h5 mb-3">House Rules</h3>
+
+      <div class="row g-3">
+        <div class="col-md-3">
+          <div class="card border-0 bg-light p-3 rounded-4">
+            <span class="text-muted small fw-bold">Smoking</span>
+            <strong>{{ selectedProperty.allowsSmoking ? 'Yes' : 'No' }}</strong>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div class="card border-0 bg-light p-3 rounded-4">
+            <span class="text-muted small fw-bold">Pets</span>
+            <strong>{{ selectedProperty.allowsPets ? 'Yes' : 'No' }}</strong>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div class="card border-0 bg-light p-3 rounded-4">
+            <span class="text-muted small fw-bold">Parties</span>
+            <strong>{{ selectedProperty.allowsParties ? 'Yes' : 'No' }}</strong>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div class="card border-0 bg-light p-3 rounded-4">
+            <span class="text-muted small fw-bold">Children</span>
+            <strong>{{ selectedProperty.allowsChildren ? 'Yes' : 'No' }}</strong>
+          </div>
+        </div>
+
+        @if (selectedProperty.additionalHouseRules) {
+        <div class="col-12">
+          <div class="card border-0 bg-light p-3 rounded-4">
+            <span class="text-muted small fw-bold">Additional Rules</span>
+            <p class="mb-0">{{ selectedProperty.additionalHouseRules }}</p>
+          </div>
+        </div>
+        }
+      </div>
+    </section>
+
+    <!-- Amenities -->
+    <section class="mb-4">
+      <h3 class="h5 mb-3">Amenities</h3>
+
+      <div class="d-flex flex-wrap gap-2">
+        @for (amenity of selectedProperty.amenities; track amenity.id) {
+        <span class="badge bg-light text-dark border">
+          {{ amenity.name }}
+        </span>
+        } @empty {
+        <span class="text-muted">No amenities selected.</span>
+        }
+      </div>
+    </section>
+
+    <!-- Property Images -->
+    <section class="mb-4">
+      <h3 class="h5 mb-3">Property Images</h3>
+
+      <div class="row g-3">
+        @for (image of selectedProperty.images; track image.id) {
+        <div class="col-md-4 col-lg-3">
+          <div class="card border-0 bg-light rounded-4 overflow-hidden h-100">
+            <img
+              [src]="image.url"
+              alt="Property image"
+              style="width: 100%; height: 160px; object-fit: cover;"
+            />
+
+            <div class="p-2 d-flex justify-content-between align-items-center">
+              <span class="text-muted small">{{ image.format }}</span>
+
+              @if (image.isCover) {
+              <span class="badge bg-success">Cover</span>
+              }
+            </div>
+          </div>
+        </div>
+        } @empty {
+        <div class="col-12 text-muted">
+          No property images uploaded.
+        </div>
+        }
+      </div>
+    </section>
+
+    <!-- Property Verification Document -->
+    <section class="mb-4">
+      <h3 class="h5 mb-3">Property Verification Document</h3>
+
+      @if (selectedProperty.verificationDocument) {
+      <div class="card border-0 bg-light rounded-4 p-3">
+        <div class="row g-3 mb-3">
+          <div class="col-md-4">
+            <div class="card border-0 bg-white p-3 rounded-4">
+              <span class="text-muted small fw-bold">Document Type</span>
+              <strong>{{ selectedProperty.verificationDocument.documentType }}</strong>
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div class="card border-0 bg-white p-3 rounded-4">
+              <span class="text-muted small fw-bold">Pages</span>
+              <strong>{{ selectedProperty.verificationDocument.pagesCount }}</strong>
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div class="card border-0 bg-white p-3 rounded-4">
+              <span class="text-muted small fw-bold">Uploaded</span>
+              <strong>{{ selectedProperty.verificationDocument.createdAt | date: 'medium' }}</strong>
+            </div>
+          </div>
+        </div>
+
+        @if (documentLoading) {
+        <div class="text-center py-5 text-muted">
+          Loading verification document pages...
+        </div>
+        }
+
+        <div class="d-flex flex-column gap-3">
+          @for (page of selectedProperty.verificationDocument.pages; track page.id) {
+          <div class="card border-0 bg-white rounded-4 p-3">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <strong>Page {{ page.pageNumber }}</strong>
+
+              @if (getDocumentPageUrl(page)) {
+              <button
+                type="button"
+                class="btn btn-sm btn-outline-dark"
+                (click)="openDocumentPage(page)"
+              >
+                Open full page
+              </button>
+              }
+            </div>
+
+            @if (getDocumentPageUrl(page)) {
+            <img
+              [src]="getDocumentPageUrl(page)"
+              alt="Property verification document page"
+              style="width: 100%; max-height: 520px; object-fit: contain; background: #e2e8f0; border-radius: 14px;"
+            />
+            } @else {
+            <div class="text-muted py-4">
+              This document page could not be loaded.
+            </div>
+            }
+          </div>
+          }
+        </div>
+      </div>
+      } @else {
+      <div class="card border-0 bg-light rounded-4 p-4 text-muted">
+        No property verification document uploaded.
+      </div>
+      }
+    </section>
+
+    <!-- Review Actions -->
+    <section class="row g-4">
+      <div class="col-lg-8">
+        <div class="card border-0 bg-light rounded-4 p-3 h-100">
+          <h3 class="h5 mb-2">Reject Property</h3>
+
+          <p class="text-muted small">
+            Write a clear reason so the host can fix the listing and submit again.
+          </p>
+
+          <textarea
+            class="form-control mb-3"
+            rows="4"
+            placeholder="Write rejection reason..."
+            [(ngModel)]="rejectionReason"
+          ></textarea>
+
+          <button
+            type="button"
+            class="btn btn-danger"
+            (click)="rejectSelectedProperty()"
+            [disabled]="actionLoading || rejectionReason.trim().length < 10"
+          >
+            Reject Property
+          </button>
+        </div>
+      </div>
+
+      <div class="col-lg-4">
+        <div class="card border-0 bg-light rounded-4 p-3 h-100">
+          <h3 class="h5 mb-2">Approve Property</h3>
+
+          <p class="text-muted small">
+            This will approve and publish the property for users.
+          </p>
+
+          <button
+            type="button"
+            class="btn btn-success"
+            (click)="approveSelectedProperty()"
+            [disabled]="actionLoading"
+          >
+            Approve Property
+          </button>
+        </div>
+      </div>
+    </section>
+  </div>
+  }
+</div>

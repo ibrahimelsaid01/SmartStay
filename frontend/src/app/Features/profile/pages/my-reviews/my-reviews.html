@@ -1,0 +1,767 @@
+<section class="my-reviews-page">
+  <header class="reviews-page-header">
+    <div>
+      <span class="page-eyebrow">Your stays, your voice</span>
+
+      <h2>My Reviews</h2>
+
+      <p>
+        Manage reviews submitted after completed stays and follow their
+        moderation status.
+      </p>
+    </div>
+
+    <button
+      type="button"
+      class="reviews-refresh-btn"
+      (click)="refreshReviews()"
+      [disabled]="
+        loading ||
+        reviewFormLoading ||
+        !!deleteLoadingReviewId
+      "
+    >
+      <i class="bi bi-arrow-clockwise"></i>
+
+      {{ loading ? 'Refreshing...' : 'Refresh' }}
+    </button>
+  </header>
+
+  <div
+    *ngIf="errorMessage"
+    class="reviews-alert reviews-alert-error"
+  >
+    <i class="bi bi-exclamation-circle"></i>
+
+    <span>
+      {{ errorMessage }}
+    </span>
+  </div>
+
+  <div
+    *ngIf="successMessage"
+    class="reviews-alert reviews-alert-success"
+  >
+    <i class="bi bi-check-circle"></i>
+
+    <span>
+      {{ successMessage }}
+    </span>
+  </div>
+
+  <section
+    *ngIf="isFocusedReviewView()"
+    class="focused-review-banner"
+  >
+    <div>
+      <i class="bi bi-eye"></i>
+
+      <div>
+        <strong>
+          Viewing a selected review
+        </strong>
+
+        <p>
+          This review was opened directly from My Bookings. Its current
+          moderation status is shown below.
+        </p>
+      </div>
+    </div>
+
+    <button
+      type="button"
+      class="show-all-reviews-btn"
+      (click)="showAllReviews()"
+      [disabled]="
+        loading ||
+        reviewFormLoading ||
+        !!deleteLoadingReviewId
+      "
+    >
+      <i class="bi bi-arrow-left"></i>
+
+      Back to All Reviews
+    </button>
+  </section>
+
+  <div class="reviews-toolbar">
+    <div
+      class="review-status-filters"
+      aria-label="Filter reviews by status"
+    >
+      <button
+        *ngFor="let status of statusFilters"
+        type="button"
+        class="review-filter-btn"
+        [class.active]="selectedStatus === status"
+        (click)="selectStatus(status)"
+        [disabled]="
+          loading ||
+          reviewFormLoading ||
+          !!deleteLoadingReviewId
+        "
+      >
+        {{ status }}
+      </button>
+    </div>
+
+    <div class="reviews-count">
+      <strong>
+        {{ totalCount }}
+      </strong>
+
+      <span>
+        {{ totalCount === 1 ? 'review' : 'reviews' }}
+      </span>
+    </div>
+  </div>
+
+  <section
+    *ngIf="isReviewFormOpen()"
+    class="review-form-card"
+  >
+    <div class="review-form-header">
+      <div>
+        <span class="review-form-label">
+          {{
+            reviewFormMode === 'create'
+              ? 'New review'
+              : 'Edit review'
+          }}
+        </span>
+
+        <h3>
+          {{
+            reviewFormPropertyTitle ||
+              (
+                reviewFormMode === 'create'
+                  ? 'Review your completed stay'
+                  : 'Update your review'
+              )
+          }}
+        </h3>
+
+        <p *ngIf="reviewFormMode === 'create'">
+          Your review will be submitted for moderation before it appears
+          publicly.
+        </p>
+
+        <p *ngIf="reviewFormMode === 'edit'">
+          Updating a rejected review sends it back to the moderation queue.
+        </p>
+      </div>
+
+      <button
+        type="button"
+        class="review-form-close-btn"
+        (click)="closeReviewForm()"
+        [disabled]="reviewFormLoading"
+        aria-label="Close review form"
+      >
+        <i class="bi bi-x-lg"></i>
+      </button>
+    </div>
+
+    <div
+      *ngIf="reviewFormErrorMessage"
+      class="reviews-alert reviews-alert-error compact-alert"
+    >
+      <i class="bi bi-exclamation-circle"></i>
+
+      <span>
+        {{ reviewFormErrorMessage }}
+      </span>
+    </div>
+
+    <div class="review-form-grid">
+      <div class="review-rating-field">
+        <label>
+          Overall rating
+        </label>
+
+        <div
+          class="review-rating-buttons"
+          aria-label="Review rating"
+        >
+          <button
+            *ngFor="let rating of ratingOptions"
+            type="button"
+            class="review-rating-btn"
+            [class.active]="rating <= reviewFormRating"
+            (click)="setReviewRating(rating)"
+            [disabled]="reviewFormLoading"
+            [attr.aria-label]="rating + ' star rating'"
+          >
+            <i class="bi bi-star-fill"></i>
+          </button>
+        </div>
+
+        <span>
+          {{ reviewFormRating }} out of 5
+        </span>
+      </div>
+
+      <div class="review-comment-field positive-field">
+        <label for="review-positive-comment">
+          What went well?
+
+          <span>
+            Optional
+          </span>
+        </label>
+
+        <textarea
+          id="review-positive-comment"
+          class="form-control"
+          rows="5"
+          maxlength="2000"
+          placeholder="Share the positive parts of your stay..."
+          [(ngModel)]="reviewFormPositiveComment"
+          [disabled]="reviewFormLoading"
+        ></textarea>
+
+        <small>
+          {{ reviewFormPositiveComment.length }} / 2000
+        </small>
+      </div>
+
+      <div class="review-comment-field negative-field">
+        <label for="review-negative-comment">
+          What could be improved?
+
+          <span>
+            Optional
+          </span>
+        </label>
+
+        <textarea
+          id="review-negative-comment"
+          class="form-control"
+          rows="5"
+          maxlength="2000"
+          placeholder="Mention anything that could have been better..."
+          [(ngModel)]="reviewFormNegativeComment"
+          [disabled]="reviewFormLoading"
+        ></textarea>
+
+        <small>
+          {{ reviewFormNegativeComment.length }} / 2000
+        </small>
+      </div>
+    </div>
+
+    <div class="review-form-note">
+      <i class="bi bi-info-circle"></i>
+
+      <span>
+        Add at least one positive or negative comment. Reviews must describe
+        your real stay and must not include abusive or misleading content.
+      </span>
+    </div>
+
+    <div class="review-form-actions">
+      <button
+        type="button"
+        class="review-form-cancel-btn"
+        (click)="closeReviewForm()"
+        [disabled]="reviewFormLoading"
+      >
+        Cancel
+      </button>
+
+      <button
+        type="button"
+        class="review-form-submit-btn"
+        (click)="submitReview()"
+        [disabled]="reviewFormLoading"
+      >
+        <span
+          *ngIf="reviewFormLoading"
+          class="spinner-border spinner-border-sm"
+          aria-hidden="true"
+        ></span>
+
+        {{
+          reviewFormLoading
+            ? 'Saving...'
+            : reviewFormMode === 'create'
+              ? 'Submit Review'
+              : 'Save and Resubmit'
+        }}
+      </button>
+    </div>
+  </section>
+
+  <div
+    *ngIf="loading"
+    class="reviews-loading-state"
+  >
+    <div
+      class="spinner-border"
+      role="status"
+      aria-hidden="true"
+    ></div>
+
+    <strong>
+      {{
+        focusedReviewLoading
+          ? 'Loading selected review...'
+          : 'Loading your reviews...'
+      }}
+    </strong>
+
+    <span>
+      {{
+        focusedReviewLoading
+          ? 'We are retrieving the latest details for this review.'
+          : 'We are retrieving the latest moderation status.'
+      }}
+    </span>
+  </div>
+
+  <section
+    *ngIf="!loading && reviews.length === 0"
+    class="reviews-empty-state"
+  >
+    <div class="reviews-empty-icon">
+      <i class="bi bi-chat-square-heart"></i>
+    </div>
+
+    <h3>
+      {{
+        selectedStatus === 'All'
+          ? "You haven't reviewed any stays yet"
+          : 'No ' + selectedStatus.toLowerCase() + ' reviews'
+      }}
+    </h3>
+
+    <p *ngIf="selectedStatus === 'All'">
+      After a booking is completed, open it from My Bookings and share your
+      experience.
+    </p>
+
+    <p *ngIf="selectedStatus !== 'All'">
+      There are currently no reviews matching this moderation status.
+    </p>
+
+    <a
+      *ngIf="selectedStatus === 'All'"
+      routerLink="/profile/bookings/completed"
+      class="browse-bookings-btn"
+    >
+      <i class="bi bi-calendar-check"></i>
+
+      View Completed Bookings
+    </a>
+
+    <button
+      *ngIf="selectedStatus !== 'All'"
+      type="button"
+      class="browse-bookings-btn"
+      (click)="selectStatus('All')"
+    >
+      Show All Reviews
+    </button>
+  </section>
+
+  <section
+    *ngIf="!loading && reviews.length > 0"
+    class="reviews-list"
+  >
+    <article
+      *ngFor="
+        let review of reviews;
+        trackBy: trackReviewById
+      "
+      class="review-card"
+      [class.review-card-editing]="
+        isEditingReview(review.id)
+      "
+      [class.review-card-focused]="
+        isFocusedReview(review.id)
+      "
+      [attr.id]="
+        isFocusedReview(review.id)
+          ? 'focused-review-card'
+          : null
+      "
+    >
+      <div class="review-property-section">
+        <a
+          class="review-property-image-link"
+          [routerLink]="[
+            '/property-details',
+            review.property.id
+          ]"
+        >
+          <img
+            *ngIf="
+              review.property.coverImageUrl;
+              else propertyImagePlaceholder
+            "
+            [src]="review.property.coverImageUrl"
+            [alt]="review.property.title"
+            class="review-property-image"
+          />
+
+          <ng-template #propertyImagePlaceholder>
+            <div
+              class="review-property-image property-image-placeholder"
+            >
+              <i class="bi bi-house-door"></i>
+            </div>
+          </ng-template>
+        </a>
+
+        <div class="review-property-details">
+          <div class="review-property-title-row">
+            <div>
+              <a
+                [routerLink]="[
+                  '/property-details',
+                  review.property.id
+                ]"
+                class="review-property-title"
+              >
+                {{ review.property.title }}
+              </a>
+
+              <span class="review-property-location">
+                <i class="bi bi-geo-alt"></i>
+
+                {{
+                  getReviewLocation(review) ||
+                  'Location unavailable'
+                }}
+              </span>
+            </div>
+
+            <span
+              class="review-status-pill"
+              [ngClass]="
+                getStatusClass(review.status)
+              "
+            >
+              {{ review.status }}
+            </span>
+          </div>
+
+          <div class="review-stay-details">
+            <span>
+              <i class="bi bi-calendar-event"></i>
+
+              {{
+                review.checkInDate
+                  | date: 'MMM d, y'
+              }}
+
+              —
+
+              {{
+                review.checkOutDate
+                  | date: 'MMM d, y'
+              }}
+            </span>
+
+            <span>
+              Submitted
+
+              {{
+                review.createdAt
+                  | date: 'mediumDate'
+              }}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div class="review-card-body">
+        <div class="review-rating-summary">
+          <div
+            class="review-stars"
+            [attr.aria-label]="
+              review.rating + ' stars'
+            "
+          >
+            <i
+              *ngFor="let rating of ratingOptions"
+              class="bi bi-star-fill"
+              [class.active]="
+                rating <= review.rating
+              "
+            ></i>
+          </div>
+
+          <strong>
+            {{ review.rating }} / 5
+          </strong>
+        </div>
+
+        <div class="review-status-description">
+          <i class="bi bi-info-circle"></i>
+
+          <span>
+            {{
+              getStatusDescription(
+                review.status
+              )
+            }}
+          </span>
+        </div>
+
+        <div class="review-comments-grid">
+          <section
+            *ngIf="review.positiveComment"
+            class="review-comment positive-comment"
+          >
+            <h4>
+              <i class="bi bi-hand-thumbs-up"></i>
+
+              What went well
+            </h4>
+
+            <p>
+              {{ review.positiveComment }}
+            </p>
+          </section>
+
+          <section
+            *ngIf="review.negativeComment"
+            class="review-comment negative-comment"
+          >
+            <h4>
+              <i class="bi bi-lightbulb"></i>
+
+              What could be improved
+            </h4>
+
+            <p>
+              {{ review.negativeComment }}
+            </p>
+          </section>
+        </div>
+
+        <section
+          *ngIf="
+            review.status === 'Rejected' &&
+            review.rejectionReason
+          "
+          class="review-rejection-box"
+        >
+          <div>
+            <i class="bi bi-shield-exclamation"></i>
+          </div>
+
+          <div>
+            <h4>
+              Moderation feedback
+            </h4>
+
+            <p>
+              {{ review.rejectionReason }}
+            </p>
+          </div>
+        </section>
+
+        <section
+          *ngIf="review.reply"
+          class="review-host-reply"
+        >
+          <img
+            [src]="
+              review.reply.hostProfileImageUrl ||
+              'Images/default-avatar.png'
+            "
+            [alt]="review.reply.hostDisplayName"
+          />
+
+          <div>
+            <div class="review-host-reply-header">
+              <div>
+                <span>
+                  Response from host
+                </span>
+
+                <strong>
+                  {{ review.reply.hostDisplayName }}
+                </strong>
+              </div>
+
+              <small>
+                {{
+                  review.reply.createdAt
+                    | date: 'mediumDate'
+                }}
+              </small>
+            </div>
+
+            <p>
+              {{ review.reply.content }}
+            </p>
+          </div>
+        </section>
+      </div>
+
+      <footer class="review-card-footer">
+        <div class="review-card-meta">
+          <span *ngIf="review.status === 'Posted'">
+            <i class="bi bi-hand-thumbs-up"></i>
+
+            {{ review.helpfulCount }}
+            found this helpful
+          </span>
+
+          <span>
+            <i class="bi bi-clock-history"></i>
+
+            Updated
+
+            {{
+              getReviewDisplayDate(review)
+                | date: 'mediumDate'
+            }}
+          </span>
+        </div>
+
+        <div class="review-card-actions">
+          <button
+            *ngIf="review.canEdit"
+            type="button"
+            class="review-edit-btn"
+            (click)="openEditReviewForm(review)"
+            [disabled]="
+              reviewFormLoading ||
+              !!deleteLoadingReviewId
+            "
+          >
+            <i class="bi bi-pencil-square"></i>
+
+            {{
+              review.status === 'Rejected'
+                ? 'Edit and Resubmit'
+                : 'Edit'
+            }}
+          </button>
+
+          <button
+            *ngIf="review.canDelete"
+            type="button"
+            class="review-delete-btn"
+            (click)="openDeleteConfirmation(review)"
+            [disabled]="
+              reviewFormLoading ||
+              !!deleteLoadingReviewId
+            "
+          >
+            <i class="bi bi-trash3"></i>
+
+            Delete
+          </button>
+        </div>
+      </footer>
+
+      <div
+        *ngIf="
+          isDeleteConfirmationOpen(
+            review.id
+          )
+        "
+        class="review-delete-confirmation"
+      >
+        <div>
+          <strong>
+            Delete this review?
+          </strong>
+
+          <p>
+            This action removes the review permanently and cannot be undone.
+          </p>
+        </div>
+
+        <div class="review-delete-confirmation-actions">
+          <button
+            type="button"
+            class="review-delete-cancel-btn"
+            (click)="closeDeleteConfirmation()"
+            [disabled]="
+              isDeletingReview(
+                review.id
+              )
+            "
+          >
+            Keep Review
+          </button>
+
+          <button
+            type="button"
+            class="review-delete-confirm-btn"
+            (click)="deleteReview(review)"
+            [disabled]="
+              isDeletingReview(
+                review.id
+              )
+            "
+          >
+            <span
+              *ngIf="
+                isDeletingReview(
+                  review.id
+                )
+              "
+              class="spinner-border spinner-border-sm"
+              aria-hidden="true"
+            ></span>
+
+            {{
+              isDeletingReview(review.id)
+                ? 'Deleting...'
+                : 'Delete Review'
+            }}
+          </button>
+        </div>
+      </div>
+    </article>
+  </section>
+
+  <nav
+    *ngIf="
+      !loading &&
+      !isFocusedReviewView() &&
+      totalPages > 1
+    "
+    class="reviews-pagination"
+    aria-label="Reviews pagination"
+  >
+    <button
+      type="button"
+      (click)="goToPreviousPage()"
+      [disabled]="
+        page <= 1 ||
+        reviewFormLoading ||
+        !!deleteLoadingReviewId
+      "
+    >
+      <i class="bi bi-chevron-left"></i>
+
+      Previous
+    </button>
+
+    <span>
+      Page {{ page }} of {{ totalPages }}
+    </span>
+
+    <button
+      type="button"
+      (click)="goToNextPage()"
+      [disabled]="
+        page >= totalPages ||
+        reviewFormLoading ||
+        !!deleteLoadingReviewId
+      "
+    >
+      Next
+
+      <i class="bi bi-chevron-right"></i>
+    </button>
+  </nav>
+</section>

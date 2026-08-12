@@ -1,0 +1,603 @@
+<section class="confirmation-page">
+  <div class="confirmation-card">
+    <div
+      *ngIf="isLoading"
+      class="confirmation-state confirmation-loading-state"
+      aria-live="polite"
+    >
+      <span
+        class="spinner-border spinner-border-sm"
+        aria-hidden="true"
+      ></span>
+
+      Loading booking confirmation...
+    </div>
+
+    <div
+      *ngIf="!isLoading && errorMessage"
+      class="alert alert-danger confirmation-alert"
+      role="alert"
+    >
+      <span>
+        {{ errorMessage }}
+      </span>
+
+      <button
+        type="button"
+        class="alert-retry-btn"
+        (click)="loadConfirmationData()"
+        [disabled]="isRefreshingStatus"
+      >
+        Try Again
+      </button>
+    </div>
+
+    <div
+      *ngIf="
+        !isLoading &&
+        warningMessage &&
+        !errorMessage
+      "
+      class="alert alert-warning confirmation-alert"
+      role="status"
+    >
+      {{ warningMessage }}
+    </div>
+
+    <ng-container
+      *ngIf="
+        !isLoading &&
+        hasConfirmationData
+      "
+    >
+      <div
+        class="status-icon"
+        [class.success]="isConfirmed"
+        [class.pending]="isProcessing"
+        [class.failed]="isFailed"
+        [class.refunded]="
+          isRefunded &&
+          isConfirmed
+        "
+      >
+        <i
+          class="bi"
+          [ngClass]="{
+            'bi-check-circle-fill':
+              isConfirmed &&
+              !isRefunded,
+
+            'bi-arrow-counterclockwise':
+              isConfirmed &&
+              isRefunded,
+
+            'bi-hourglass-split':
+              isProcessing,
+
+            'bi-x-circle-fill':
+              isFailed
+          }"
+        ></i>
+      </div>
+
+      <h1
+        *ngIf="
+          isConfirmed &&
+          !isRefunded
+        "
+      >
+        Booking confirmed
+      </h1>
+
+      <h1
+        *ngIf="
+          isConfirmed &&
+          isRefunded
+        "
+      >
+        Booking payment updated
+      </h1>
+
+      <h1 *ngIf="isProcessing">
+        Payment is being confirmed
+      </h1>
+
+      <h1 *ngIf="isPaymentAttemptFailed">
+        Payment was not completed
+      </h1>
+
+      <h1 *ngIf="isBookingExpired">
+        Booking payment window expired
+      </h1>
+
+      <h1 *ngIf="isBookingCancelled">
+        Booking was cancelled
+      </h1>
+
+      <p
+        class="description"
+        *ngIf="
+          isConfirmed &&
+          !isRefunded
+        "
+      >
+        Your payment was confirmed successfully and your booking is now
+        confirmed.
+      </p>
+
+      <p
+        class="description"
+        *ngIf="
+          isConfirmed &&
+          isRefunded
+        "
+      >
+        The booking confirmation is available, and the payment now includes
+        refund activity shown below.
+      </p>
+
+      <p
+        class="description"
+        *ngIf="isProcessing"
+      >
+        Stripe or the SmartStay webhook is still finalizing the payment and
+        booking status.
+      </p>
+
+      <p
+        class="description auto-check-description"
+        *ngIf="
+          isProcessing &&
+          isAutoChecking
+        "
+      >
+        <span
+          class="spinner-border spinner-border-sm"
+          aria-hidden="true"
+        ></span>
+
+        {{ autoCheckMessage }}
+      </p>
+
+      <p
+        class="description"
+        *ngIf="isPaymentAttemptFailed"
+      >
+        This payment attempt reached a final failed or cancelled state. You
+        can retry only while the booking payment window remains open.
+      </p>
+
+      <p
+        class="description"
+        *ngIf="isBookingExpired"
+      >
+        The reservation was not paid before its deadline. Review My Bookings
+        before creating another reservation.
+      </p>
+
+      <p
+        class="description"
+        *ngIf="isBookingCancelled"
+      >
+        This booking is cancelled and can no longer be paid.
+      </p>
+
+      <div
+        *ngIf="bookingConfirmation"
+        class="booking-summary"
+      >
+        <img
+          class="property-cover"
+          [src]="
+            bookingConfirmation.property.coverImageUrl ||
+            '/Images/property-placeholder.jpg'
+          "
+          [alt]="bookingConfirmation.property.title"
+        />
+
+        <div class="property-info">
+          <h2>
+            {{ bookingConfirmation.property.title }}
+          </h2>
+
+          <p class="property-address">
+            <i
+              class="bi bi-geo-alt"
+              aria-hidden="true"
+            ></i>
+
+            {{ bookingConfirmation.property.fullAddress }}
+          </p>
+
+          <div class="summary-grid">
+            <div>
+              <span>Check-in</span>
+
+              <strong>
+                {{
+                  bookingConfirmation.stay.checkInDate
+                    | date
+                }}
+              </strong>
+            </div>
+
+            <div>
+              <span>Check-out</span>
+
+              <strong>
+                {{
+                  bookingConfirmation.stay.checkOutDate
+                    | date
+                }}
+              </strong>
+            </div>
+
+            <div>
+              <span>Nights</span>
+
+              <strong>
+                {{ bookingConfirmation.stay.nights }}
+              </strong>
+            </div>
+
+            <div>
+              <span>Guests</span>
+
+              <strong>
+                {{ bookingConfirmation.stay.guestsCount }}
+              </strong>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="status-box">
+        <div class="status-row">
+          <span>
+            Payment status
+          </span>
+
+          <strong>
+            {{ displayPaymentStatus }}
+          </strong>
+        </div>
+
+        <div class="status-row">
+          <span>
+            Booking status
+          </span>
+
+          <strong>
+            {{ displayBookingStatus }}
+          </strong>
+        </div>
+
+        <div class="status-row">
+          <span>
+            Amount
+          </span>
+
+          <strong>
+            {{ displayAmount | number }}
+            {{ displayCurrency }}
+          </strong>
+        </div>
+
+        <div
+          *ngIf="
+            displayRefundedAmount >
+            0
+          "
+          class="status-row refund-status-row"
+        >
+          <span>
+            Refunded amount
+          </span>
+
+          <strong>
+            {{ displayRefundedAmount | number }}
+            {{ displayCurrency }}
+          </strong>
+        </div>
+
+        <div
+          *ngIf="paymentFailureMessage"
+          class="status-row failure-status-row"
+        >
+          <span>
+            Payment issue
+          </span>
+
+          <strong>
+            {{ paymentFailureMessage }}
+          </strong>
+        </div>
+
+        <div
+          *ngIf="
+            bookingConfirmation?.confirmedAt
+              as confirmedAt
+          "
+          class="status-row"
+        >
+          <span>
+            Confirmed at
+          </span>
+
+          <strong>
+            {{ confirmedAt | date: 'medium' }}
+          </strong>
+        </div>
+
+        <div
+          *ngIf="
+            paymentStatus?.bookingExpiresAt
+              as bookingExpiresAt
+          "
+          class="status-row"
+        >
+          <span>
+            Payment deadline
+          </span>
+
+          <strong>
+            {{ bookingExpiresAt | date: 'medium' }}
+          </strong>
+        </div>
+      </div>
+
+      <div class="confirmation-actions">
+        <button
+          type="button"
+          class="refresh-btn"
+          (click)="loadConfirmationData()"
+          [disabled]="isRefreshingStatus"
+        >
+          <span
+            *ngIf="isRefreshingStatus"
+            class="spinner-border spinner-border-sm"
+            aria-hidden="true"
+          ></span>
+
+          {{
+            isRefreshingStatus
+              ? 'Refreshing...'
+              : 'Refresh status'
+          }}
+        </button>
+
+        <a
+          *ngIf="
+            canRetryPayment &&
+            paymentStatus
+          "
+          [routerLink]="[
+            '/checkout',
+            paymentStatus.bookingId
+          ]"
+          class="confirmation-action-link retry-payment-link"
+        >
+          Retry payment
+        </a>
+
+        <a
+          *ngIf="
+            isFailed &&
+            !canRetryPayment
+          "
+          routerLink="/profile/bookings/all"
+          class="confirmation-action-link bookings-action-link"
+        >
+          Review My Bookings
+        </a>
+      </div>
+
+      <div
+        class="recommendations-section"
+        *ngIf="
+          isConfirmed &&
+          bookingConfirmation
+        "
+      >
+        <h3>
+          Nearby Recommendations
+        </h3>
+
+        <div
+          *ngIf="!selectedCategory"
+          class="category-selection"
+        >
+          <p class="category-prompt">
+            Choose a category to see nearby recommendations:
+          </p>
+
+          <div class="category-buttons">
+            <button
+              *ngFor="
+                let category of categoryOptions
+              "
+              type="button"
+              class="category-btn"
+              (click)="selectCategory(category)"
+            >
+              <i
+                class="bi"
+                [ngClass]="
+                  category === 'coffee'
+                    ? 'bi-cup-hot'
+                    : category === 'restaurants'
+                      ? 'bi-cup-straw'
+                      : 'bi-pin-map'
+                "
+                aria-hidden="true"
+              ></i>
+
+              {{ category | titlecase }}
+            </button>
+          </div>
+        </div>
+
+        <div
+          *ngIf="
+            selectedCategory &&
+            isLoadingRecommendations
+          "
+          class="recommendations-loading"
+          aria-live="polite"
+        >
+          Loading {{ selectedCategory }} recommendations...
+        </div>
+
+        <div
+          *ngIf="
+            selectedCategory &&
+            !isLoadingRecommendations &&
+            recommendationsError
+          "
+          class="alert alert-warning"
+        >
+          {{ recommendationsError }}
+        </div>
+
+        <div
+          *ngIf="
+            selectedCategory &&
+            !isLoadingRecommendations &&
+            recommendations.length > 0
+          "
+          class="recommendations-grid"
+        >
+          <article
+            *ngFor="
+              let recommendation of recommendations
+            "
+            class="recommendation-card"
+          >
+            <img
+              *ngIf="recommendation['image']"
+              [src]="recommendation['image']"
+              [alt]="recommendation['name']"
+              class="recommendation-image"
+              loading="lazy"
+            />
+
+            <div class="recommendation-content">
+              <h4>
+                {{ recommendation['name'] }}
+              </h4>
+
+              <p
+                *ngIf="recommendation['address']"
+                class="recommendation-address"
+              >
+                <i
+                  class="bi bi-geo-alt"
+                  aria-hidden="true"
+                ></i>
+
+                {{ recommendation['address'] }}
+              </p>
+
+              <p
+                *ngIf="
+                  recommendation['distance'] !==
+                  undefined
+                "
+                class="recommendation-distance"
+              >
+                <i
+                  class="bi bi-pin-map"
+                  aria-hidden="true"
+                ></i>
+
+                {{
+                  recommendation['distance']
+                    | number: '1.2-2'
+                }}
+                km away
+              </p>
+
+              <p
+                *ngIf="
+                  recommendation['rating'] !==
+                  undefined
+                "
+                class="recommendation-rating"
+              >
+                <i
+                  class="bi bi-star-fill"
+                  aria-hidden="true"
+                ></i>
+
+                {{
+                  recommendation['rating']
+                    | number: '1.1-1'
+                }}
+              </p>
+            </div>
+          </article>
+        </div>
+
+        <div
+          *ngIf="
+            selectedCategory &&
+            !isLoadingRecommendations &&
+            recommendations.length === 0 &&
+            !recommendationsError
+          "
+          class="no-recommendations"
+        >
+          No {{ selectedCategory }} recommendations are available at this
+          location.
+        </div>
+
+        <div
+          *ngIf="
+            selectedCategory &&
+            !isLoadingRecommendations
+          "
+          class="change-category"
+        >
+          <button
+            type="button"
+            class="change-category-btn"
+            (click)="clearSelectedCategory()"
+          >
+            Choose Different Category
+          </button>
+        </div>
+      </div>
+
+      <nav
+        class="confirmation-footer-links"
+        aria-label="Confirmation links"
+      >
+        <a
+          routerLink="/profile/bookings/all"
+          class="home-link"
+        >
+          View my bookings
+        </a>
+
+        <a
+          routerLink="/"
+          class="home-link secondary-link"
+        >
+          Back to home
+        </a>
+      </nav>
+    </ng-container>
+
+    <div
+      *ngIf="
+        !isLoading &&
+        !hasConfirmationData &&
+        !errorMessage &&
+        !warningMessage
+      "
+      class="confirmation-state"
+    >
+      Booking confirmation data is not available.
+    </div>
+  </div>
+</section>

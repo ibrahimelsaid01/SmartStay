@@ -1,0 +1,51 @@
+.badge {
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-weight: 500;
+}
+
+.badge-aqua {
+  background: #81d8d0;
+  color: white;
+}
+
+.badge-gold {
+  background: #ffc107;
+  color: white;
+}
+
+.title {
+  font-weight: 800;
+  color: #2d3748;
+}
+
+.btn-wishlist {
+  background: white;
+  border: 1px solid #81d8d0;
+  color: #319f9a;
+  border-radius: 6px;
+  padding: 8px 16px;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    opacity 0.2s ease;
+}
+
+.btn-wishlist:hover:not(:disabled),
+.btn-wishlist.is-wishlisted {
+  background: #81d8d0;
+  color: white;
+}
+
+.btn-wishlist:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.rating-box {
+  background: #f0fbfb;
+}
+
+.text-gold {
+  color: #ffc107;
+}

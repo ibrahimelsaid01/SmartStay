@@ -1,0 +1,194 @@
+@if (isLoading) {
+  <p>Loading...</p>
+} @else {
+
+  <div class="payment-container">
+
+    <!-- Payment Methods -->
+    <section class="section">
+
+      <div class="section-header">
+        <div>
+          <h2>Payment methods</h2>
+          <p>Add a payment method using our secure payment system, then start planning your next booking.</p>
+        </div>
+        <button class="add-btn" (click)="openModal()">Add payments method</button>
+      </div>
+
+      @for (card of paymentMethods; track card.id) {
+        <div class="payment-card">
+
+          <div class="card-info">
+            @if (card.brand === 'Visa') {
+              <img src="/Images/visa.png" alt="Visa">
+            } @else {
+              <img src="/Images/mastercard.png" alt="MasterCard">
+            }
+            <div>
+              <div class="card-name-row">
+                <h4>{{ card.brand }} .... {{ card.last4 }}</h4>
+                @if (card.isDefault) {
+                  <span class="default-badge">DEFAULT</span>
+                }
+              </div>
+              <p>Expiration: {{ card.expiry }}</p>
+            </div>
+          </div>
+
+          <div class="dropdown">
+            <button class="menu-btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+              <i class="bi bi-three-dots"></i>
+            </button>
+            <ul class="dropdown-menu">
+              @if (!card.isDefault) {
+                <li>
+                  <button class="dropdown-item" (click)="setDefault(card.id)">Set as default</button>
+                </li>
+              }
+              <li>
+                <button class="dropdown-item text-danger" (click)="deleteCard(card.id)">Delete card</button>
+              </li>
+            </ul>
+          </div>
+
+        </div>
+      }
+
+    </section>
+
+    <!-- Gift Credit -->
+    <section class="section">
+      <div class="section-header">
+        <div>
+          <h2>Gift credit</h2>
+          <p>Add gift credits to your account to enhance your travel experience.</p>
+        </div>
+        <button class="add-btn">Add gift card</button>
+      </div>
+    </section>
+
+    <!-- Coupons -->
+    <section class="section">
+      <div class="section-header">
+        <h2>Coupons</h2>
+      </div>
+      <div class="coupon-row">
+        <span>Your coupons</span>
+        <span class="coupon-count">0</span>
+      </div>
+      <button class="add-btn coupon-add-btn">Add coupons</button>
+    </section>
+
+  </div>
+
+}
+
+<!-- Modal خارج الـ @else تماماً علشان position fixed يشتغل صح -->
+@if (showModal) {
+  <div class="modal-overlay" (click)="closeModal()">
+    <div class="modal-box" (click)="$event.stopPropagation()">
+
+      <!-- Body بيتسكرول -->
+      <div class="modal-scroll-body">
+        <h2 class="modal-title">Add Payment Method</h2>
+        <p class="modal-subtitle">
+          Enter your card details to ensure a seamless booking experience.
+          Your information is encrypted and stored securely.
+        </p>
+        <form [formGroup]="paymentForm" (ngSubmit)="saveCard()">
+
+          <div class="form-field">
+            <label>Cardholder Name</label>
+            <input type="text" formControlName="cardholderName" placeholder="e.g. Ahmed Saad"
+              [class.error-input]="isFieldInvalid('cardholderName')" />
+            @if (isFieldInvalid('cardholderName')) {
+              <span class="error-msg">Cardholder name is required</span>
+            }
+          </div>
+
+          <div class="form-field">
+            <label>Card Number</label>
+            <div class="card-number-wrapper">
+              <input type="text" formControlName="cardNumber" placeholder="0000 0000 0000 0000"
+                (input)="onCardNumberInput($event)" [class.error-input]="isFieldInvalid('cardNumber')" />
+              <i class="bi bi-credit-card card-icon"></i>
+            </div>
+            @if (isFieldInvalid('cardNumber')) {
+              <span class="error-msg">Valid card number is required</span>
+            }
+          </div>
+
+          <div class="form-row">
+            <div class="form-field">
+              <label>Expiration Date</label>
+              <input type="text" formControlName="expirationDate" placeholder="MM/YY"
+                (input)="onExpiryInput($event)" [class.error-input]="isFieldInvalid('expirationDate')" />
+              @if (isFieldInvalid('expirationDate')) {
+                <span class="error-msg">Valid date required (MM/YY)</span>
+              }
+            </div>
+            <div class="form-field">
+              <label>CVV</label>
+              <input type="text" formControlName="cvv" placeholder="..."
+                (input)="onCvvInput($event)" [class.error-input]="isFieldInvalid('cvv')" />
+              @if (isFieldInvalid('cvv')) {
+                <span class="error-msg">CVV is required</span>
+              }
+            </div>
+          </div>
+
+          <h3 class="billing-title">Billing Address</h3>
+
+          <div class="form-field">
+            <label>Street address</label>
+            <input type="text" formControlName="streetAddress" placeholder="123 Luxury Avenue"
+              [class.error-input]="isFieldInvalid('streetAddress')" />
+            @if (isFieldInvalid('streetAddress')) {
+              <span class="error-msg">Street address is required</span>
+            }
+          </div>
+
+          <div class="form-row">
+            <div class="form-field">
+              <label>City</label>
+              <input type="text" formControlName="city" placeholder="Cairo"
+                [class.error-input]="isFieldInvalid('city')" />
+            </div>
+            <div class="form-field">
+              <label>State/Province</label>
+              <input type="text" formControlName="stateProvince" placeholder="Downtown"
+                [class.error-input]="isFieldInvalid('stateProvince')" />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-field">
+              <label>Zip/ Postal code</label>
+              <input type="text" formControlName="zipCode" placeholder="00000"
+                [class.error-input]="isFieldInvalid('zipCode')" />
+            </div>
+            <div class="form-field">
+              <label>Country</label>
+              <input type="text" formControlName="country" placeholder="Egypt"
+                [class.error-input]="isFieldInvalid('country')" />
+            </div>
+          </div>
+
+          <div class="save-checkbox">
+            <input type="checkbox" id="saveCard" formControlName="saveForFuture" />
+            <label for="saveCard">Save this card for future bookings</label>
+          </div>
+
+          <div class="modal-actions">
+            <button type="submit" class="save-btn" [disabled]="isSaving">
+              {{ isSaving ? 'Saving...' : 'Save Card' }}
+            </button>
+            <button type="button" class="cancel-btn" (click)="closeModal()">Cancel</button>
+          </div>
+
+        </form>
+      </div>
+
+    </div>
+  </div>
+}

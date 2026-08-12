@@ -1,0 +1,15 @@
+<div class="gallery-container">
+  <!-- الصورة الرئيسية -->
+  <div class="main-image">
+    <img [src]="images[0]?.url" alt="Main Property View">
+  </div>
+
+  <!-- شبكة الصور الفرعية -->
+  <div class="sub-images">
+    @for (img of images.slice(1, 5); track $index) {
+    <div class="sub-img">
+      <img [src]="img.url" alt="Property Detail">
+    </div>
+    }
+  </div>
+</div>

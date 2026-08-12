@@ -1,0 +1,51 @@
+<div class="chatbot-container">
+	<div class="chatbot-header">
+		<h3>🤖 SmartStay AI Assistant</h3>
+		<button class="btn-clear" (click)="clearChat()" title="Clear conversation">
+			<i class="bi bi-arrow-clockwise"></i>
+		</button>
+	</div>
+
+	<div class="messages-container" #messagesContainer>
+		@for (message of messages; track message.id) {
+		@if (!message.isLoading) {
+		<div [ngClass]="{'message': true, 'user-message': message.isUser, 'bot-message': !message.isUser}">
+			<div class="message-content">
+				@if (!message.isUser) {
+				<div class="bot-avatar">🤖</div>
+				}
+				<div class="message-text">{{ message.text }}</div>
+				@if (message.isUser) {
+				<div class="user-avatar">👤</div>
+				}
+			</div>
+			<span class="message-time">{{ message.timestamp | date: 'short' }}</span>
+		</div>
+		} @else {
+		<div class="message bot-message loading">
+			<div class="message-content">
+				<div class="bot-avatar">🤖</div>
+				<div class="typing-indicator">
+					<span></span>
+					<span></span>
+					<span></span>
+				</div>
+			</div>
+		</div>
+		}
+		}
+	</div>
+
+	<div class="input-area">
+		<div class="input-group">
+			<input type="text" class="message-input"
+				placeholder="Ask me about properties, locations, prices, or anything about SmartStay..."
+				[(ngModel)]="userMessage" (keyup.enter)="sendMessage()" [disabled]="isLoading" autocomplete="off" />
+			<button class="btn-send" (click)="sendMessage()" [disabled]="!userMessage.trim() || isLoading"
+				title="Send message">
+				<i class="bi bi-send-fill"></i>
+			</button>
+		</div>
+		<small class="hint-text">💡 Tip: Try "I'm looking for a place in Cairo for 2 guests under 2000 EGP"</small>
+	</div>
+</div>

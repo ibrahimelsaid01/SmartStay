@@ -1,0 +1,409 @@
+.reviews-page {
+  background: #ffffff;
+  border-radius: 24px;
+  padding: 28px;
+  box-shadow: 0 18px 50px rgba(15, 23, 42, 0.06);
+}
+
+.page-header,
+.details-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.page-header h2,
+.details-header h3 {
+  margin: 0 0 6px;
+  color: #172b3a;
+  font-weight: 900;
+}
+
+.page-header p,
+.details-header p {
+  margin: 0;
+  color: #64748b;
+}
+
+.refresh-btn {
+  border: 1px solid rgba(13, 172, 178, 0.25);
+  background: #f8fffd;
+  color: #0dabb2;
+  border-radius: 14px;
+  padding: 10px 14px;
+  font-weight: 800;
+}
+
+.filters-card {
+  display: grid;
+  grid-template-columns: 260px auto;
+  gap: 14px;
+  align-items: end;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  border-radius: 18px;
+  padding: 18px;
+  background: #f8fafc;
+  margin-bottom: 18px;
+}
+
+.filter-group label {
+  display: block;
+  color: #64748b;
+  font-size: 12px;
+  font-weight: 800;
+  margin-bottom: 6px;
+}
+
+.filter-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.apply-btn,
+.reset-btn {
+  border: none;
+  border-radius: 12px;
+  padding: 10px 14px;
+  font-weight: 900;
+}
+
+.apply-btn {
+  background: #0dabb2;
+  color: #ffffff;
+}
+
+.reset-btn {
+  background: #e2e8f0;
+  color: #475569;
+}
+
+.summary-row {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-bottom: 18px;
+}
+
+.summary-card {
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  border-radius: 16px;
+  padding: 14px 18px;
+  min-width: 180px;
+  background: #ffffff;
+}
+
+.summary-card span {
+  display: block;
+  color: #64748b;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.summary-card strong {
+  color: #172b3a;
+  font-size: 24px;
+  font-weight: 900;
+}
+
+.loading-state,
+.empty-state {
+  text-align: center;
+  padding: 42px 16px;
+  color: #64748b;
+  background: #f8fafc;
+  border-radius: 16px;
+  margin-bottom: 20px;
+}
+
+.empty-state i {
+  font-size: 42px;
+  color: #0dabb2;
+}
+
+.empty-state h4 {
+  color: #172b3a;
+  margin: 12px 0 6px;
+  font-weight: 900;
+}
+
+.reviews-table-wrapper {
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  border-radius: 18px;
+  overflow: hidden;
+}
+
+.table thead {
+  background: #f0fafa;
+}
+
+.table th {
+  color: #0dabb2;
+  font-size: 12px;
+  padding: 14px;
+  white-space: nowrap;
+}
+
+.table td {
+  padding: 14px;
+  color: #475569;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
+.table td strong {
+  display: block;
+  color: #172b3a;
+  font-weight: 800;
+}
+
+.property-cell,
+.author-cell {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 220px;
+}
+
+.property-cell img,
+.author-cell img {
+  width: 46px;
+  height: 46px;
+  border-radius: 14px;
+  object-fit: cover;
+  background: #e2e8f0;
+}
+
+.property-cell span,
+.author-cell span {
+  display: block;
+  color: #94a3b8;
+  font-size: 11px;
+  max-width: 190px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.rating-box {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.rating-box span {
+  color: #cbd5e1;
+  font-size: 16px;
+}
+
+.rating-box span.filled {
+  color: #f59e0b;
+}
+
+.rating-box strong {
+  margin-left: 6px;
+  font-size: 13px;
+}
+
+.status-pill {
+  display: inline-block;
+  padding: 5px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.status-pending {
+  background: #fef3c7;
+  color: #b45309;
+}
+
+.status-posted {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.status-rejected {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.status-default {
+  background: #e2e8f0;
+  color: #475569;
+}
+
+.pagination-box {
+  margin-top: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+}
+
+.pagination-box button {
+  border: none;
+  background: #0dabb2;
+  color: #ffffff;
+  border-radius: 12px;
+  padding: 9px 14px;
+  font-weight: 900;
+}
+
+.pagination-box button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.details-panel {
+  margin-top: 26px;
+  background: #ffffff;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  border-radius: 22px;
+  padding: 22px;
+  box-shadow: 0 14px 35px rgba(15, 23, 42, 0.05);
+}
+
+.details-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.details-grid div {
+  background: #f8fafc;
+  border-radius: 16px;
+  padding: 14px;
+}
+
+.details-grid span {
+  display: block;
+  color: #64748b;
+  font-size: 12px;
+  font-weight: 800;
+  margin-bottom: 6px;
+}
+
+.details-grid strong {
+  color: #172b3a;
+}
+
+.comments-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 16px;
+}
+
+.comment-card,
+.reply-card,
+.rejection-reason-box,
+.moderation-box,
+.locked-state {
+  background: #f8fafc;
+  border-radius: 16px;
+  padding: 16px;
+}
+
+.comment-card h5,
+.reply-card h5,
+.rejection-reason-box h5,
+.moderation-box h5 {
+  color: #172b3a;
+  font-weight: 900;
+  margin-bottom: 10px;
+}
+
+.comment-card p,
+.reply-card p,
+.rejection-reason-box p {
+  color: #475569;
+  line-height: 1.7;
+  margin: 0;
+}
+
+.reply-card,
+.rejection-reason-box,
+.moderation-box,
+.locked-state {
+  margin-top: 16px;
+}
+
+.reply-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.reply-header img {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: #e2e8f0;
+}
+
+.reply-header strong {
+  display: block;
+  color: #172b3a;
+}
+
+.reply-header span {
+  color: #94a3b8;
+  font-size: 12px;
+}
+
+.moderation-box {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 16px;
+}
+
+.reject-area textarea {
+  margin-bottom: 12px;
+}
+
+.approve-area p {
+  color: #64748b;
+  margin-bottom: 16px;
+}
+
+.locked-state {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #64748b;
+  font-weight: 800;
+}
+
+.locked-state i {
+  color: #0dabb2;
+}
+
+@media (max-width: 992px) {
+  .comments-grid,
+  .moderation-box {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .reviews-page {
+    padding: 18px;
+  }
+
+  .page-header,
+  .details-header {
+    flex-direction: column;
+  }
+
+  .filters-card {
+    grid-template-columns: 1fr;
+  }
+
+  .filter-actions {
+    flex-direction: column;
+  }
+}

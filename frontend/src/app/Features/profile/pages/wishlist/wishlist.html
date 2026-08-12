@@ -1,0 +1,130 @@
+<div class="wishlist-container">
+  <div class="d-flex align-items-center justify-content-between gap-3 mb-4">
+    <h4 class="fw-bold mb-0">Wish Lists</h4>
+
+    <button
+      *ngIf="!loading"
+      type="button"
+      class="btn btn-sm btn-outline-secondary"
+      (click)="loadWishlist()"
+    >
+      <i class="bi bi-arrow-clockwise me-1"></i>
+      Refresh
+    </button>
+  </div>
+
+  <div *ngIf="loading" class="text-center py-4" aria-live="polite">
+    <div class="spinner-border text-info" role="status">
+      <span class="visually-hidden">Loading your wish list...</span>
+    </div>
+
+    <p class="text-muted mt-3 mb-0">Loading your wish list...</p>
+  </div>
+
+  <div
+    *ngIf="!loading && errorMessage"
+    class="alert alert-danger d-flex align-items-center justify-content-between gap-3"
+  >
+    <span>{{ errorMessage }}</span>
+
+    <button
+      type="button"
+      class="btn btn-sm btn-outline-danger"
+      (click)="loadWishlist()"
+    >
+      Try again
+    </button>
+  </div>
+
+  <div
+    *ngIf="!loading && !errorMessage && wishlist.length === 0"
+    class="empty-state text-center py-5"
+  >
+    <i class="bi bi-heart" style="font-size: 60px; color: #ddd"></i>
+
+    <h5 class="mt-3 fw-bold">
+      You haven't added any items to your wish list yet.
+    </h5>
+
+    <p class="text-muted">
+      Start exploring and add your favorite destinations here!
+    </p>
+
+    <button
+      class="btn mt-2"
+      style="background: #4dd9d5; color: white"
+      routerLink="/all-stays"
+    >
+      <i class="bi bi-search me-2"></i>
+      Start searching
+    </button>
+  </div>
+
+  <div
+    *ngIf="!loading && !errorMessage && wishlist.length > 0"
+    class="row g-4"
+  >
+    <div
+      class="col-md-6 col-lg-4"
+      *ngFor="let item of wishlist; trackBy: trackWishlistItem"
+    >
+      <div class="wishlist-card p-3 rounded-3 border position-relative h-100">
+        <a [routerLink]="['/property-details', item.propertyId]">
+          <img
+            [src]="item.coverImageUrl || 'Images/section1.jpg'"
+            class="w-100 rounded-3 mb-3"
+            style="height: 180px; object-fit: cover"
+            [alt]="item.title"
+          />
+        </a>
+
+        <button
+          type="button"
+          class="btn-remove position-absolute top-0 end-0 m-2"
+          [disabled]="isRemoving(item.propertyId)"
+          (click)="removeFromWishlist(item.propertyId)"
+          [attr.aria-label]="
+            isRemoving(item.propertyId)
+              ? 'Removing from wishlist'
+              : 'Remove from wishlist'
+          "
+        >
+          <span
+            *ngIf="isRemoving(item.propertyId)"
+            class="spinner-border spinner-border-sm text-danger"
+            aria-hidden="true"
+          ></span>
+
+          <i
+            *ngIf="!isRemoving(item.propertyId)"
+            class="bi bi-heart-fill text-danger"
+          ></i>
+        </button>
+
+        <h6 class="fw-bold mb-1">
+          <a
+            [routerLink]="['/property-details', item.propertyId]"
+            class="text-decoration-none text-dark"
+          >
+            {{ item.title }}
+          </a>
+        </h6>
+
+        <p class="text-muted small mb-1">
+          {{ item.city }}, {{ item.country }}
+        </p>
+
+        <p class="text-muted small mb-1">
+          <i class="bi bi-star-fill text-warning me-1"></i>
+          {{ item.averageRating || 0 }} ·
+          {{ item.reviewsCount || 0 }} reviews
+        </p>
+
+        <p class="fw-bold mb-0" style="color: #4dd9d5">
+          {{ item.pricePerNight || 0 }}
+          {{ item.currency || 'EGP' }} / night
+        </p>
+      </div>
+    </div>
+  </div>
+</div>

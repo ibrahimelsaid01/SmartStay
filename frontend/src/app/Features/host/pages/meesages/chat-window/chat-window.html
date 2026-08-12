@@ -1,0 +1,198 @@
+<div class="chat-card-base">
+  @if (chatService.activeThread(); as thread) {
+    <div
+      class="p-3 border-bottom d-flex justify-content-between align-items-center bg-white flex-shrink-0"
+    >
+      <div class="d-flex align-items-center gap-2">
+        <button
+          type="button"
+          class="btn btn-light btn-sm rounded-circle d-lg-none me-1"
+          aria-label="Back to conversations"
+          (click)="chatService.clearActiveThread()"
+        >
+          <i class="bi bi-arrow-left fs-5"></i>
+        </button>
+
+        <img
+          #headerAvatar
+          [src]="thread.avatar || '/Images/default-avatar.png'"
+          [alt]="thread.name + ' profile image'"
+          class="rounded-circle"
+          style="
+            width: 40px;
+            height: 40px;
+            object-fit: cover;
+          "
+          (error)="headerAvatar.src = '/Images/default-avatar.png'"
+        >
+
+        <div>
+          <h6 class="mb-0 fw-bold text-dark small">
+            {{ thread.name }}
+          </h6>
+
+          <span class="x-small text-muted d-flex align-items-center gap-1">
+            <span
+              class="rounded-circle d-inline-block"
+              [ngClass]="
+                thread.status === 'Online now'
+                  ? 'bg-success'
+                  : 'bg-secondary'
+              "
+              style="width: 7px; height: 7px;"
+              aria-hidden="true"
+            ></span>
+
+            {{ thread.status }}
+            •
+            {{ thread.propertyName }}
+          </span>
+        </div>
+      </div>
+
+      <div class="d-flex align-items-center gap-1">
+        <button
+          type="button"
+          class="btn btn-light btn-sm rounded-circle d-lg-none"
+          aria-label="View reservation details"
+          (click)="chatService.isMobileDetailsOpen.set(true)"
+        >
+          <i class="bi bi-info-circle fs-5"></i>
+        </button>
+
+        <button
+          type="button"
+          class="btn btn-light btn-sm rounded-circle"
+          aria-label="Conversation options"
+        >
+          <i class="bi bi-three-dots-vertical"></i>
+        </button>
+      </div>
+    </div>
+
+    <div
+      #scrollContainer
+      class="bg-messages-area flex-grow-1"
+    >
+      <div class="text-center my-3">
+        <span
+          class="badge bg-light text-muted fw-normal x-small px-3 py-1.5 rounded-pill shadow-sm"
+        >
+          Today, Oct 10
+        </span>
+      </div>
+
+      @for (
+        msg of chatService.activeMessages();
+        track msg.id
+      ) {
+        <div
+          class="d-flex flex-column mb-3"
+          [ngClass]="
+            msg.isMe
+              ? 'align-items-end'
+              : 'align-items-start'
+          "
+        >
+          <div
+            class="d-flex align-items-end gap-2"
+            style="max-width: 80%;"
+          >
+            @if (!msg.isMe) {
+              <img
+                #messageAvatar
+                [src]="thread.avatar || '/Images/default-avatar.png'"
+                [alt]="thread.name + ' profile image'"
+                class="rounded-circle mb-1"
+                style="
+                  width: 28px;
+                  height: 28px;
+                  object-fit: cover;
+                "
+                (error)="messageAvatar.src = '/Images/default-avatar.png'"
+              >
+            }
+
+            <div
+              class="bubble p-3 rounded-4 shadow-sm"
+              [ngClass]="
+                msg.isMe
+                  ? 'bg-my-bubble text-white'
+                  : 'bg-guest-bubble text-dark'
+              "
+            >
+              <p class="mb-0 small lh-base">
+                {{ msg.text }}
+              </p>
+            </div>
+          </div>
+
+          <span class="text-muted x-small mt-1 px-2">
+            {{ msg.timestamp }}
+
+            @if (msg.isMe) {
+              <i
+                class="bi bi-check2-all text-success ms-1"
+                aria-label="Message delivered"
+              ></i>
+            }
+          </span>
+        </div>
+      }
+    </div>
+
+    <div class="input-area-footer">
+      <form
+        class="d-flex align-items-center gap-2 bg-light p-2 rounded-4 border"
+        (ngSubmit)="onSend()"
+      >
+        <button
+          type="button"
+          class="btn btn-link text-muted p-1"
+          aria-label="Attach file"
+          (click)="fileInput.click()"
+        >
+          <i class="bi bi-paperclip fs-5"></i>
+        </button>
+
+        <input
+          #fileInput
+          type="file"
+          class="d-none"
+          (change)="onFileSelected($event)"
+        >
+
+        <input
+          type="text"
+          class="form-control border-0 bg-transparent shadow-none small flex-grow-1"
+          placeholder="Type your message..."
+          [ngModel]="typedMessage()"
+          (ngModelChange)="typedMessage.set($event)"
+          name="messageText"
+        >
+
+        <button
+          type="submit"
+          class="btn btn-send rounded-3 d-flex align-items-center justify-content-center p-2.5"
+          aria-label="Send message"
+          [disabled]="!typedMessage().trim()"
+        >
+          <i class="bi bi-send-fill text-white small"></i>
+        </button>
+      </form>
+    </div>
+  } @else {
+    <div
+      class="h-100 d-flex flex-column align-items-center justify-content-center text-muted p-4"
+    >
+      <i
+        class="bi bi-chat-dots fs-1 mb-2 text-secondary opacity-50"
+        aria-hidden="true"
+      ></i>
+
+      <p class="small">
+        Select a conversation to start messaging
+      </p>
+    </div>
+  }
+</div>

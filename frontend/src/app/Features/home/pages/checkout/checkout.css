@@ -1,0 +1,191 @@
+.checkout-page {
+  min-height: calc(100vh - 180px);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 120px 16px 80px;
+  background: #f8fafc;
+}
+
+.checkout-card {
+  width: 100%;
+  max-width: 560px;
+  padding: 28px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 22px;
+  box-shadow: 0 20px 60px rgba(15, 23, 42, 0.08);
+}
+
+.checkout-title {
+  margin: 0 0 8px;
+  color: #0f172a;
+  font-size: 28px;
+  font-weight: 800;
+}
+
+.checkout-subtitle {
+  margin: 0 0 22px;
+  color: #64748b;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.payment-summary {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.payment-summary > div {
+  padding: 14px;
+  background: #f1f5f9;
+  border-radius: 14px;
+}
+
+.summary-label {
+  display: block;
+  margin-bottom: 4px;
+  color: #64748b;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.payment-deadline {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 18px;
+  padding: 14px 16px;
+  color: #0f766e;
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  border-radius: 14px;
+}
+
+.payment-deadline > i {
+  flex: 0 0 auto;
+  font-size: 24px;
+}
+
+.payment-deadline > div {
+  display: grid;
+  min-width: 0;
+  gap: 2px;
+}
+
+.deadline-label {
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.deadline-countdown {
+  font-size: 24px;
+  line-height: 1.1;
+  letter-spacing: 0.04em;
+}
+
+.payment-deadline small {
+  color: inherit;
+  opacity: 0.82;
+}
+
+.payment-deadline.is-urgent {
+  color: #92400e;
+  background: #fffbeb;
+  border-color: #fde68a;
+}
+
+.payment-deadline.is-expired {
+  color: #991b1b;
+  background: #fef2f2;
+  border-color: #fecaca;
+}
+
+.payment-loading-box {
+  margin-bottom: 14px;
+  padding: 14px;
+  color: #475569;
+  background: #f1f5f9;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.stripe-payment-element {
+  min-height: 90px;
+  margin-bottom: 18px;
+  padding: 16px;
+  background: #ffffff;
+  border: 1px solid #dbeafe;
+  border-radius: 16px;
+}
+
+.stripe-payment-element.is-hidden {
+  display: none;
+}
+
+.pay-button {
+  width: 100%;
+  padding: 14px 18px;
+  color: #ffffff;
+  background: #2ec4bd;
+  border: 0;
+  border-radius: 14px;
+  font-weight: 800;
+  transition:
+    background-color 0.2s ease,
+    opacity 0.2s ease;
+}
+
+.pay-button:hover:not(:disabled) {
+  background: #0faaa3;
+}
+
+.pay-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
+.retry-button,
+.bookings-button {
+  margin-bottom: 12px;
+  background: #0f172a;
+}
+
+.retry-button:hover:not(:disabled),
+.bookings-button:hover:not(:disabled) {
+  background: #1e293b;
+}
+
+.secure-note {
+  margin: 16px 0 0;
+  color: #64748b;
+  font-size: 12px;
+  line-height: 1.5;
+  text-align: center;
+}
+
+@media (max-width: 575.98px) {
+  .checkout-page {
+    padding: 96px 12px 48px;
+  }
+
+  .checkout-card {
+    padding: 22px 18px;
+    border-radius: 18px;
+  }
+
+  .checkout-title {
+    font-size: 24px;
+  }
+
+  .payment-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .deadline-countdown {
+    font-size: 21px;
+  }
+}

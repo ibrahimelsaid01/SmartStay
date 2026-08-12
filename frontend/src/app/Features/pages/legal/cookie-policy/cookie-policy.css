@@ -1,0 +1,66 @@
+.page-container {
+  background-color: #fcfdfe;
+}
+
+.brand-color {
+  color: #3ec3c6 !important;
+}
+
+.btn-brand {
+  background-color: #3ec3c6 !important;
+  border-color: #3ec3c6 !important;
+  font-size: 0.85rem;
+  transition: all 0.2s ease;
+}
+.btn-brand:hover {
+  background-color: #35b0b3 !important;
+  transform: translateY(-1px);
+}
+
+.btn-outline-light-custom {
+  background-color: #ffffff !important;
+  border-color: #e2e8f0 !important;
+  font-size: 0.85rem;
+  transition: all 0.2s ease;
+}
+.btn-outline-light-custom:hover {
+  background-color: #f8fafc !important;
+  border-color: #cbd5e1 !important;
+}
+
+.policy-card {
+  border: none !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.015) !important;
+}
+
+.icon-box {
+  width: 40px;
+  height: 40px;
+  background-color: #dbf4f5 !important;
+  color: #3ec3c6 !important;
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+.inner-gray-card {
+  background-color: #f8fafb !important;
+  border: 1px solid rgba(0, 0, 0, 0.01);
+}
+
+.inner-banner {
+  background-color: #f4fafb !important;
+  border: 1px solid rgba(62, 195, 198, 0.05);
+}
+
+.sub-title {
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+}
+
+.leading-relaxed {
+  line-height: 1.65;
+}
+
+.shrink-0 {
+  flex-shrink: 0;
+}

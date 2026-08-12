@@ -1,0 +1,769 @@
+<section class="user-management-page">
+  <div class="page-header">
+    <div>
+      <h2>User Management</h2>
+      <p>
+        View platform users, roles, account status, activity counts, and booking
+        restrictions.
+      </p>
+    </div>
+
+    <button
+      type="button"
+      class="refresh-btn"
+      (click)="loadUsers()"
+      [disabled]="loading"
+    >
+      <i class="bi bi-arrow-clockwise"></i>
+      Refresh
+    </button>
+  </div>
+
+  <div *ngIf="errorMessage" class="alert alert-danger py-2">
+    {{ errorMessage }}
+  </div>
+
+  <div *ngIf="successMessage" class="alert alert-success py-2">
+    {{ successMessage }}
+  </div>
+
+  <div class="filters-card">
+    <div class="filter-group search-group">
+      <label>Search</label>
+
+      <input
+        type="text"
+        class="form-control"
+        placeholder="Search by name or email..."
+        [(ngModel)]="search"
+        (keyup.enter)="applyFilters()"
+      />
+    </div>
+
+    <div class="filter-group">
+      <label>Role</label>
+
+      <select class="form-select" [(ngModel)]="role">
+        <option value="">All roles</option>
+        <option value="Admin">Admin</option>
+        <option value="Host">Host</option>
+        <option value="User">User</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label>Status</label>
+
+      <select class="form-select" [(ngModel)]="isActive">
+        <option value="all">All</option>
+        <option value="true">Active</option>
+        <option value="false">Inactive</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label>Profile</label>
+
+      <select class="form-select" [(ngModel)]="isProfileCompleted">
+        <option value="all">All</option>
+        <option value="true">Completed</option>
+        <option value="false">Incomplete</option>
+      </select>
+    </div>
+
+    <div class="filter-actions">
+      <button
+        type="button"
+        class="apply-btn"
+        (click)="applyFilters()"
+      >
+        Apply
+      </button>
+
+      <button
+        type="button"
+        class="reset-btn"
+        (click)="resetFilters()"
+      >
+        Reset
+      </button>
+    </div>
+  </div>
+
+  <div class="summary-row">
+    <div class="summary-card">
+      <span>Total Users</span>
+      <strong>{{ totalCount }}</strong>
+    </div>
+
+    <div class="summary-card">
+      <span>Current Page</span>
+      <strong>{{ page }} / {{ totalPages }}</strong>
+    </div>
+  </div>
+
+  <div *ngIf="loading" class="loading-state">
+    <div
+      class="spinner-border"
+      style="color: #4dd9d5"
+    ></div>
+
+    <p class="text-muted small mt-3 mb-0">
+      Loading users...
+    </p>
+  </div>
+
+  <div
+    *ngIf="!loading && users.length === 0"
+    class="empty-state"
+  >
+    <i class="bi bi-people"></i>
+    <h4>No users found</h4>
+    <p>Try changing your filters.</p>
+  </div>
+
+  <div
+    *ngIf="!loading && users.length > 0"
+    class="table-responsive users-table-wrapper"
+  >
+    <table class="table table-hover align-middle mb-0">
+      <thead>
+        <tr>
+          <th>User</th>
+          <th>Email</th>
+          <th>Phone</th>
+          <th>Roles</th>
+          <th>Status</th>
+          <th>Profile</th>
+          <th>Host Status</th>
+          <th>Properties</th>
+          <th>Bookings</th>
+          <th>Created</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let user of users">
+          <td>
+            <div class="user-cell">
+              <img
+                [src]="user.profileImageUrl || 'Images/default-avatar.png'"
+                alt="avatar"
+              />
+
+              <div>
+                <strong>
+                  {{ user.fullName || 'Unnamed user' }}
+                </strong>
+
+                <span>{{ user.userId }}</span>
+              </div>
+            </div>
+          </td>
+
+          <td>
+            {{ user.email || '—' }}
+          </td>
+
+          <td>
+            {{ user.phoneNumber || '—' }}
+          </td>
+
+          <td>
+            <div class="roles-list">
+              <span
+                *ngFor="let role of user.roles"
+                class="role-pill"
+                [ngClass]="getRoleBadgeClass(role)"
+              >
+                {{ role }}
+              </span>
+            </div>
+          </td>
+
+          <td>
+            <span
+              class="status-pill"
+              [class.active]="user.isActive"
+              [class.inactive]="!user.isActive"
+            >
+              {{ user.isActive ? 'Active' : 'Inactive' }}
+            </span>
+          </td>
+
+          <td>
+            <span
+              class="profile-pill"
+              [class.completed]="user.isProfileCompleted"
+              [class.incomplete]="!user.isProfileCompleted"
+            >
+              {{ user.isProfileCompleted ? 'Completed' : 'Incomplete' }}
+            </span>
+          </td>
+
+          <td>
+            {{ user.hostStatus || (user.isHost ? 'Host' : '—') }}
+          </td>
+
+          <td>
+            {{ user.propertiesCount }}
+          </td>
+
+          <td>
+            {{ user.guestBookingsCount }}
+          </td>
+
+          <td>
+            {{ user.createdAt | date: 'MMM d, y' }}
+          </td>
+
+          <td>
+            <div class="actions-cell">
+              <button
+                type="button"
+                class="status-action-btn"
+                [class.deactivate]="user.isActive"
+                [class.activate]="!user.isActive"
+                (click)="toggleUserStatus(user)"
+                [disabled]="actionLoadingId === user.userId"
+              >
+                {{
+                  actionLoadingId === user.userId
+                    ? 'Saving...'
+                    : user.isActive
+                      ? 'Deactivate'
+                      : 'Activate'
+                }}
+              </button>
+
+              <button
+                type="button"
+                class="restriction-action-btn"
+                (click)="openRestrictionsPanel(user)"
+                [disabled]="
+                  restrictionsLoading &&
+                  selectedUser?.userId === user.userId
+                "
+              >
+                Restrictions
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div
+    *ngIf="totalPages > 1"
+    class="pagination-box"
+  >
+    <button
+      type="button"
+      (click)="goToPreviousPage()"
+      [disabled]="page <= 1 || loading"
+    >
+      Previous
+    </button>
+
+    <span>
+      Page {{ page }} of {{ totalPages }}
+    </span>
+
+    <button
+      type="button"
+      (click)="goToNextPage()"
+      [disabled]="page >= totalPages || loading"
+    >
+      Next
+    </button>
+  </div>
+
+  <section
+    *ngIf="selectedUser"
+    class="restrictions-panel"
+  >
+    <div class="restrictions-header">
+      <div>
+        <h3>Booking Restrictions</h3>
+
+        <p>
+          {{ selectedUser.fullName || 'Unnamed user' }}
+          ·
+          {{ selectedUser.email || 'No email' }}
+        </p>
+      </div>
+
+      <button
+        type="button"
+        class="btn btn-sm btn-outline-secondary"
+        (click)="closeRestrictionsPanel()"
+      >
+        Close
+      </button>
+    </div>
+
+    <div
+      *ngIf="restrictionsErrorMessage"
+      class="alert alert-danger py-2"
+    >
+      {{ restrictionsErrorMessage }}
+    </div>
+
+    <div
+      *ngIf="restrictionsSuccessMessage"
+      class="alert alert-success py-2"
+    >
+      {{ restrictionsSuccessMessage }}
+    </div>
+
+    <div
+      *ngIf="restrictionsLoading"
+      class="loading-state compact-loading"
+    >
+      <div
+        class="spinner-border spinner-border-sm"
+        style="color: #4dd9d5"
+      ></div>
+
+      <span class="ms-2">
+        Loading restrictions...
+      </span>
+    </div>
+
+    <ng-container *ngIf="!restrictionsLoading">
+      <div class="active-restriction-box">
+        <h4>Active restriction</h4>
+
+        <div
+          *ngIf="!activeRestriction"
+          class="empty-restriction"
+        >
+          <i class="bi bi-check-circle"></i>
+
+          <div>
+            <strong>No active booking restriction</strong>
+
+            <p>
+              This user can create bookings normally.
+            </p>
+          </div>
+        </div>
+
+        <div
+          *ngIf="activeRestriction"
+          class="restriction-card active-card"
+        >
+          <div class="restriction-card-header">
+            <span
+              class="restriction-type-pill"
+              [ngClass]="
+                getRestrictionTypeClass(activeRestriction.type)
+              "
+            >
+              {{
+                getRestrictionTypeLabel(activeRestriction.type)
+              }}
+            </span>
+
+            <span
+              class="restriction-status-pill"
+              [ngClass]="
+                getRestrictionStatusClass(activeRestriction.status)
+              "
+            >
+              {{
+                getRestrictionStatusLabel(activeRestriction.status)
+              }}
+            </span>
+          </div>
+
+          <p class="restriction-reason">
+            {{ activeRestriction.reason }}
+          </p>
+
+          <div class="restriction-meta-grid">
+            <div>
+              <span>Cancellation count</span>
+
+              <strong>
+                {{ activeRestriction.cancellationCountSnapshot }}
+              </strong>
+            </div>
+
+            <div>
+              <span>Restricted from</span>
+
+              <strong>
+                {{
+                  activeRestriction.restrictedFrom
+                    | date: 'medium'
+                }}
+              </strong>
+            </div>
+
+            <div>
+              <span>Restricted until</span>
+
+              <strong>
+                {{
+                  activeRestriction.restrictedUntil
+                    ? (
+                        activeRestriction.restrictedUntil
+                        | date: 'medium'
+                      )
+                    : 'No end date'
+                }}
+              </strong>
+            </div>
+
+            <div>
+              <span>Created by system</span>
+
+              <strong>
+                {{
+                  activeRestriction.createdBySystem
+                    ? 'Yes'
+                    : 'No'
+                }}
+              </strong>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="history-box">
+        <h4>Restriction history</h4>
+
+        <div
+          *ngIf="userRestrictions.length === 0"
+          class="empty-restriction"
+        >
+          <i class="bi bi-journal-x"></i>
+
+          <div>
+            <strong>No restriction history</strong>
+
+            <p>
+              This user has not triggered booking restrictions yet.
+            </p>
+          </div>
+        </div>
+
+        <div
+          *ngIf="userRestrictions.length > 0"
+          class="restrictions-list"
+        >
+          <article
+            *ngFor="let restriction of userRestrictions"
+            class="restriction-card"
+          >
+            <div class="restriction-card-header">
+              <div class="d-flex flex-wrap gap-2">
+                <span
+                  class="restriction-type-pill"
+                  [ngClass]="
+                    getRestrictionTypeClass(restriction.type)
+                  "
+                >
+                  {{
+                    getRestrictionTypeLabel(restriction.type)
+                  }}
+                </span>
+
+                <span
+                  class="restriction-status-pill"
+                  [ngClass]="
+                    getRestrictionStatusClass(restriction.status)
+                  "
+                >
+                  {{
+                    getRestrictionStatusLabel(restriction.status)
+                  }}
+                </span>
+              </div>
+
+              <span class="restriction-date">
+                {{
+                  restriction.createdAt
+                    | date: 'mediumDate'
+                }}
+              </span>
+            </div>
+
+            <p class="restriction-reason">
+              {{ restriction.reason }}
+            </p>
+
+            <div class="restriction-meta-grid">
+              <div>
+                <span>Cancellation count</span>
+
+                <strong>
+                  {{ restriction.cancellationCountSnapshot }}
+                </strong>
+              </div>
+
+              <div>
+                <span>From</span>
+
+                <strong>
+                  {{
+                    restriction.restrictedFrom
+                      | date: 'medium'
+                  }}
+                </strong>
+              </div>
+
+              <div>
+                <span>Until</span>
+
+                <strong>
+                  {{
+                    restriction.restrictedUntil
+                      ? (
+                          restriction.restrictedUntil
+                          | date: 'medium'
+                        )
+                      : '—'
+                  }}
+                </strong>
+              </div>
+
+              <div>
+                <span>Removed at</span>
+
+                <strong>
+                  {{
+                    restriction.removedAt
+                      ? (
+                          restriction.removedAt
+                          | date: 'medium'
+                        )
+                      : '—'
+                  }}
+                </strong>
+              </div>
+            </div>
+
+            <div
+              *ngIf="restriction.removalNote"
+              class="removal-note-box"
+            >
+              <span>Removal note</span>
+
+              <p>
+                {{ restriction.removalNote }}
+              </p>
+            </div>
+
+            <div
+              *ngIf="canApplyTemporarySuspension(restriction)"
+              class="temporary-suspension-decision-box"
+            >
+              <div class="temporary-suspension-decision-header">
+                <div>
+                  <span>Admin review decision</span>
+
+                  <p>
+                    Review the cancellation history before applying
+                    a temporary booking suspension. No permanent
+                    suspension is applied here.
+                  </p>
+                </div>
+
+                <button
+                  *ngIf="
+                    !isTemporarySuspensionFormOpen(restriction)
+                  "
+                  type="button"
+                  class="open-suspension-form-btn"
+                  (click)="
+                    openTemporarySuspensionForm(restriction)
+                  "
+                  [disabled]="
+                    restrictionActionLoadingId ===
+                    getRestrictionId(restriction)
+                  "
+                >
+                  Apply Temporary Suspension
+                </button>
+              </div>
+
+              <div
+                *ngIf="
+                  isTemporarySuspensionFormOpen(restriction)
+                "
+                class="temporary-suspension-form"
+              >
+                <div
+                  class="temporary-suspension-field duration-field"
+                >
+                  <label
+                    [for]="
+                      'suspension-duration-' +
+                      getRestrictionId(restriction)
+                    "
+                  >
+                    Suspension duration
+                  </label>
+
+                  <div class="duration-input-group">
+                    <input
+                      [id]="
+                        'suspension-duration-' +
+                        getRestrictionId(restriction)
+                      "
+                      type="number"
+                      class="form-control"
+                      min="1"
+                      max="90"
+                      step="1"
+                      [(ngModel)]="
+                        temporarySuspensionDurationDays
+                      "
+                      [disabled]="
+                        restrictionActionLoadingId ===
+                        getRestrictionId(restriction)
+                      "
+                    />
+
+                    <span>days</span>
+                  </div>
+
+                  <small>
+                    Choose a whole number between 1 and 90 days.
+                  </small>
+                </div>
+
+                <div
+                  class="temporary-suspension-field reason-field"
+                >
+                  <label
+                    [for]="
+                      'suspension-reason-' +
+                      getRestrictionId(restriction)
+                    "
+                  >
+                    Decision reason
+                  </label>
+
+                  <textarea
+                    [id]="
+                      'suspension-reason-' +
+                      getRestrictionId(restriction)
+                    "
+                    class="form-control"
+                    rows="4"
+                    maxlength="1000"
+                    placeholder="Explain why a temporary booking suspension is necessary..."
+                    [(ngModel)]="temporarySuspensionReason"
+                    [disabled]="
+                      restrictionActionLoadingId ===
+                      getRestrictionId(restriction)
+                    "
+                  ></textarea>
+
+                  <div
+                    class="temporary-suspension-field-footer"
+                  >
+                    <small>
+                      Minimum 10 characters.
+                    </small>
+
+                    <small>
+                      {{ temporarySuspensionReason.length }}
+                      / 1000
+                    </small>
+                  </div>
+                </div>
+
+                <div
+                  class="temporary-suspension-form-actions"
+                >
+                  <button
+                    type="button"
+                    class="cancel-suspension-btn"
+                    (click)="closeTemporarySuspensionForm()"
+                    [disabled]="
+                      restrictionActionLoadingId ===
+                      getRestrictionId(restriction)
+                    "
+                  >
+                    Cancel
+                  </button>
+
+                  <button
+                    type="button"
+                    class="confirm-suspension-btn"
+                    (click)="
+                      applyTemporaryBookingRestriction(
+                        restriction
+                      )
+                    "
+                    [disabled]="
+                      restrictionActionLoadingId ===
+                        getRestrictionId(restriction) ||
+                      temporarySuspensionDurationDays < 1 ||
+                      temporarySuspensionDurationDays > 90 ||
+                      temporarySuspensionReason.trim().length < 10
+                    "
+                  >
+                    {{
+                      restrictionActionLoadingId ===
+                      getRestrictionId(restriction)
+                        ? 'Applying...'
+                        : 'Confirm Temporary Suspension'
+                    }}
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div
+              *ngIf="canRemoveRestriction(restriction)"
+              class="remove-restriction-box"
+            >
+              <label>Removal note</label>
+
+              <textarea
+                class="form-control"
+                rows="3"
+                placeholder="Explain why this restriction is being removed..."
+                [(ngModel)]="
+                  restrictionRemovalNotes[
+                    getRestrictionId(restriction)
+                  ]
+                "
+              ></textarea>
+
+              <button
+                type="button"
+                class="remove-restriction-btn"
+                (click)="removeRestriction(restriction)"
+                [disabled]="
+                  restrictionActionLoadingId ===
+                    getRestrictionId(restriction) ||
+                  !restrictionRemovalNotes[
+                    getRestrictionId(restriction)
+                  ] ||
+                  restrictionRemovalNotes[
+                    getRestrictionId(restriction)
+                  ].trim().length < 5
+                "
+              >
+                {{
+                  restrictionActionLoadingId ===
+                  getRestrictionId(restriction)
+                    ? 'Removing...'
+                    : 'Remove Restriction'
+                }}
+              </button>
+            </div>
+          </article>
+        </div>
+      </div>
+    </ng-container>
+  </section>
+</section>

@@ -1,0 +1,105 @@
+.page-container {
+  background-color: #fcfdfe;
+}
+
+.brand-color {
+  color: #3ec3c6 !important;
+}
+
+/* البادج اللي فوق */
+.always-available-badge {
+  background-color: #dbf4f5 !important;
+  color: #3ec3c6 !important;
+  font-size: 0.7rem;
+  letter-spacing: 0.05em;
+}
+
+/* تنسيق الـ Inputs الهادي جداً نفس الصورة */
+.custom-input {
+  background-color: #f8fafc !important;
+  border: 1px solid rgba(0, 0, 0, 0.01) !important;
+  color: #334155 !important;
+  font-size: 0.9rem;
+}
+.custom-input:focus {
+  background-color: #ffffff !important;
+  border-color: #3ec3c6 !important;
+  box-shadow: 0 0 0 3px rgba(62, 195, 198, 0.15) !important;
+}
+
+/* الزرار الرئيسي */
+.btn-brand {
+  background-color: #3ec3c6 !important;
+  border: none !important;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+}
+.btn-brand:hover {
+  background-color: #34b3b6 !important;
+  transform: translateY(-1px);
+}
+
+/* كروت الدعم اللي على اليمين */
+.support-card {
+  background-color: #f4fafb !important;
+  border: 1px solid rgba(62, 195, 198, 0.03) !important;
+}
+
+.support-icon-box {
+  width: 46px;
+  height: 46px;
+  background-color: #ffffff !important;
+  color: #3ec3c6 !important;
+  font-size: 1.1rem;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.02);
+  flex-shrink: 0;
+}
+
+/* النقطة الخضراء اللي بتنور في الـ Live Chat */
+.status-dot {
+  width: 8px;
+  height: 8px;
+  background-color: #10b981;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+/* بنر السيربرايز اللبني العريض تحت */
+.subscribe-banner {
+  background-color: #3ec3c6 !important;
+}
+
+.footer-input {
+  background-color: rgba(255, 255, 255, 1) !important;
+  border: none !important;
+  font-size: 0.9rem;
+  color: #334155 !important;
+}
+.footer-input::placeholder {
+  color: #94a3b8;
+}
+
+/* زرار Subscribe الأبيض */
+.btn-white-action {
+  background-color: #ffffff !important;
+  color: #3ec3c6 !important;
+  border: none !important;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+}
+.btn-white-action:hover {
+  background-color: #f8fafc !important;
+  transform: translateY(-1px);
+}
+
+.leading-relaxed {
+  line-height: 1.6;
+}
+
+.max-w-text {
+  max-w: 550px;
+}
+
+.shrink-0 {
+  flex-shrink: 0;
+}

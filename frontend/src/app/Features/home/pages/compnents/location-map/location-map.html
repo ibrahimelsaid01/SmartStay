@@ -1,0 +1,125 @@
+<section
+  class="location-map"
+  [attr.aria-label]="sectionTitle"
+>
+  <div class="location-map__header">
+    <div>
+      <p class="location-map__eyebrow">
+        Property location
+      </p>
+
+      <h2 class="location-map__title">
+        {{ sectionTitle }}
+      </h2>
+
+      <p class="location-map__address">
+        {{ displayAddress }}
+      </p>
+    </div>
+  </div>
+
+  @if (mapUrl; as safeMapUrl) {
+    <div class="location-map__frame">
+      @if (isMapLoading) {
+        <div
+          class="location-map__loading"
+          role="status"
+          aria-live="polite"
+        >
+          <span
+            class="location-map__spinner"
+            aria-hidden="true"
+          ></span>
+
+          <span>
+            Loading map...
+          </span>
+        </div>
+      }
+
+      <iframe
+        class="location-map__iframe"
+        [src]="safeMapUrl"
+        [title]="mapTitle"
+        loading="lazy"
+        referrerpolicy="strict-origin-when-cross-origin"
+        (load)="onMapLoaded()"
+      ></iframe>
+
+      <a
+        class="location-map__click-target"
+        [href]="openMapUrl"
+        target="_blank"
+        rel="noopener noreferrer"
+        [attr.aria-label]="'Open map for ' + displayAddress"
+      >
+        <span class="location-map__click-hint">
+          Click map to open
+
+          <span aria-hidden="true">
+            ↗
+          </span>
+        </span>
+      </a>
+    </div>
+
+    <div class="location-map__actions">
+      <a
+        class="location-map__open-button"
+        [href]="openMapUrl"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <span>
+          Open map
+        </span>
+
+        <span aria-hidden="true">
+          ↗
+        </span>
+      </a>
+
+      <p class="location-map__provider">
+        Map data © OpenStreetMap contributors
+      </p>
+    </div>
+  } @else {
+    <div
+      class="location-map__empty"
+      role="status"
+    >
+      <svg
+        class="location-map__empty-icon"
+        viewBox="0 0 24 24"
+        fill="none"
+        aria-hidden="true"
+      >
+        <path
+          d="M12 21s7-5.4 7-12a7 7 0 1 0-14 0c0 6.6 7 12 7 12Z"
+          stroke="currentColor"
+          stroke-width="1.7"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+
+        <circle
+          cx="12"
+          cy="9"
+          r="2.25"
+          stroke="currentColor"
+          stroke-width="1.7"
+        />
+      </svg>
+
+      <div>
+        <h3>
+          Location map unavailable
+        </h3>
+
+        <p>
+          This property does not currently have valid map coordinates.
+        </p>
+      </div>
+    </div>
+  }
+</section>

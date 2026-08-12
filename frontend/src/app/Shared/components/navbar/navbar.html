@@ -1,0 +1,796 @@
+<nav class="navbar navbar-expand-lg navbar-dark smart-navbar">
+  <div
+    class="container-fluid container-capsule position-relative d-flex align-items-center justify-content-between"
+  >
+    <a class="navbar-brand fw-bold brand-text" routerLink="/">
+      Smart Stay
+    </a>
+
+    <!-- Center Properties Button: Desktop -->
+    <div
+      class="position-absolute top-50 start-50 translate-middle d-none d-xl-flex align-items-center justify-content-center"
+    >
+      <a
+        class="btn btn-outline-info rounded-pill px-4 py-2 fw-semibold text-decoration-none"
+        routerLink="/"
+        fragment="properties-section"
+        aria-label="Go to properties section"
+      >
+        <i
+          class="bi bi-buildings me-2"
+          aria-hidden="true"
+        ></i>
+
+        Properties
+      </a>
+    </div>
+
+    <div
+      class="d-flex align-items-center gap-2 order-lg-3 mobile-actions-wrapper"
+    >
+      @if (profileService.isAuthenticated()) {
+        @if (profileService.currentUser(); as currentUser) {
+          <div class="dropdown notifications-dropdown">
+            <button
+              class="btn p-0 border-0 notifications-trigger"
+              type="button"
+              data-bs-toggle="dropdown"
+              data-bs-auto-close="outside"
+              aria-expanded="false"
+              aria-label="Open notifications"
+              (click)="openNotificationsDropdown()"
+            >
+              <i class="bi bi-bell"></i>
+
+              @if (unreadNotificationsCountLoading) {
+                <span
+                  class="spinner-border spinner-border-sm notifications-count-loading"
+                  aria-hidden="true"
+                ></span>
+              } @else if (unreadNotificationsCount > 0) {
+                <span class="notifications-count-badge">
+                  {{
+                    unreadNotificationsCount > 99
+                      ? '99+'
+                      : unreadNotificationsCount
+                  }}
+                </span>
+              }
+            </button>
+
+            <div
+              class="dropdown-menu dropdown-menu-end notifications-dropdown-menu shadow-lg"
+            >
+              <div class="notifications-dropdown-header">
+                <div>
+                  <h6>
+                    Notifications
+                  </h6>
+
+                  <span>
+                    {{ unreadNotificationsCount }} unread
+                  </span>
+                </div>
+
+                <button
+                  type="button"
+                  class="notifications-refresh-btn"
+                  (click)="loadNotifications()"
+                  [disabled]="notificationsLoading"
+                  aria-label="Refresh notifications"
+                >
+                  <i
+                    class="bi bi-arrow-clockwise"
+                    [class.notifications-refreshing]="notificationsLoading"
+                  ></i>
+                </button>
+              </div>
+
+              <div
+                *ngIf="notificationsErrorMessage"
+                class="notifications-message notifications-error-message"
+              >
+                {{ notificationsErrorMessage }}
+              </div>
+
+              <div
+                *ngIf="notificationsSuccessMessage"
+                class="notifications-message notifications-success-message"
+              >
+                {{ notificationsSuccessMessage }}
+              </div>
+
+              <div
+                *ngIf="notificationsLoading"
+                class="notifications-loading-state"
+              >
+                <div
+                  class="spinner-border spinner-border-sm"
+                  role="status"
+                  aria-hidden="true"
+                ></div>
+
+                <span>
+                  Loading notifications...
+                </span>
+              </div>
+
+              <ng-container *ngIf="!notificationsLoading">
+                <div
+                  *ngIf="
+                    notificationsLoaded &&
+                    notifications.length === 0
+                  "
+                  class="notifications-empty-state"
+                >
+                  <i class="bi bi-bell-slash"></i>
+
+                  <strong>
+                    No notifications yet
+                  </strong>
+
+                  <span>
+                    New booking, payment, property, and review updates will
+                    appear here.
+                  </span>
+                </div>
+
+                <div
+                  *ngIf="notifications.length > 0"
+                  class="notifications-actions-bar"
+                >
+                  <button
+                    type="button"
+                    (click)="markAllNotificationsAsRead()"
+                    [disabled]="
+                      markAllNotificationsLoading ||
+                      unreadNotificationsCount === 0
+                    "
+                  >
+                    {{
+                      markAllNotificationsLoading
+                        ? 'Marking...'
+                        : 'Mark all as read'
+                    }}
+                  </button>
+
+                  <button
+                    type="button"
+                    class="delete-all-notifications-btn"
+                    (click)="deleteAllNotifications()"
+                    [disabled]="
+                      deleteAllNotificationsLoading ||
+                      notificationsTotalCount === 0
+                    "
+                  >
+                    {{
+                      deleteAllNotificationsLoading
+                        ? 'Deleting...'
+                        : 'Delete all'
+                    }}
+                  </button>
+                </div>
+
+                <div
+                  *ngIf="notifications.length > 0"
+                  class="notifications-list"
+                >
+                  <article
+                    *ngFor="let notification of notifications"
+                    class="notification-item"
+                    [class.notification-unread]="!notification.isRead"
+                    (click)="openNotification(notification)"
+                    (keydown.enter)="openNotification(notification)"
+                    tabindex="0"
+                    role="button"
+                  >
+                    <div
+                      class="notification-icon"
+                      [ngClass]="getNotificationTypeClass(notification)"
+                    >
+                      <i
+                        class="bi"
+                        [ngClass]="getNotificationIcon(notification)"
+                      ></i>
+                    </div>
+
+                    <div class="notification-content">
+                      <div class="notification-title-row">
+                        <strong>
+                          {{ notification.title }}
+                        </strong>
+
+                        <span
+                          *ngIf="!notification.isRead"
+                          class="notification-unread-dot"
+                          aria-label="Unread notification"
+                        ></span>
+                      </div>
+
+                      <p>
+                        {{ notification.message }}
+                      </p>
+
+                      <div class="notification-meta-row">
+                        <span>
+                          {{ notification.createdAt | date: 'short' }}
+                        </span>
+
+                        <div class="notification-item-actions">
+                          <button
+                            *ngIf="!notification.isRead"
+                            type="button"
+                            class="mark-notification-read-btn"
+                            (click)="
+                              $event.stopPropagation();
+                              markNotificationAsRead(notification)
+                            "
+                            [disabled]="
+                              notificationActionLoadingId === notification.id
+                            "
+                            aria-label="Mark notification as read"
+                          >
+                            <i class="bi bi-check2"></i>
+                          </button>
+
+                          <button
+                            type="button"
+                            class="delete-notification-btn"
+                            (click)="deleteNotification(notification, $event)"
+                            [disabled]="
+                              notificationActionLoadingId === notification.id
+                            "
+                            aria-label="Delete notification"
+                          >
+                            <span
+                              *ngIf="
+                                notificationActionLoadingId === notification.id
+                              "
+                              class="spinner-border spinner-border-sm"
+                              aria-hidden="true"
+                            ></span>
+
+                            <i
+                              *ngIf="
+                                notificationActionLoadingId !== notification.id
+                              "
+                              class="bi bi-trash3"
+                            ></i>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </article>
+                </div>
+              </ng-container>
+
+              <div
+                *ngIf="notifications.length > 0"
+                class="notifications-dropdown-footer"
+              >
+                Showing {{ notifications.length }} of
+                {{ notificationsTotalCount }} notifications
+              </div>
+            </div>
+          </div>
+
+          <div class="dropdown profile-dropdown">
+            <button
+              class="btn p-0 border-0 d-flex align-items-center avatar-wrapper"
+              type="button"
+              data-bs-toggle="dropdown"
+              data-bs-auto-close="true"
+              aria-expanded="false"
+              aria-label="Open account menu"
+            >
+              <img
+                [src]="
+                  currentUser.profileImageUrl ||
+                  'Images/default-avatar.png'
+                "
+                alt="Profile avatar"
+                class="user-avatar"
+              />
+
+              <span class="online-dot"></span>
+            </button>
+
+            <ul
+              class="dropdown-menu dropdown-menu-end custom-dropdown shadow-lg"
+            >
+              <li class="user-info-header">
+                <div class="d-flex align-items-center gap-3">
+                  <img
+                    [src]="
+                      currentUser.profileImageUrl ||
+                      'Images/default-avatar.png'
+                    "
+                    alt="Profile avatar"
+                    class="dropdown-avatar"
+                  />
+
+                  <div class="user-info-content">
+                    <h6 class="user-name mb-0 fw-semibold">
+                      {{ currentUser.firstName }}
+                      {{ currentUser.lastName }}
+                    </h6>
+
+                    <span class="user-email d-block">
+                      {{ currentUser.email }}
+                    </span>
+
+                    <span class="badge verified-badge mt-1">
+                      <i class="bi bi-patch-check-fill me-1"></i>
+                      {{ getDisplayRole() }}
+                    </span>
+                  </div>
+                </div>
+              </li>
+
+              @if (canShowHostButton()) {
+                <li class="d-block d-lg-none">
+                  <a
+                    class="dropdown-item host-inside-btn mb-2 text-center justify-content-center"
+                    routerLink="/become-host"
+                  >
+                    <i class="bi bi-house-heart me-2"></i>
+                    Become a Host
+                  </a>
+                </li>
+              }
+
+              @if (isAdmin()) {
+                <li class="dropdown-section-title">
+                  Administration
+                </li>
+
+                <li>
+                  <a
+                    class="dropdown-item"
+                    routerLink="/admin/dashboard"
+                    routerLinkActive="dropdown-item-active"
+                  >
+                    <i class="bi bi-speedometer2 me-2"></i>
+                    Dashboard
+                  </a>
+                </li>
+
+                <li>
+                  <a
+                    class="dropdown-item"
+                    routerLink="/admin/bookings"
+                    routerLinkActive="dropdown-item-active"
+                  >
+                    <i class="bi bi-calendar-check me-2"></i>
+                    Bookings
+                  </a>
+                </li>
+
+                <li>
+                  <a
+                    class="dropdown-item"
+                    routerLink="/admin/user-management"
+                    routerLinkActive="dropdown-item-active"
+                  >
+                    <i class="bi bi-people me-2"></i>
+                    User Management
+                  </a>
+                </li>
+
+                <li>
+                  <a
+                    class="dropdown-item"
+                    routerLink="/admin/property-verifications"
+                    routerLinkActive="dropdown-item-active"
+                  >
+                    <i class="bi bi-shield-check me-2"></i>
+                    Property Verifications
+                  </a>
+                </li>
+
+                <li>
+                  <a
+                    class="dropdown-item"
+                    routerLink="/admin/complaints-support"
+                    routerLinkActive="dropdown-item-active"
+                  >
+                    <i class="bi bi-headset me-2"></i>
+                    Complaints & Support
+                  </a>
+                </li>
+
+                <li>
+                  <a
+                    class="dropdown-item"
+                    routerLink="/admin/reviews-moderation"
+                    routerLinkActive="dropdown-item-active"
+                  >
+                    <i class="bi bi-star me-2"></i>
+                    Reviews Moderation
+                  </a>
+                </li>
+
+                <li>
+                  <a
+                    class="dropdown-item"
+                    routerLink="/admin/action-logs"
+                    routerLinkActive="dropdown-item-active"
+                  >
+                    <i class="bi bi-journal-text me-2"></i>
+                    Action Logs
+                  </a>
+                </li>
+
+                <li>
+                  <a
+                    class="dropdown-item"
+                    routerLink="/admin/messages"
+                    routerLinkActive="dropdown-item-active"
+                  >
+                    <i class="bi bi-envelope me-2"></i>
+                    Messages
+                  </a>
+                </li>
+
+                <li>
+                  <a
+                    class="dropdown-item"
+                    routerLink="/admin/financials-payouts"
+                    routerLinkActive="dropdown-item-active"
+                  >
+                    <i class="bi bi-cash-stack me-2"></i>
+                    Financials & Payouts
+                  </a>
+                </li>
+              }
+
+              @if (isHost()) {
+                <li class="dropdown-section-title">
+                  Hosting
+                </li>
+
+                <li>
+                  <a
+                    class="dropdown-item"
+                    routerLink="/host/dashboard"
+                    routerLinkActive="dropdown-item-active"
+                  >
+                    <i class="bi bi-speedometer2 me-2"></i>
+                    Dashboard
+                  </a>
+                </li>
+
+                <li>
+                  <a
+                    class="dropdown-item"
+                    routerLink="/host/my-listings"
+                    routerLinkActive="dropdown-item-active"
+                  >
+                    <i class="bi bi-building-gear me-2"></i>
+                    My Listings
+                  </a>
+                </li>
+
+                <li>
+                  <a
+                    class="dropdown-item"
+                    routerLink="/host/listings/add"
+                    routerLinkActive="dropdown-item-active"
+                  >
+                    <i class="bi bi-plus-circle me-2"></i>
+                    Add Listing
+                  </a>
+                </li>
+
+                <li>
+                  <a
+                    class="dropdown-item"
+                    routerLink="/host/messages"
+                    routerLinkActive="dropdown-item-active"
+                  >
+                    <i class="bi bi-chat-left-text me-2"></i>
+                    Messages
+                  </a>
+                </li>
+
+                <li>
+                  <a
+                    class="dropdown-item"
+                    routerLink="/host/settings"
+                    routerLinkActive="dropdown-item-active"
+                  >
+                    <i class="bi bi-sliders me-2"></i>
+                    Host Settings
+                  </a>
+                </li>
+              }
+
+              @if (isRegularUser()) {
+                <li class="dropdown-section-title">
+                  My Account
+                </li>
+
+                <li>
+                  <a
+                    class="dropdown-item"
+                    routerLink="/profile/personal-data"
+                    routerLinkActive="dropdown-item-active"
+                  >
+                    <i class="bi bi-person me-2"></i>
+                    Profile
+                  </a>
+                </li>
+
+                <li>
+                  <a
+                    class="dropdown-item"
+                    routerLink="/profile/bookings/all"
+                    routerLinkActive="dropdown-item-active"
+                  >
+                    <i class="bi bi-calendar-check me-2"></i>
+                    My Bookings
+                  </a>
+                </li>
+
+                <li>
+                  <a
+                    class="dropdown-item"
+                    routerLink="/profile/wishlist"
+                    routerLinkActive="dropdown-item-active"
+                  >
+                    <i class="bi bi-heart me-2"></i>
+                    Wish Lists
+                  </a>
+                </li>
+
+                <li>
+                  <a
+                    class="dropdown-item"
+                    routerLink="/profile/messages"
+                    routerLinkActive="dropdown-item-active"
+                  >
+                    <i class="bi bi-chat-left-text me-2"></i>
+                    Messages
+                  </a>
+                </li>
+
+                <li>
+                  <a
+                    class="dropdown-item"
+                    routerLink="/profile/payment-account"
+                    routerLinkActive="dropdown-item-active"
+                  >
+                    <i class="bi bi-wallet2 me-2"></i>
+                    Payment
+                  </a>
+                </li>
+
+                <li>
+                  <a
+                    class="dropdown-item"
+                    routerLink="/profile/my-reviews"
+                    routerLinkActive="dropdown-item-active"
+                  >
+                    <i class="bi bi-star me-2"></i>
+                    My Reviews
+                  </a>
+                </li>
+
+                <li>
+                  <a
+                    class="dropdown-item"
+                    routerLink="/profile/support"
+                    routerLinkActive="dropdown-item-active"
+                  >
+                    <i class="bi bi-life-preserver me-2"></i>
+                    Support
+                  </a>
+                </li>
+
+                <li>
+                  <a
+                    class="dropdown-item"
+                    routerLink="/profile/settings"
+                    routerLinkActive="dropdown-item-active"
+                  >
+                    <i class="bi bi-gear me-2"></i>
+                    Settings
+                  </a>
+                </li>
+              } @else if (canShowHostPersonalLinks()) {
+                <li class="dropdown-section-title">
+                  Personal Account
+                </li>
+
+                <li>
+                  <a
+                    class="dropdown-item"
+                    routerLink="/profile/personal-data"
+                    routerLinkActive="dropdown-item-active"
+                  >
+                    <i class="bi bi-person me-2"></i>
+                    Personal Profile
+                  </a>
+                </li>
+
+                <li>
+                  <a
+                    class="dropdown-item"
+                    routerLink="/profile/bookings/all"
+                    routerLinkActive="dropdown-item-active"
+                  >
+                    <i class="bi bi-calendar-check me-2"></i>
+                    My Bookings
+                  </a>
+                </li>
+
+                <li>
+                  <a
+                    class="dropdown-item"
+                    routerLink="/profile/wishlist"
+                    routerLinkActive="dropdown-item-active"
+                  >
+                    <i class="bi bi-heart me-2"></i>
+                    Wish Lists
+                  </a>
+                </li>
+
+                <li>
+                  <a
+                    class="dropdown-item"
+                    routerLink="/profile/support"
+                    routerLinkActive="dropdown-item-active"
+                  >
+                    <i class="bi bi-life-preserver me-2"></i>
+                    Support
+                  </a>
+                </li>
+              }
+
+              <li>
+                <hr class="dropdown-divider" />
+              </li>
+
+              <li>
+                <a
+                  class="dropdown-item"
+                  routerLink="/help-center"
+                >
+                  <i class="bi bi-question-circle me-2"></i>
+                  Help Center
+                </a>
+              </li>
+
+              <li>
+                <a
+                  class="dropdown-item"
+                  routerLink="/ai-chat"
+                  (click)="openAiChat($event)"
+                >
+                  <i class="bi bi-chat-dots me-2"></i>
+                  AI Assistant
+                </a>
+              </li>
+
+              <li>
+                <button
+                  type="button"
+                  class="dropdown-item text-danger-hover logout-menu-btn"
+                  (click)="logout()"
+                  [disabled]="isLoggingOut"
+                  [attr.aria-busy]="isLoggingOut"
+                >
+                  @if (isLoggingOut) {
+                    <span
+                      class="spinner-border spinner-border-sm logout-spinner"
+                      aria-hidden="true"
+                    ></span>
+
+                    <span>
+                      Signing out...
+                    </span>
+                  } @else {
+                    <i class="bi bi-box-arrow-right me-2"></i>
+
+                    <span>
+                      Logout
+                    </span>
+                  }
+                </button>
+              </li>
+            </ul>
+          </div>
+        }
+      } @else if (profileService.isLoading()) {
+        <button
+          class="btn p-0 border-0 d-flex align-items-center avatar-wrapper"
+          type="button"
+          disabled
+          aria-busy="true"
+        >
+          <img
+            src="Images/default-avatar.png"
+            alt="Profile avatar"
+            class="user-avatar"
+          />
+
+          <span
+            class="spinner-border spinner-border-sm text-info ms-2"
+            aria-hidden="true"
+          ></span>
+        </button>
+      } @else {
+        <a
+          class="btn login-capsule-btn text-decoration-none d-lg-none"
+          routerLink="/login"
+        >
+          Login
+        </a>
+      }
+
+      <button
+        class="navbar-toggler border-0 p-2"
+        type="button"
+        data-bs-toggle="collapse"
+        data-bs-target="#navbarNav"
+        aria-controls="navbarNav"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+    </div>
+
+    <div
+      class="collapse navbar-collapse order-lg-2"
+      id="navbarNav"
+    >
+      <div
+        class="d-flex align-items-center gap-3 desktop-actions-inner text-center justify-content-center ms-auto"
+      >
+        <!-- Responsive Properties Button -->
+        <a
+          class="btn btn-outline-info d-xl-none"
+          routerLink="/"
+          fragment="properties-section"
+          aria-label="Go to properties section"
+        >
+          <i
+            class="bi bi-buildings me-2"
+            aria-hidden="true"
+          ></i>
+
+          Properties
+        </a>
+
+        <a
+          class="btn btn-outline-info d-none d-lg-inline-block"
+          routerLink="/ai-chat"
+          (click)="openAiChat($event)"
+        >
+          <i class="bi bi-chat-dots"></i>
+          AI Assistant
+        </a>
+
+        @if (canShowHostButton()) {
+          <button
+            type="button"
+            class="btn host-btn text-uppercase d-none d-lg-inline-block"
+            routerLink="/become-host"
+          >
+            Become a Host
+          </button>
+        }
+
+        @if (!profileService.isAuthenticated()) {
+          <a
+            class="btn login-capsule-btn text-decoration-none d-none d-lg-inline-block"
+            routerLink="/login"
+          >
+            Login
+          </a>
+        }
+      </div>
+    </div>
+  </div>
+</nav>

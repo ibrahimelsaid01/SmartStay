@@ -1,0 +1,87 @@
+<div class="help-page">
+
+  <header class="help-header">
+    <h1>How can we help you today?</h1>
+
+    <div class="search-bar">
+      <span class="search-icon">&#128269;</span>
+      <input
+        type="text"
+        placeholder="Search for help topics, guides, or FAQs..."
+        [(ngModel)]="searchTerm"
+        (keyup.enter)="onSearch()"
+      />
+    </div>
+  </header>
+
+  <section class="categories-section">
+    <h2>Browse by Category</h2>
+
+    <div class="categories-grid">
+      <div class="category-card" *ngFor="let category of categories">
+        <div class="category-icon" [innerHTML]="category.icon"></div>
+        <h3>{{ category.title }}</h3>
+        <p>{{ category.description }}</p>
+        <a href="javascript:void(0)" class="view-guides-link">View Guides &rarr;</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="faq-section">
+    <div class="faq-section-inner">
+      <h2>Top FAQs</h2>
+      <p class="faq-subtitle">Find quick answers to our most frequently asked questions.</p>
+
+      <div class="faq-list">
+        <div class="faq-item" *ngFor="let faq of faqs" [class.open]="faq.open">
+          <button type="button" class="faq-question" (click)="toggleFaq(faq)">
+            <span>{{ faq.question }}</span>
+            <span class="faq-chevron">&#9660;</span>
+          </button>
+          <div class="faq-answer" *ngIf="faq.open">
+            <p>{{ faq.answer }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta-section">
+    <div class="cta-banner">
+      <div class="cta-text">
+        <p class="cta-eyebrow">Still need help?</p>
+        <p class="cta-description">
+          Our dedicated support team is available 24/7 to assist you with any questions or issues.
+        </p>
+      </div>
+      <button type="button" class="btn btn-contact" (click)="onContactSupport()">
+        Contact Support
+      </button>
+    </div>
+  </section>
+
+  <section class="guide-section">
+    <div class="guide-card">
+      <div class="guide-image">
+        <img src="Images/helpcenter.jpg" alt="Smart Stay living room" />
+      </div>
+      <div class="guide-content">
+        <span class="guide-badge">NEW GUIDE</span>
+        <h3>Mastering the Smart Stay App</h3>
+        <p>
+          Our latest comprehensive guide covers everything from setting up your first profile to utilizing
+          advanced IoT automations in our premium properties.
+        </p>
+        <ul class="guide-checklist">
+          <li *ngFor="let item of guideChecklist">
+            <span class="check-icon">&#10003;</span>
+            <span>{{ item }}</span>
+          </li>
+        </ul>
+        <a href="javascript:void(0)" class="download-link">Download PDF Guide &rarr;</a>
+      </div>
+    </div>
+  </section>
+
+</div>
+

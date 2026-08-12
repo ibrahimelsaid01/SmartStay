@@ -1,0 +1,138 @@
+<div class="container py-5 page-container">
+<br>
+   <br>
+   <br>
+  <header class="mb-5">
+    <span class="badge rounded-pill always-available-badge px-3 py-2 mb-3 text-uppercase fw-bold">
+      <i class="bi bi-clock-history me-1"></i> Always Available
+    </span>
+    <h1 class="fw-bold display-5 text-dark mb-3">Get in Touch</h1>
+    <p class="text-muted leading-relaxed max-w-text">
+      Whether you have a question about our global suites, personalized experiences, or need technical assistance, our
+      team is here for you 24/7.
+    </p>
+  </header>
+
+  <div class="row g-5 mb-5">
+    <div class="col-lg-7">
+      <div class="form-card bg-white p-4 p-md-5 rounded-4 shadow-sm">
+
+        <form (submit)="handleContactSubmit($event)" class="d-flex flex-column gap-4">
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label text-secondary small fw-medium">Full Name</label>
+              <input type="text" [(ngModel)]="contactData.name" name="name"
+                class="form-control custom-input rounded-3 p-3" placeholder="John Doe" required>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label text-secondary small fw-medium">Email Address</label>
+              <input type="email" [(ngModel)]="contactData.email" name="email"
+                class="form-control custom-input rounded-3 p-3" placeholder="john@example.com" required>
+            </div>
+          </div>
+
+          <div>
+            <label class="form-label text-secondary small fw-medium">Subject</label>
+            <input type="text" [(ngModel)]="contactData.subject" name="subject"
+              class="form-control custom-input rounded-3 p-3" placeholder="How can we help?" required>
+          </div>
+
+          <div>
+            <label class="form-label text-secondary small fw-medium">Message</label>
+            <textarea [(ngModel)]="contactData.message" name="message" rows="5"
+              class="form-control custom-input rounded-3 p-3" placeholder="Tell us more about your inquiry..."
+              required></textarea>
+          </div>
+
+          @if (formSuccess) {
+          <div class="alert alert-success border-0 rounded-3 p-3 d-flex align-items-center gap-2"
+            style="background-color: #ecfdf5 !important; color: #065f46 !important; display: flex !important;">
+            <i class="bi bi-check-circle-fill fs-5" style="color: #10b981 !important;"></i>
+            <div>
+              <strong class="d-block mb-1">Thank you!</strong>
+              <span class="small" style="color: #047857 !important;">Your message has been sent successfully. We'll get
+                back to you soon.</span>
+            </div>
+          </div>
+          }
+
+          <div>
+            <button type="submit"
+              class="btn btn-brand text-white fw-medium rounded-3 px-4 py-3 shadow-sm d-inline-flex align-items-center gap-2">
+              <i class="bi bi-send-fill"></i>
+              Send Message
+            </button>
+          </div>
+        </form>
+
+      </div>
+    </div>
+
+    <div class="col-lg-5 d-flex flex-column gap-3">
+
+      <div class="support-card d-flex gap-3 p-4 rounded-4 align-items-center shadow-sm">
+        <div class="support-icon-box rounded-3 d-flex align-items-center justify-content-center">
+          <i class="bi bi-telephone-fill"></i>
+        </div>
+        <div>
+          <h3 class="h6 fw-bold text-dark mb-1">Phone Support</h3>
+          <p class="text-muted small mb-2">Speak with our concierge team.</p>
+          <a href="tel:+201090753929" class="brand-color text-decoration-none fw-bold small">+20 1090 753 929</a>
+        </div>
+      </div>
+
+      <div class="support-card d-flex gap-3 p-4 rounded-4 align-items-center shadow-sm">
+        <div class="support-icon-box rounded-3 d-flex align-items-center justify-content-center">
+          <i class="bi bi-envelope-fill"></i>
+        </div>
+        <div>
+          <h3 class="h6 fw-bold text-dark mb-1">Email Inquiry</h3>
+          <p class="text-muted small mb-2">We typically respond within 2 hours.</p>
+          <a href="mailto:support@smartstay.co"
+            class="brand-color text-decoration-none fw-bold small">support&#64;smartstay.co</a>
+        </div>
+      </div>
+
+      <div class="support-card d-flex gap-3 p-4 rounded-4 align-items-center shadow-sm">
+        <div class="support-icon-box rounded-3 d-flex align-items-center justify-content-center">
+          <i class="bi bi-chat-left-text-fill"></i>
+        </div>
+        <div>
+          <h3 class="h6 fw-bold text-dark mb-1">Live Chat</h3>
+          <p class="text-muted small mb-2">Instant messaging with our experts.</p>
+          <span class="small fw-medium d-flex align-items-center gap-2" style="color: #10b981;">
+            <span class="status-dot"></span> Agents Online Now
+          </span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="subscribe-banner rounded-5 p-4 p-md-5 text-white mt-5 shadow-sm">
+    <div class="row align-items-center g-4">
+      <div class="col-md-6">
+        <h3 class="fw-bold h4 mb-2">Join our preferred guest program</h3>
+        <p class="mb-0 text-white-50 small">Receive exclusive offers, destination guides, and advanced booking access
+          directly in your inbox.</p>
+      </div>
+      <div class="col-md-6">
+        <form (submit)="handleSubscribe($event)" class="d-flex flex-column flex-sm-row gap-2">
+          <input type="email" [(ngModel)]="subscriberEmail" name="subEmail"
+            class="form-control footer-input rounded-pill px-4 py-3" placeholder="Enter your email" required>
+
+          <button type="submit" class="btn btn-white-action rounded-pill px-4 py-3 fw-medium shrink-0">
+            Subscribe
+          </button>
+        </form>
+
+        @if (subscribeSuccess) {
+        <p class="text-white small mt-2 mb-0 animate__animated animate__fadeIn" style="display: block !important;">
+          <i class="bi bi-check-circle-fill me-1"></i> Awesome! Thanks for subscribing.
+        </p>
+        }
+      </div>
+    </div>
+  </div>
+
+</div>

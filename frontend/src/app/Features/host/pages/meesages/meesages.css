@@ -1,0 +1,34 @@
+.chat-layout-wrapper {
+  background-color: #f8f9fa;
+  height: calc(100vh - 110px);
+  overflow: hidden;
+}
+
+.chat-layout-wrapper .row {
+  height: 100%;
+}
+
+.chat-card-base {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+.scrollable-chat-area {
+  flex-grow: 1;
+  overflow-y: auto;
+  padding: 1rem;
+}
+.offcanvas {
+  width: 85% !important;
+  max-width: 360px;
+  transition: transform 0.3s ease-in-out;
+}
+
+.offcanvas.show {
+  transform: none;
+}

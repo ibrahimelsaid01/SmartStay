@@ -1,0 +1,115 @@
+<div class="tos-page">
+  <header class="tos-header">
+    <h1>Terms of Service</h1>
+    <p class="tos-updated">Last updated: {{ lastUpdated }}</p>
+
+    <div class="tos-actions">
+      <button type="button" class="btn btn-print" (click)="onPrint()">
+        <span class="icon">&#128438;</span> Print Document
+      </button>
+      <button type="button" class="btn btn-download" (click)="onDownloadPdf()">
+        <span class="icon">&#8595;</span> Download PDF
+      </button>
+    </div>
+  </header>
+
+  <main class="tos-content">
+
+    <section class="tos-section">
+      <h2>1. Acceptance of Terms</h2>
+      <p>
+        Welcome to Smart Stay. By accessing or using our platform, mobile application, or any services provided
+        by us, you agree to comply with and be bound by these Terms of Service. If you do not agree to these
+        terms, please refrain from using the platform.
+      </p>
+      <p>
+        These terms constitute a legally binding agreement between you and Smart Stay regarding your access to
+        and use of our hospitality management ecosystem.
+      </p>
+    </section>
+
+    <hr class="tos-divider" />
+
+    <section class="tos-section">
+      <h2>2. Platform Usage</h2>
+      <p>
+        Our platform serves as a bridge between hosts providing premium accommodations and guests seeking
+        smart-enabled stays. Usage is subject to the following rules:
+      </p>
+
+      <div class="tos-grid">
+        <div class="tos-card">
+          <h3>For Guests</h3>
+          <ul>
+            <li *ngFor="let rule of guestRules">{{ rule.text }}</li>
+          </ul>
+        </div>
+        <div class="tos-card">
+          <h3>For Hosts</h3>
+          <ul>
+            <li *ngFor="let rule of hostRules">{{ rule.text }}</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <hr class="tos-divider" />
+
+    <section class="tos-section">
+      <h2>3. Fees and Payments</h2>
+      <p>
+        Smart Stay facilitates payments through secure third-party processors. By using our payment features, you
+        agree to:
+      </p>
+
+      <ul class="tos-checklist">
+        <li *ngFor="let point of paymentPoints">
+          <span class="check-icon">&#10003;</span>
+          <span><strong>{{ point.title }}:</strong> {{ point.text }}</span>
+        </li>
+      </ul>
+    </section>
+
+    <hr class="tos-divider" />
+
+    <section class="tos-section">
+      <h2>4. Smart Access Technology</h2>
+      <blockquote class="tos-quote">
+        Our platform utilizes advanced IoT integration to provide seamless keyless entry. This technology is the
+        core of the Smart Stay experience.
+      </blockquote>
+      <p>
+        Users acknowledge that smart access reliability depends on network connectivity and hardware integrity.
+        Smart Stay is not responsible for temporary lockouts due to local power outages or internet disruptions,
+        though we provide 24/7 support for manual overrides.
+      </p>
+    </section>
+
+    <hr class="tos-divider" />
+
+    <section class="tos-section">
+      <h2>5. Limitation of Liability</h2>
+      <p>
+        To the maximum extent permitted by law, Smart Stay shall not be liable for any indirect, incidental,
+        special, consequential, or punitive damages, or any loss of profits or revenues, whether incurred
+        directly or indirectly.
+      </p>
+      <p>
+        We do not own, create, sell, resell, provide, control, or manage any Listings or Host Services. Hosts
+        alone are responsible for their Listings and Host Services.
+      </p>
+    </section>
+
+    <hr class="tos-divider" />
+
+    <section class="tos-section">
+      <h2>6. Governing Law</h2>
+      <p>
+        These terms are governed by and construed in accordance with the laws of the jurisdiction in which Smart
+        Stay is headquartered, without regard to its conflict of law principles.
+      </p>
+    </section>
+
+  </main>
+</div>
+

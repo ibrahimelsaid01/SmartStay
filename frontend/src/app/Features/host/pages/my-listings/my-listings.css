@@ -1,0 +1,343 @@
+.my-listings-container {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background-color: #f8fafc;
+  min-height: 100vh;
+  color: #0f172a;
+}
+
+.page-title {
+  color: #0f172a;
+  font-size: 1.85rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.page-subtitle {
+  color: #64748b;
+  font-size: 0.95rem;
+}
+
+/* Stat Cards */
+.stat-card {
+  border: 1px solid #e2e8f0 !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02), 0 1px 2px rgba(0, 0, 0, 0.04);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+}
+
+.stat-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.stat-value {
+  font-size: 2.25rem;
+  line-height: 1;
+}
+
+.stat-icon-wrapper {
+  width: 48px;
+  height: 48px;
+}
+
+/* Background/Text colors helper */
+.bg-gold-light {
+  background-color: #fef9c3 !important;
+}
+
+.text-gold {
+  color: #ca8a04 !important;
+}
+
+.bg-grey-light {
+  background-color: #f1f5f9 !important;
+}
+
+.bg-red-light {
+  background-color: #fee2e2 !important;
+}
+
+.text-red {
+  color: #dc2626 !important;
+}
+
+.text-teal {
+  color: #0d9488 !important;
+}
+
+.text-teal-light {
+  color: #2dd4bf !important;
+}
+
+/* Main workspace */
+.property-overview-card {
+  border: 1px solid #e2e8f0 !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02), 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+.section-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.search-input-wrapper {
+  width: 100%;
+  max-width: 280px;
+}
+
+.search-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.9rem;
+}
+
+.search-input {
+  padding-left: 36px;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  border: 1px solid #e2e8f0;
+  color: #0f172a;
+}
+
+.search-input:focus {
+  border-color: #2dd4bf;
+  box-shadow: 0 0 0 3px rgba(45, 212, 191, 0.15);
+}
+
+/* Custom Table Styles */
+.custom-listings-table {
+  width: 100%;
+}
+
+.custom-listings-table th {
+  background-color: #f8fafc;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.custom-listings-table td {
+  border-bottom: 1px solid #f1f5f9;
+  padding-top: 16px;
+  padding-bottom: 16px;
+}
+
+.property-thumbnail {
+  width: 48px;
+  height: 48px;
+  object-fit: cover;
+}
+
+.property-title {
+  font-size: 0.925rem;
+  color: #1e293b;
+}
+
+.property-subtext {
+  font-size: 0.775rem;
+}
+
+.property-type {
+  font-size: 0.875rem;
+}
+
+.features-icons-row i {
+  font-size: 0.85rem;
+}
+
+/* Badge Pill styles */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.775rem;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: 9999px;
+  text-transform: capitalize;
+}
+
+.badge-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.badge-success-pill {
+  background-color: #dcfce7;
+  color: #16a34a;
+}
+
+.dot-success {
+  background-color: #16a34a;
+}
+
+.badge-danger-pill {
+  background-color: #fee2e2;
+  color: #dc2626;
+}
+
+.dot-danger {
+  background-color: #dc2626;
+}
+
+.badge-warning-pill {
+  background-color: #fef3c7;
+  color: #d97706;
+}
+
+.dot-warning {
+  background-color: #d97706;
+}
+
+.badge-info-pill {
+  background-color: #e0f2fe;
+  color: #0284c7;
+}
+
+.dot-info {
+  background-color: #0284c7;
+}
+
+.badge-muted-pill {
+  background-color: #f1f5f9;
+  color: #64748b;
+}
+
+.dot-muted {
+  background-color: #64748b;
+}
+
+.property-price {
+  font-size: 0.95rem;
+}
+
+.price-unit {
+  font-size: 0.75rem;
+}
+
+/* Actions Button Styles */
+.btn-action-icon {
+  width: 36px;
+  height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.btn-action-icon:hover {
+  background-color: #f8fafc !important;
+  border-color: #cbd5e1 !important;
+}
+
+.btn-sync-calendar {
+  height: 36px;
+  padding: 0 16px;
+  font-size: 0.825rem;
+  transition: all 0.2s;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.btn-sync-calendar:hover {
+  background-color: #f8fafc !important;
+  border-color: #cbd5e1 !important;
+}
+
+.view-all-link {
+  color: #0ea5e9;
+  text-decoration: none;
+  font-size: 0.875rem;
+  transition: color 0.15s;
+}
+
+.view-all-link:hover {
+  color: #0284c7;
+  text-decoration: underline;
+}
+
+/* Sidebar Health Check & Maintenance */
+.sidebar-card {
+  border: 1px solid #e2e8f0 !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02), 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+.sidebar-section-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.health-alert-box {
+  background-color: #f8fafc;
+  border: 1px solid #f1f5f9;
+}
+
+.health-icon-wrapper i {
+  font-size: 1.15rem;
+}
+
+.health-title {
+  font-size: 0.875rem;
+  letter-spacing: -0.01em;
+}
+
+.health-desc {
+  font-size: 0.8rem;
+  line-height: 1.4;
+}
+
+.maintenance-task-box {
+  background-color: #f8fafc;
+  border: 1px solid #f1f5f9;
+}
+
+.maintenance-icon-wrapper {
+  width: 36px;
+  height: 36px;
+}
+
+.task-title {
+  font-size: 0.875rem;
+  letter-spacing: -0.01em;
+}
+
+.task-property {
+  font-size: 0.775rem;
+}
+
+.task-status {
+  font-size: 0.75rem;
+}
+
+.status-in-progress {
+  color: #0d9488;
+}
+
+.status-scheduled {
+  color: #64748b;
+}
+
+.btn-view-all-tasks {
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  color: #1e293b;
+  font-size: 0.85rem;
+  transition: all 0.2s;
+}
+
+.btn-view-all-tasks:hover {
+  background-color: #f8fafc;
+  border-color: #cbd5e1;
+}

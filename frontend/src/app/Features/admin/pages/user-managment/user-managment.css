@@ -1,0 +1,720 @@
+.user-management-page {
+  background: #ffffff;
+  border-radius: 24px;
+  padding: 28px;
+  box-shadow: 0 18px 50px rgba(15, 23, 42, 0.06);
+}
+
+.page-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.page-header h2 {
+  margin: 0 0 6px;
+  color: #172b3a;
+  font-weight: 800;
+}
+
+.page-header p {
+  margin: 0;
+  color: #64748b;
+}
+
+.refresh-btn {
+  border: 1px solid rgba(13, 172, 178, 0.25);
+  background: #f8fffd;
+  color: #0dabb2;
+  border-radius: 14px;
+  padding: 10px 14px;
+  font-weight: 700;
+}
+
+.filters-card {
+  display: grid;
+  grid-template-columns: 2fr repeat(3, 1fr) auto;
+  gap: 14px;
+  align-items: end;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  border-radius: 18px;
+  padding: 18px;
+  background: #f8fafc;
+  margin-bottom: 18px;
+}
+
+.filter-group label {
+  display: block;
+  font-size: 12px;
+  color: #64748b;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.filter-group .form-control,
+.filter-group .form-select,
+.remove-restriction-box .form-control {
+  border-radius: 12px;
+  border: 1px solid rgba(15, 23, 42, 0.12);
+  box-shadow: none;
+}
+
+.filter-group .form-control:focus,
+.filter-group .form-select:focus,
+.remove-restriction-box .form-control:focus {
+  border-color: #0dabb2;
+  box-shadow: 0 0 0 0.2rem rgba(13, 172, 178, 0.12);
+}
+
+.filter-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.apply-btn,
+.reset-btn {
+  border: none;
+  border-radius: 12px;
+  padding: 10px 14px;
+  font-weight: 800;
+}
+
+.apply-btn {
+  background: #0dabb2;
+  color: #ffffff;
+}
+
+.reset-btn {
+  background: #e2e8f0;
+  color: #475569;
+}
+
+.summary-row {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-bottom: 18px;
+}
+
+.summary-card {
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  border-radius: 16px;
+  padding: 14px 18px;
+  min-width: 180px;
+  background: #ffffff;
+}
+
+.summary-card span {
+  display: block;
+  color: #64748b;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.summary-card strong {
+  color: #172b3a;
+  font-size: 24px;
+  font-weight: 900;
+}
+
+.loading-state,
+.empty-state {
+  text-align: center;
+  padding: 42px 16px;
+  color: #64748b;
+  background: #f8fafc;
+  border-radius: 16px;
+}
+
+.compact-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 22px;
+}
+
+.empty-state i {
+  font-size: 42px;
+  color: #0dabb2;
+}
+
+.empty-state h4 {
+  color: #172b3a;
+  margin: 12px 0 6px;
+}
+
+.users-table-wrapper {
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  border-radius: 18px;
+  overflow: hidden;
+}
+
+.table thead {
+  background: #f0fafa;
+}
+
+.table th {
+  color: #0dabb2;
+  font-size: 12px;
+  padding: 14px;
+  white-space: nowrap;
+}
+
+.table td {
+  padding: 14px;
+  color: #475569;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
+.user-cell {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.user-cell img {
+  width: 38px;
+  height: 38px;
+  border-radius: 999px;
+  object-fit: cover;
+}
+
+.user-cell strong {
+  display: block;
+  color: #172b3a;
+}
+
+.user-cell span {
+  display: block;
+  color: #94a3b8;
+  font-size: 11px;
+  max-width: 160px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.roles-list {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.role-pill,
+.status-pill,
+.profile-pill {
+  display: inline-block;
+  padding: 5px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.role-admin {
+  background: #e0f2fe;
+  color: #0369a1;
+}
+
+.role-host {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.role-user {
+  background: #f1f5f9;
+  color: #475569;
+}
+
+.role-default {
+  background: #e2e8f0;
+  color: #475569;
+}
+
+.status-pill.active {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.status-pill.inactive {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.profile-pill.completed {
+  background: #e0f2fe;
+  color: #0369a1;
+}
+
+.profile-pill.incomplete {
+  background: #fef3c7;
+  color: #b45309;
+}
+
+.actions-cell {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.status-action-btn,
+.restriction-action-btn {
+  border: none;
+  border-radius: 12px;
+  padding: 8px 12px;
+  font-weight: 800;
+}
+
+.status-action-btn.deactivate {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.status-action-btn.activate {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.restriction-action-btn {
+  background: #fef3c7;
+  color: #b45309;
+}
+
+.status-action-btn:disabled,
+.restriction-action-btn:disabled,
+.remove-restriction-btn:disabled,
+.open-suspension-form-btn:disabled,
+.cancel-suspension-btn:disabled,
+.confirm-suspension-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.pagination-box {
+  margin-top: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+}
+
+.pagination-box button {
+  border: none;
+  background: #0dabb2;
+  color: #ffffff;
+  border-radius: 12px;
+  padding: 9px 14px;
+  font-weight: 800;
+}
+
+.pagination-box button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.restrictions-panel {
+  margin-top: 26px;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  border-radius: 22px;
+  padding: 22px;
+  background: #ffffff;
+  box-shadow: 0 14px 35px rgba(15, 23, 42, 0.05);
+}
+
+.restrictions-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.restrictions-header h3 {
+  margin: 0 0 6px;
+  color: #172b3a;
+  font-weight: 900;
+}
+
+.restrictions-header p {
+  margin: 0;
+  color: #64748b;
+}
+
+.active-restriction-box,
+.history-box {
+  background: #f8fafc;
+  border-radius: 18px;
+  padding: 18px;
+  margin-top: 16px;
+}
+
+.active-restriction-box h4,
+.history-box h4 {
+  color: #172b3a;
+  font-size: 18px;
+  font-weight: 900;
+  margin-bottom: 14px;
+}
+
+.empty-restriction {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: #ffffff;
+  border: 1px dashed rgba(15, 23, 42, 0.15);
+  border-radius: 16px;
+  padding: 16px;
+  color: #64748b;
+}
+
+.empty-restriction i {
+  font-size: 28px;
+  color: #0dabb2;
+}
+
+.empty-restriction strong {
+  display: block;
+  color: #172b3a;
+  margin-bottom: 4px;
+}
+
+.empty-restriction p {
+  margin: 0;
+}
+
+.restrictions-list {
+  display: grid;
+  gap: 14px;
+}
+
+.restriction-card {
+  background: #ffffff;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  border-radius: 18px;
+  padding: 16px;
+}
+
+.restriction-card.active-card {
+  border-color: rgba(245, 158, 11, 0.35);
+  background: #fffbeb;
+}
+
+.restriction-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+
+.restriction-date {
+  color: #94a3b8;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.restriction-type-pill,
+.restriction-status-pill {
+  display: inline-block;
+  padding: 5px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.restriction-warning {
+  background: #fef3c7;
+  color: #b45309;
+}
+
+.restriction-temporary {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.restriction-review {
+  background: #e0f2fe;
+  color: #0369a1;
+}
+
+.restriction-status-active {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.restriction-status-expired {
+  background: #e2e8f0;
+  color: #475569;
+}
+
+.restriction-status-removed {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.restriction-status-default {
+  background: #f1f5f9;
+  color: #475569;
+}
+
+.restriction-reason {
+  color: #475569;
+  line-height: 1.7;
+  white-space: pre-line;
+  margin-bottom: 14px;
+}
+
+.restriction-meta-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 12px;
+}
+
+.restriction-meta-grid div {
+  background: #f8fafc;
+  border-radius: 14px;
+  padding: 12px;
+}
+
+.restriction-meta-grid span {
+  display: block;
+  color: #64748b;
+  font-size: 12px;
+  font-weight: 800;
+  margin-bottom: 4px;
+}
+
+.restriction-meta-grid strong {
+  color: #172b3a;
+  overflow-wrap: anywhere;
+}
+
+.removal-note-box {
+  margin-top: 14px;
+  background: #f0fdf4;
+  border: 1px solid rgba(21, 128, 61, 0.15);
+  border-radius: 14px;
+  padding: 12px;
+}
+
+.removal-note-box span {
+  display: block;
+  color: #15803d;
+  font-size: 12px;
+  font-weight: 900;
+  margin-bottom: 6px;
+}
+
+.removal-note-box p {
+  margin: 0;
+  color: #166534;
+  white-space: pre-line;
+}
+
+.temporary-suspension-decision-box {
+  margin-top: 16px;
+  border: 1px solid rgba(3, 105, 161, 0.18);
+  border-radius: 16px;
+  background: #f0f9ff;
+  padding: 14px;
+}
+
+.temporary-suspension-decision-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.temporary-suspension-decision-header span {
+  display: block;
+  color: #075985;
+  font-size: 13px;
+  font-weight: 900;
+  margin-bottom: 4px;
+}
+
+.temporary-suspension-decision-header p {
+  margin: 0;
+  color: #475569;
+  line-height: 1.6;
+}
+
+.open-suspension-form-btn {
+  flex: 0 0 auto;
+  border: none;
+  border-radius: 12px;
+  background: #0369a1;
+  color: #ffffff;
+  padding: 9px 14px;
+  font-weight: 900;
+}
+
+.temporary-suspension-form {
+  display: grid;
+  grid-template-columns: minmax(180px, 0.35fr) minmax(280px, 1fr);
+  gap: 14px;
+  margin-top: 16px;
+  border-top: 1px solid rgba(3, 105, 161, 0.14);
+  padding-top: 16px;
+}
+
+.temporary-suspension-field label {
+  display: block;
+  color: #172b3a;
+  font-size: 13px;
+  font-weight: 900;
+  margin-bottom: 6px;
+}
+
+.temporary-suspension-field .form-control {
+  border: 1px solid rgba(15, 23, 42, 0.12);
+  border-radius: 12px;
+  box-shadow: none;
+}
+
+.temporary-suspension-field .form-control:focus {
+  border-color: #0369a1;
+  box-shadow: 0 0 0 0.2rem rgba(3, 105, 161, 0.1);
+}
+
+.temporary-suspension-field .form-control:disabled {
+  background: #e2e8f0;
+  cursor: not-allowed;
+}
+
+.temporary-suspension-field small {
+  color: #64748b;
+  font-size: 12px;
+}
+
+.duration-input-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 5px;
+}
+
+.duration-input-group input {
+  min-width: 0;
+}
+
+.duration-input-group > span {
+  flex: 0 0 auto;
+  color: #475569;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.reason-field textarea {
+  resize: vertical;
+  min-height: 104px;
+}
+
+.temporary-suspension-field-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 5px;
+}
+
+.temporary-suspension-form-actions {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.cancel-suspension-btn,
+.confirm-suspension-btn {
+  border: none;
+  border-radius: 12px;
+  padding: 9px 14px;
+  font-weight: 900;
+}
+
+.cancel-suspension-btn {
+  background: #e2e8f0;
+  color: #475569;
+}
+
+.confirm-suspension-btn {
+  background: #b91c1c;
+  color: #ffffff;
+}
+
+.remove-restriction-box {
+  margin-top: 14px;
+  border-top: 1px solid rgba(15, 23, 42, 0.08);
+  padding-top: 14px;
+}
+
+.remove-restriction-box label {
+  display: block;
+  color: #172b3a;
+  font-size: 13px;
+  font-weight: 900;
+  margin-bottom: 6px;
+}
+
+.remove-restriction-box textarea {
+  resize: none;
+  margin-bottom: 10px;
+}
+
+.remove-restriction-btn {
+  border: none;
+  border-radius: 12px;
+  background: #0dabb2;
+  color: #ffffff;
+  padding: 9px 14px;
+  font-weight: 900;
+}
+
+@media (max-width: 992px) {
+  .filters-card {
+    grid-template-columns: 1fr;
+  }
+
+  .page-header,
+  .restrictions-header {
+    flex-direction: column;
+  }
+
+  .actions-cell {
+    flex-direction: column;
+  }
+
+  .temporary-suspension-decision-header {
+    flex-direction: column;
+  }
+
+  .open-suspension-form-btn {
+    width: 100%;
+  }
+
+  .temporary-suspension-form {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 576px) {
+  .user-management-page,
+  .restrictions-panel {
+    padding: 16px;
+  }
+
+  .temporary-suspension-form-actions {
+    align-items: stretch;
+    flex-direction: column-reverse;
+  }
+
+  .cancel-suspension-btn,
+  .confirm-suspension-btn {
+    width: 100%;
+  }
+}

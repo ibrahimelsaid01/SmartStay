@@ -1,0 +1,39 @@
+<h2>Review your Information</h2>
+
+<ng-container *ngIf="state.application() as app">
+  <label>Your name</label>
+  <input [value]="app.displayName" readonly />
+
+  <label>Bio</label>
+  <textarea [value]="app.bio" readonly></textarea>
+
+  <label>Country</label>
+  <input [value]="app.country" readonly />
+
+  <label>City</label>
+  <input [value]="app.city" readonly />
+
+  <label>Phone Number</label>
+  <input [value]="app.phoneNumber" readonly />
+
+  <div class="row">
+    <span>Profile image</span>
+    <img *ngIf="app.profileImageUrl" [src]="app.profileImageUrl" class="thumb round" />
+    <span *ngIf="!app.hasProfileImage" class="missing">Not uploaded</span>
+  </div>
+
+  <div class="row">
+    <span>National ID</span>
+    <span *ngIf="app.hasIdentityDocument">✓ Uploaded</span>
+    <span *ngIf="!app.hasIdentityDocument" class="missing">Not uploaded</span>
+  </div>
+
+  <p class="error" *ngIf="state.error()">{{ state.error() }}</p>
+
+  <div class="actions">
+    <button type="button" (click)="state.goBack()">Back</button>
+    <button type="button" [disabled]="state.loading()" (click)="onSubmit()">
+      {{ state.loading() ? 'Submitting...' : 'Submit' }}
+    </button>
+  </div>
+</ng-container>

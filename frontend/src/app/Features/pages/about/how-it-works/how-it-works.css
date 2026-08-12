@@ -1,0 +1,94 @@
+.brand-color {
+  color: #3ec3c6 !important;
+}
+
+.btn-brand {
+  background-color: #3ec3c6 !important;
+  border-color: #3ec3c6 !important;
+}
+.btn-brand:hover {
+  background-color: #33a5a8 !important;
+}
+
+.btn-outline-brand {
+  color: #3ec3c6 !important;
+  border-color: #3ec3c6 !important;
+}
+.btn-outline-brand:hover {
+  background-color: #f4fafb !important;
+  color: #3ec3c6 !important;
+}
+
+.custom-card,
+.cta-banner {
+  background-color: #f4fafb !important;
+  border: 1px solid rgba(62, 195, 198, 0.05);
+}
+
+.icon-box {
+  width: 40px;
+  height: 40px;
+  background-color: #d5f3f4 !important;
+  color: #3ec3c6 !important;
+  font-size: 1.1rem;
+}
+
+.max-w-hero {
+  max-w: 650px;
+}
+
+.leading-relaxed {
+  line-height: 1.6;
+}
+
+.image-wrapper {
+  height: 300px;
+}
+.image-wrapper img {
+  height: 100%;
+  object-fit: cover;
+}
+
+.shrink-0 {
+  flex-shrink: 0;
+}
+.page-container {
+  background-color: #f8fbfb;
+}
+
+.brand-color {
+  color: #3ec3c6 !important;
+}
+
+.guest-card {
+  border: none !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02) !important;
+}
+
+.host-card {
+  background-color: #eef7f8 !important;
+  border: none !important;
+}
+
+.icon-box-wrapper {
+  flex-shrink: 0;
+}
+
+.icon-box {
+  width: 42px;
+  height: 42px;
+  background-color: #dbf4f5 !important;
+  color: #3ec3c6 !important;
+  font-size: 1.2rem;
+  box-shadow: 0 4px 8px rgba(62, 195, 198, 0.15);
+}
+
+.host-icon-box {
+  background-color: #3ec3c6 !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 8px rgba(62, 195, 198, 0.3);
+}
+
+.leading-relaxed {
+  line-height: 1.6;
+}

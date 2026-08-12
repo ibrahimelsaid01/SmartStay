@@ -1,0 +1,53 @@
+.cursor-pointer {
+  cursor: pointer;
+}
+.transition-all {
+  transition: all 0.2s ease-in-out;
+}
+.x-small {
+  font-size: 0.75rem;
+}
+.small-title {
+  font-size: 0.92rem;
+}
+.text-info-custom {
+  color: #42cccc;
+}
+
+.thread-item {
+  display: flex;
+  gap: 12px;
+  padding: 12px;
+  background: #ffffff;
+  border-radius: 12px;
+  cursor: pointer;
+  min-width: 0;
+  width: 100%;
+  transition: all 0.2s ease;
+}
+.thread-item:hover {
+  background-color: #f8fafc;
+}
+.active-thread {
+  background-color: #f0fdfa !important;
+  border-color: rgba(66, 204, 204, 0.2) !important;
+}
+.threads-list::-webkit-scrollbar {
+  width: 5px;
+}
+.threads-list::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+.threads-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.text-truncate-custom {
+  white-block: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block;
+  width: 100%;
+}

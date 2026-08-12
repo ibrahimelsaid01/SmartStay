@@ -1,0 +1,70 @@
+.policy-card {
+  background: white;
+  transition: transform 0.2s;
+}
+
+.policy-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+}
+
+.icon-box {
+  width: 48px;
+  height: 48px;
+  background: #f0fafa;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.text-teal { color: #4dd9d5; }
+.bg-teal { background-color: #4dd9d5 !important; }
+
+.timeline-box {
+  background: #fafafa;
+}
+
+.timeline {
+  padding: 0 20px;
+}
+
+.timeline-line {
+  position: absolute;
+  top: 12px;
+  left: 20px;
+  right: 20px;
+  height: 2px;
+  background: linear-gradient(to right, #4dd9d5, #ccc);
+  z-index: 0;
+}
+
+.timeline-point {
+  position: relative;
+  z-index: 1;
+}
+
+.dot {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  margin: 0 auto;
+}
+
+.badge-label {
+  background: #f0fafa;
+  color: #4dd9d5;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  border: 1px solid #4dd9d5;
+}
+
+.accordion-item {
+  background: white;
+  transition: all 0.2s;
+}
+
+.accordion-item:hover {
+  border-color: #4dd9d5 !important;
+}

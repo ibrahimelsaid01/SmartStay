@@ -1,0 +1,101 @@
+<div class="header-container my-4">
+  <div class="d-flex gap-2 mb-3 flex-wrap">
+    <span class="badge badge-aqua">
+      {{ property.propertyType }}
+    </span>
+
+    <span class="badge badge-aqua">
+      {{ locationBadge }}
+    </span>
+
+    <span class="badge badge-gold">
+      <i
+        class="bi bi-tag-fill me-1"
+        aria-hidden="true"
+      ></i>
+
+      {{
+        property.pricePerNight
+          | number
+      }}
+
+      {{ property.currency }}
+    </span>
+  </div>
+
+  <div
+    class="d-flex justify-content-between align-items-center gap-3 flex-wrap"
+  >
+    <div>
+      <h1 class="title">
+        {{ property.title }}
+      </h1>
+
+      <p class="location text-muted m-0">
+        <i
+          class="bi bi-geo-alt-fill me-1"
+          aria-hidden="true"
+        ></i>
+
+        {{ displayAddress }}
+      </p>
+    </div>
+
+    <button
+      type="button"
+      class="btn-wishlist"
+      [class.is-wishlisted]="isWishlisted"
+      [disabled]="wishlistLoading"
+      (click)="toggleWishlist()"
+      [attr.aria-label]="
+        isWishlisted
+          ? 'Remove property from wishlist'
+          : 'Add property to wishlist'
+      "
+    >
+      @if (wishlistLoading) {
+        <span
+          class="spinner-border spinner-border-sm me-2"
+          aria-hidden="true"
+        ></span>
+
+        Updating...
+      } @else {
+        <i
+          class="bi me-2"
+          [class.bi-heart-fill]="isWishlisted"
+          [class.bi-heart]="!isWishlisted"
+          aria-hidden="true"
+        ></i>
+
+        {{
+          isWishlisted
+            ? 'Saved to Wishlist'
+            : 'Add to Wishlist'
+        }}
+      }
+    </button>
+  </div>
+
+  <div
+    class="rating-box d-inline-flex align-items-center p-2 rounded mt-2"
+  >
+    <span
+      class="stars text-gold me-2"
+      aria-hidden="true"
+    >
+      ★★★★★
+    </span>
+
+    <span class="score fw-bold fs-5 me-2">
+      {{
+        averageRating
+          | number: '1.0-2'
+      }}
+    </span>
+
+    <span class="text-muted">
+      ({{ reviewsLabel }})
+    </span>
+  </div>
+</div>

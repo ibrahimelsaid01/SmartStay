@@ -1,0 +1,123 @@
+.dashboard-wrapper {
+  min-height: 100vh;
+  font-family: 'Inter', sans-serif;
+}
+
+.text-muted {
+  color: #a2aec9 !important;
+}
+
+.x-small {
+  font-size: 0.75rem;
+}
+
+.card.bg-dark {
+  background-color: #161b26 !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.card.bg-dark:hover {
+  border-color: rgba(255, 255, 255, 0.15) !important;
+}
+
+.icon-shape {
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+}
+
+.bg-success-opacity {
+  background-color: rgba(82, 196, 26, 0.1) !important;
+  color: #52c41a !important;
+}
+
+.bg-info-opacity {
+  background-color: rgba(66, 204, 204, 0.1) !important;
+  color: #42cccc !important;
+}
+
+.bg-warning-opacity {
+  background-color: rgba(250, 173, 20, 0.1) !important;
+  color: #faad14 !important;
+}
+
+.activity-list {
+  max-height: 320px;
+  overflow-y: auto;
+}
+
+.activity-list::-webkit-scrollbar {
+  width: 4px;
+}
+
+.activity-list::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+
+.activity-item {
+  transition: background-color 0.2s ease;
+  border-radius: 8px;
+}
+
+.activity-item:hover {
+  background-color: rgba(255, 255, 255, 0.03);
+}
+
+.request-item {
+  background-color: #0c111d !important;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.request-item:hover {
+  background-color: #1a2130 !important;
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.avatar-initials {
+  font-size: 0.9rem;
+  letter-spacing: 0.5px;
+  box-shadow: 0 2px 8px rgba(66, 204, 204, 0.2);
+}
+
+.btn-outline-secondary.text-muted {
+  border-color: rgba(255, 255, 255, 0.08) !important;
+  background-color: transparent;
+  transition: all 0.2s ease;
+}
+
+.btn-outline-secondary.text-muted:hover {
+  background-color: rgba(255, 255, 255, 0.02);
+  border-color: rgba(255, 255, 255, 0.15) !important;
+  color: #ffffff !important;
+}
+
+.btn-success {
+  background-color: #52c41a !important;
+  border-color: #52c41a !important;
+  box-shadow: 0 4px 12px rgba(82, 196, 26, 0.2);
+}
+
+.btn-info {
+  background-color: #42cccc !important;
+  border-color: #42cccc !important;
+  box-shadow: 0 4px 12px rgba(66, 204, 204, 0.2);
+}
+
+.info-badge {
+  background-color: rgba(66, 204, 204, 0.15);
+  color: #42cccc;
+  font-size: 0.75rem;
+  padding: 4px 8px;
+  border-radius: 6px;
+}

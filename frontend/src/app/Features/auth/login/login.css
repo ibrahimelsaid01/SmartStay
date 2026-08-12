@@ -1,0 +1,84 @@
+.auth-wrapper {
+  position: relative;
+  min-height: 100vh;
+  background: url('../../../../../public/Images/login.jpg') center/cover no-repeat;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.auth-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+}
+
+.auth-box {
+  position: relative;
+  z-index: 2;
+  background: white;
+  border-radius: 16px;
+  padding: 32px;
+  width: 100%;
+  max-width: 420px;
+}
+
+.btn-google {
+  background: #4dd9d5;
+  color: white;
+  border: none;
+  font-weight: 600;
+  border-radius: 8px;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.btn-primary-custom {
+  background: #4dd9d5;
+  color: white;
+  border: none;
+  font-weight: 600;
+  border-radius: 8px;
+  padding: 10px;
+}
+
+.btn-primary-custom:hover,
+.btn-google:hover {
+  background: #3bc4c0;
+  color: white;
+}
+
+.auth-wrapper {
+  background: url('../../../../../public/Images/login.jpg') center/cover no-repeat;
+}
+
+.btn-primary-custom:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+.auth-wrapper {
+  background: url('../../../../../public/Images/login.jpg') center/cover no-repeat;
+}
+
+.form-control {
+  border-radius: 8px;
+  padding: 10px 14px;
+  border: 1px solid #ddd;
+}
+
+.form-control:focus {
+  border-color: #4dd9d5;
+  box-shadow: 0 0 0 3px rgba(77, 217, 213, 0.2);
+}
+
+a {
+  color: #4dd9d5;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}

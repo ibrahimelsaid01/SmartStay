@@ -1,0 +1,642 @@
+
+.hero-section {
+  position: relative;
+  width: 100%;
+  min-height: 750px;
+  overflow: hidden;
+}
+
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  background: url('/Images/section1.jpg') center/cover no-repeat;
+}
+
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.55);
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+
+  min-height: 650px;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  max-width: 1200px;
+  margin: auto;
+
+  padding: 0 60px;
+
+  overflow: visible;
+}
+/* ==========================
+   HERO TEXT
+========================== */
+
+.hero-text {
+  max-width: 500px;
+  color: white;
+}
+
+.hero-text h1 {
+  font-size: 64px;
+  font-weight: 700;
+  line-height: 1.05;
+  margin-bottom: 20px;
+}
+
+.hero-text h1 span {
+  color: #7de2e3;
+}
+
+.hero-text p {
+  font-size: 18px;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, .85);
+}
+
+/* ==========================
+   GLASS CARD
+========================== */
+
+.explore-card {
+  position: relative;
+
+  width: 340px;
+
+  padding: 24px;
+
+  border-radius: 24px;
+
+  background: rgba(255, 255, 255, 0.12);
+
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+
+  border: 1px solid rgba(255, 255, 255, .25);
+
+  box-shadow:
+    0 10px 30px rgba(0, 0, 0, .25);
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  margin-bottom: 20px;
+
+  color: #8be9ec;
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.card-header i {
+  font-size: 18px;
+}
+
+.input-box {
+  height: 48px;
+
+  border: 1px solid rgba(139, 233, 236, .5);
+
+  border-radius: 10px;
+
+  padding: 0 14px;
+
+  margin-bottom: 12px;
+
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  cursor: pointer;
+
+  color: white;
+
+  background: rgba(255, 255, 255, .08);
+
+  transition: .2s;
+}
+
+.input-box:hover {
+  background: rgba(255, 255, 255, .15);
+}
+
+.input-box i {
+  font-size: 15px;
+}
+
+.input-box span {
+  font-size: 14px;
+}
+
+/* ==========================
+   GUESTS
+========================== */
+
+.guests-box {
+  border: 1px solid rgba(139, 233, 236, .5);
+
+  border-radius: 10px;
+
+  padding: 12px 14px;
+
+  margin-bottom: 16px;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  background: rgba(255,255,255,.08);
+}
+
+.guest-label {
+  color: white;
+  font-size: 14px;
+}
+
+.guest-counter {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.guest-counter button {
+  width: 28px;
+  height: 28px;
+
+  border: none;
+  border-radius: 50%;
+
+  background: #7de2e3;
+
+  color: white;
+
+  cursor: pointer;
+}
+
+.guest-counter span {
+  color: white;
+  min-width: 20px;
+  text-align: center;
+}
+
+/* ==========================
+   BUTTON
+========================== */
+
+.explore-btn {
+  width: 100%;
+  height: 50px;
+
+  border: none;
+  border-radius: 12px;
+
+  background: #7de2e3;
+
+  color: white;
+
+  font-size: 15px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  transition: .2s;
+}
+
+.explore-btn:hover {
+  background: #57d1d4;
+}
+
+/* ==========================
+   CARD
+========================== */
+
+.explore-card {
+  position: relative;
+  overflow: visible;
+}
+
+/* ==========================
+   DROPDOWNS
+========================== */
+
+.dropdown-panel {
+  position: absolute;
+  background: #fff;
+  border-radius: 20px;
+  box-shadow: 0 15px 40px rgba(0,0,0,.18);
+  z-index: 99999;
+}
+
+/* ==========================
+   DESTINATION
+========================== */
+
+.where-dropdown {
+  width: 300px;
+  max-height: 320px;
+
+  top: 55px;
+  left: 100%;
+  margin-left: 12px;
+
+  overflow: hidden;
+
+  background: rgba(255,255,255,.95);
+  backdrop-filter: blur(18px);
+
+  border: 1px solid rgba(125,226,227,.25);
+  border-radius: 20px;
+}
+
+.where-dropdown-content {
+  padding: 18px;
+
+  max-height: 420px;
+  overflow-y: auto;
+   scrollbar-gutter: stable;
+}
+.destination-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+
+  padding: 12px;
+
+  border-radius: 16px;
+
+  cursor: pointer;
+
+  transition: .25s;
+}
+
+.destination-item:hover {
+  background: #f0fdff;
+  transform: translateX(4px);
+}
+.icon-box {
+  width: 52px;
+  height: 52px;
+
+  border-radius: 14px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+}
+.item-name {
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.2;
+}
+.section-title {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: .3px;
+}
+.item-sub {
+  font-size: 11px;
+  line-height: 1.4;
+  color: #94a3b8;
+}
+
+.icon-box i {
+  font-size: 22px;
+}
+
+
+/* ==========================
+   DATES
+========================== */
+
+.when-dropdown {
+  top: 110px;
+  left: 100%;
+  margin-left: 16px;
+
+  width: 850px;
+  max-width: 90vw;
+
+  background: rgba(255,255,255,.98);
+
+  overflow: visible;
+  backdrop-filter: blur(15px);
+}
+
+/* ==========================
+   CALENDAR
+========================== */
+
+.calendars {
+  display: flex;
+  gap: 28px;
+  padding: 24px 35px;
+  position: relative;
+}
+
+.calendar {
+  flex: 1;
+  min-width: 320px;
+}
+
+.month-label {
+  text-align: center;
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+.day-headers {
+  display: grid;
+  grid-template-columns: repeat(7,1fr);
+  margin-bottom: 10px;
+}
+
+.day-headers span {
+  text-align: center;
+  font-size: 13px;
+  font-weight: 600;
+  color: #94a3b8;
+}
+
+.day-grid {
+  display: grid;
+  grid-template-columns: repeat(7,1fr);
+  gap: 6px;
+}
+
+.day-cell {
+  width: 44px;
+  height: 44px;
+
+  margin: auto;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+  cursor: pointer;
+
+  font-size: 15px;
+  font-weight: 500;
+}
+
+
+.day-cell:hover:not(.past):not(.empty) {
+  background: #f1f5f9;
+}
+
+.day-cell.selected {
+  background: #7de2e3;
+  color: #fff;
+}
+
+.day-cell.in-range {
+  background: #ecfeff;
+}
+
+.day-cell.range-start,
+.day-cell.range-end {
+  background: #7de2e3;
+  color: #fff;
+}
+
+.day-cell.past {
+  color: #cbd5e1;
+  cursor: default;
+}
+.where-dropdown-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.where-dropdown-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.where-dropdown-content::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 999px;
+}
+
+/* ==========================
+   ARROWS
+========================== */
+
+.nav-arrow {
+  position: absolute;
+  top: 28px;
+
+  width: 36px;
+  height: 36px;
+
+  border: none;
+  border-radius: 50%;
+
+  background: #f1f5f9;
+
+  cursor: pointer;
+}
+
+.nav-prev {
+  left: 10px;
+}
+
+.nav-next {
+  right: 10px;
+}
+
+/* ==========================
+   MOBILE
+========================== */
+
+@media (max-width: 992px) {
+
+  .hero-content {
+    flex-direction: column;
+    gap: 40px;
+    text-align: center;
+    padding: 40px 20px;
+  }
+
+  .hero-text h1 {
+    font-size: 42px;
+  }
+
+  .hero-text p {
+    font-size: 15px;
+  }
+
+  .explore-card {
+    width: 100%;
+    max-width: 380px;
+  }
+
+  /* ==========================
+     DROPDOWNS MOBILE
+  ========================== */
+
+  .where-dropdown,
+  .when-dropdown {
+
+    position: absolute;
+
+    left: 0;
+    top: calc(100% + 10px);
+
+    width: 100%;
+    max-width: 100%;
+
+    margin-left: 0;
+
+    transform: none;
+
+    overflow-x: hidden;
+  }
+
+  .where-dropdown {
+    max-height: 300px;
+  }
+
+  .where-dropdown-content {
+    padding: 14px;
+  }
+
+  /* ==========================
+   CALENDAR MOBILE
+========================== */
+
+.calendars {
+  flex-direction: column;
+  gap: 20px;
+  padding: 20px;
+}
+
+.calendar {
+  width: 100%;
+  min-width: 100%;
+}
+
+.when-dropdown {
+  width: 100%;
+  max-width: 100%;
+  max-height: none;
+  overflow: visible;
+}
+
+.month-label {
+  font-size: 16px;
+  margin-bottom: 12px;
+}
+
+.day-headers {
+  margin-bottom: 8px;
+}
+
+.day-headers span {
+  font-size: 12px;
+}
+
+.day-grid {
+  gap: 3px;
+}
+
+.day-cell {
+  width: 32px;
+  height: 32px;
+  font-size: 12px;
+  margin: auto;
+}
+
+.nav-arrow {
+  width: 30px;
+  height: 30px;
+  top: 18px;
+}
+
+.nav-prev {
+  left: 5px;
+}
+
+.nav-next {
+  right: 5px;
+}
+  .calendar:last-child .month-label {
+    display: none;
+  }
+
+  /* ==========================
+     GUESTS MOBILE
+  ========================== */
+
+  .guests-box {
+    padding: 12px 16px;
+  }
+
+  .guest-label {
+    margin-right: 12px;
+  }
+
+  .guest-counter {
+    gap: 16px;
+  }
+
+  .guest-counter button {
+    width: 32px;
+    height: 32px;
+    flex-shrink: 0;
+  }
+
+  /* ==========================
+     DESTINATION ITEMS
+  ========================== */
+
+  .destination-item {
+    padding: 10px;
+    gap: 10px;
+  }
+
+  .icon-box {
+    width: 42px;
+    height: 42px;
+  }
+
+  .icon-box i {
+    font-size: 18px;
+  }
+
+  .item-name {
+    font-size: 13px;
+  }
+
+  .item-sub {
+    font-size: 11px;
+  }
+
+  /* ==========================
+     ARROWS
+  ========================== */
+
+  .nav-prev {
+    left: 5px;
+  }
+
+  .nav-next {
+    right: 5px;
+  }
+}

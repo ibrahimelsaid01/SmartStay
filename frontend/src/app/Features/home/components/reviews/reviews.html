@@ -1,0 +1,291 @@
+<!-- Section 4 -->
+<section class="features-section py-5">
+  <div class="container">
+    <h2 class="text-center fw-bold mb-4">
+      How SmartStay makes verified travel bookings safe and simple
+    </h2>
+
+    <div class="row g-4">
+      <div class="col-md-4">
+        <div class="feature-card p-3">
+          <i class="bi bi-stars text-warning mb-2 fs-4"></i>
+
+          <h6 class="fw-bold">
+            AI Smart Matching
+          </h6>
+
+          <p class="text-muted small">
+            Personalized property recommendations tailored perfectly to your
+            travel style and preferences.
+          </p>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="feature-card p-3">
+          <i class="bi bi-shield-check mb-2 fs-4"></i>
+
+          <h6 class="fw-bold">
+            Secure Direct Booking
+          </h6>
+
+          <p class="text-muted small">
+            Seamless and secure instant booking with multiple trusted local
+            and global payment methods.
+          </p>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="feature-card p-3">
+          <i class="bi bi-person-check mb-2 fs-4"></i>
+
+          <h6 class="fw-bold">
+            AI Guest Screening
+          </h6>
+
+          <p class="text-muted small">
+            Building host trust with advanced AI identity verification for
+            both guests and hosts.
+          </p>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="feature-card p-3">
+          <i class="bi bi-chat-dots mb-2 fs-4"></i>
+
+          <h6 class="fw-bold">
+            Smart Host Chat
+          </h6>
+
+          <p class="text-muted small">
+            Direct communication with verified hosts to ask questions and
+            finalize your stay details instantly.
+          </p>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="feature-card p-3">
+          <i class="bi bi-star mb-2 fs-4"></i>
+
+          <h6 class="fw-bold">
+            AI Review Summaries
+          </h6>
+
+          <p class="text-muted small">
+            Read AI-second summaries of previous guests' feedback to make
+            faster booking decisions.
+          </p>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="feature-card p-3">
+          <i class="bi bi-gem mb-2 fs-4"></i>
+
+          <h6 class="fw-bold">
+            Verified Private Stays
+          </h6>
+
+          <p class="text-muted small">
+            Access a curated collection of high-quality apartments, studios,
+            and villas across Egypt.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Section 5 -->
+<section class="trust-section py-5">
+  <div class="container text-center">
+    <h2 class="fw-bold mb-2">
+      Why Guests Trust SmartStay
+    </h2>
+
+    <p class="text-muted mb-4">
+      Experience a new era of secure bookings with our AI-verified hosts and
+      smart security screening across Egypt.
+    </p>
+
+    <div class="row g-3 justify-content-center mb-4">
+      <div class="col-md-4">
+        <div class="trust-badge p-3">
+          <i class="bi bi-check-circle text-success me-2"></i>
+
+          Trusted by 10,000+ travelers in Egypt
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="trust-badge p-3">
+          <i class="bi bi-check-circle text-success me-2"></i>
+
+          AI-Verified Hosts & Properties
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="trust-badge p-3">
+          <i class="bi bi-star text-warning me-2"></i>
+
+          100% Genuine, Filtered Reviews
+        </div>
+      </div>
+    </div>
+
+    <button class="btn btn-explore px-4 py-2">
+      Start exploring
+    </button>
+  </div>
+</section>
+
+<!-- Section 6 -->
+<section class="reviews-section py-5">
+  <div class="container">
+    <div class="reviews-heading text-center mb-4">
+      <h2 class="fw-bold mb-2">
+        What Our Community Says
+      </h2>
+
+      <p class="text-muted mb-0">
+        Real published guest reviews gradually replace our starter community
+        examples as SmartStay grows.
+      </p>
+    </div>
+
+    <div
+      *ngIf="reviewsLoading"
+      class="reviews-loading-indicator"
+      aria-live="polite"
+    >
+      <span
+        class="spinner-border spinner-border-sm"
+        aria-hidden="true"
+      ></span>
+
+      <span>
+        Updating community reviews...
+      </span>
+    </div>
+
+    <div class="row g-4">
+      <div
+        *ngFor="
+          let review of displayedReviews;
+          trackBy: trackReviewById
+        "
+        class="col-md-4"
+      >
+        <article
+          class="review-card p-4"
+          [class.real-review-card]="isRealReview(review)"
+          [class.mock-review-card]="!isRealReview(review)"
+        >
+          <div class="reviewer-header d-flex align-items-center mb-3">
+            <img
+              [src]="review.reviewerImageUrl"
+              [alt]="review.reviewerName"
+              class="reviewer-img me-3"
+              loading="lazy"
+              (error)="useDefaultReviewerImage($event)"
+            />
+
+            <div class="reviewer-details">
+              <div class="reviewer-name-row">
+                <h6 class="mb-0 fw-bold">
+                  {{ review.reviewerName }}
+                </h6>
+
+                <span
+                  *ngIf="isRealReview(review)"
+                  class="verified-review-badge"
+                >
+                  <i class="bi bi-patch-check-fill"></i>
+
+                  Verified stay
+                </span>
+              </div>
+
+              <small class="text-muted">
+                {{ review.location }}
+              </small>
+            </div>
+          </div>
+
+          <div
+            class="stars mb-3"
+            [attr.aria-label]="review.rating + ' out of 5 stars'"
+          >
+            <i
+              *ngFor="let star of starOptions"
+              class="bi bi-star-fill"
+              [class.active]="star <= review.rating"
+            ></i>
+          </div>
+
+          <p class="review-comment small text-muted mb-0">
+            {{ review.comment }}
+          </p>
+
+          <footer
+            *ngIf="isRealReview(review)"
+            class="real-review-footer"
+          >
+            <a
+              *ngIf="review.propertyId"
+              [routerLink]="[
+                '/property-details',
+                review.propertyId
+              ]"
+              class="review-property-link"
+            >
+              <i class="bi bi-house-door"></i>
+
+              {{ review.propertyTitle || 'View property' }}
+            </a>
+
+            <time
+              *ngIf="review.publishedAt"
+              [attr.datetime]="review.publishedAt"
+            >
+              {{ review.publishedAt | date: 'mediumDate' }}
+            </time>
+          </footer>
+        </article>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section
+  class="hero"
+  *ngIf="!authState.isLoggedIn()"
+>
+  <div class="hero-content">
+    <h1>
+      Start your journey with SmartStay today!
+    </h1>
+
+    <p>
+      Join thousands of travelers enjoying shared accommodations and
+      authentic experiences
+    </p>
+
+    <div class="hero-buttons">
+      <button
+        class="hero-btn signup-btn"
+        routerLink="/login"
+      >
+        Sign in for free
+      </button>
+
+      <button class="hero-btn property-btn">
+        List Your Property
+      </button>
+    </div>
+  </div>
+</section>

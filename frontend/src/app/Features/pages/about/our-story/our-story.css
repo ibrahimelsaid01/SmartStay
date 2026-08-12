@@ -1,0 +1,74 @@
+.hero-section {
+  height: 400px;
+  overflow: hidden;
+  
+}
+
+.hero-img {
+  height: 400px;
+  object-fit: cover;
+  filter: brightness(0.6);
+}
+
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.3);
+  z-index: 1;
+}
+
+.hero-content {
+  z-index: 2;
+}
+
+.badge-label {
+  background: rgba(255,255,255,0.2);
+  color: white;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  letter-spacing: 1px;
+}
+
+.text-teal {
+  color: #4dd9d5;
+}
+
+.btn-teal {
+  background-color: #4dd9d5;
+  color: white;
+  border: none;
+  border-radius: 8px;
+}
+
+.btn-teal:hover {
+  background-color: #3bc4c0;
+  color: white;
+}
+
+.bg-teal {
+  background-color: #4dd9d5 !important;
+}
+
+.edge-card {
+  height: 100%;
+  transition: transform 0.2s;
+}
+
+.edge-card:hover {
+  transform: translateY(-4px);
+}
+
+.icon-box {
+  width: 48px;
+  height: 48px;
+  background: #f0fafa;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bg-teal .icon-box {
+  background: rgba(255,255,255,0.2);
+}

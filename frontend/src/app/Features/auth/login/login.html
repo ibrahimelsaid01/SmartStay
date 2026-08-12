@@ -1,0 +1,315 @@
+<div class="auth-wrapper">
+  <div class="auth-overlay"></div>
+
+  <div class="auth-box">
+    <div
+      *ngIf="authenticationError"
+      class="alert alert-danger py-2 small"
+      role="alert"
+    >
+      {{ authenticationError }}
+    </div>
+
+    <!-- Step 1: Email or external provider -->
+    <div *ngIf="step === 1">
+      <h4 class="fw-bold mb-1">
+        Sign in or create an account
+      </h4>
+
+      <p class="text-muted small mb-3">
+        Find the best stay, connect with verified hosts, and experience
+        seamless booking everywhere.
+      </p>
+
+      <div
+        id="google-btn"
+        class="w-100 mb-3"
+      ></div>
+
+      <div class="mb-3">
+        <input
+          type="email"
+          class="form-control"
+          placeholder="E-mail"
+          autocomplete="email"
+          maxlength="256"
+          [(ngModel)]="email"
+          [class.is-invalid]="!!emailError"
+          [disabled]="loading"
+          (keydown.enter)="onContinueEmail(email)"
+        />
+
+        <div
+          class="invalid-feedback"
+          *ngIf="emailError"
+        >
+          {{ emailError }}
+        </div>
+      </div>
+
+      <button
+        type="button"
+        class="btn btn-primary-custom w-100 mb-3"
+        (click)="onContinueEmail(email)"
+        [disabled]="loading"
+      >
+        {{
+          loading
+            ? 'Loading...'
+            : 'Continue'
+        }}
+      </button>
+
+      <p class="text-center text-muted small mb-3">
+        or ways to sign in
+      </p>
+
+      <button
+        type="button"
+        class="btn btn-outline-secondary w-100 mb-3"
+        (click)="onFacebookLogin()"
+        [disabled]="loading"
+      >
+        <i class="bi bi-facebook me-2"></i>
+        Continue with Facebook
+      </button>
+
+      <p
+        class="text-muted"
+        style="font-size: 0.75rem"
+      >
+        By continuing, you agree to our
+        <a routerLink="/terms-of-service">
+          Terms
+        </a>
+        and
+        <a routerLink="/privacy-policy">
+          Privacy Policy
+        </a>.
+      </p>
+    </div>
+
+    <!-- Step 2: OTP -->
+    <div *ngIf="step === 2">
+      <h4 class="fw-bold mb-1">
+        Let's confirm your e-mail
+      </h4>
+
+      <p class="text-muted small mb-3">
+        Enter the verification code we sent to
+        <strong>{{ email }}</strong>
+      </p>
+
+      <div class="mb-3">
+        <input
+          type="text"
+          class="form-control"
+          placeholder="6-digit code"
+          inputmode="numeric"
+          autocomplete="one-time-code"
+          maxlength="6"
+          [(ngModel)]="code"
+          [class.is-invalid]="!!otpError"
+          [disabled]="loading"
+          (input)="
+            code = code
+              .replace(
+                /[^0-9]/g,
+                ''
+              )
+              .slice(0, 6)
+          "
+          (keydown.enter)="onVerifyCode()"
+        />
+
+        <div
+          class="invalid-feedback"
+          *ngIf="otpError"
+        >
+          {{ otpError }}
+        </div>
+      </div>
+
+      <button
+        type="button"
+        class="btn btn-primary-custom w-100 mb-3"
+        (click)="onVerifyCode()"
+        [disabled]="
+          loading ||
+          code.length !== 6
+        "
+      >
+        {{
+          loading
+            ? 'Verifying...'
+            : 'Continue'
+        }}
+      </button>
+
+      <div
+        *ngIf="resendMessage"
+        class="text-center small mb-2"
+        aria-live="polite"
+        [class.text-success]="
+          resendMessage.includes(
+            'successfully'
+          )
+        "
+        [class.text-danger]="
+          !resendMessage.includes(
+            'successfully'
+          )
+        "
+      >
+        {{ resendMessage }}
+      </div>
+
+      <p class="text-muted small text-center">
+        Didn't receive a code?
+
+        <button
+          type="button"
+          class="btn btn-link p-0 align-baseline"
+          (click)="onResendOtp()"
+          [disabled]="
+            resendLoading ||
+            loading
+          "
+        >
+          {{
+            resendLoading
+              ? 'Sending...'
+              : 'Resend a new code'
+          }}
+        </button>
+      </p>
+    </div>
+
+    <!-- Step 3: Invalid OTP -->
+    <div *ngIf="step === 3">
+      <h4 class="fw-bold mb-1">
+        Let's confirm your e-mail
+      </h4>
+
+      <p class="text-muted small mb-3">
+        Enter the verification code we sent to
+        <strong>{{ email }}</strong>
+      </p>
+
+      <div class="mb-1">
+        <input
+          type="text"
+          class="form-control is-invalid"
+          placeholder="6-digit code"
+          inputmode="numeric"
+          autocomplete="one-time-code"
+          maxlength="6"
+          [(ngModel)]="code"
+          [disabled]="loading"
+          (input)="
+            code = code
+              .replace(
+                /[^0-9]/g,
+                ''
+              )
+              .slice(0, 6)
+          "
+          (keydown.enter)="onVerifyCode()"
+        />
+
+        <div class="invalid-feedback">
+          {{ otpError }}
+        </div>
+      </div>
+
+      <button
+        type="button"
+        class="btn btn-primary-custom w-100 mb-3 mt-3"
+        (click)="onVerifyCode()"
+        [disabled]="
+          loading ||
+          code.length !== 6
+        "
+      >
+        {{
+          loading
+            ? 'Verifying...'
+            : 'Continue'
+        }}
+      </button>
+
+      <p class="text-center">
+        <button
+          type="button"
+          class="btn btn-link p-0"
+          (click)="onRetryCode()"
+          [disabled]="loading"
+        >
+          Start Again
+        </button>
+      </p>
+    </div>
+
+    <!-- Step 4: Complete profile -->
+    <div *ngIf="step === 4">
+      <h4 class="fw-bold mb-1">
+        What name do you use on your travel ID?
+      </h4>
+
+      <p class="text-muted small mb-3">
+        Enter your official first and last name. You can update the rest of
+        your profile details later.
+      </p>
+
+      <div
+        *ngIf="completeProfileError"
+        class="alert alert-danger py-2 small"
+        role="alert"
+      >
+        {{ completeProfileError }}
+      </div>
+
+      <div class="mb-3">
+        <input
+          type="text"
+          class="form-control mb-2"
+          placeholder="First name"
+          autocomplete="given-name"
+          minlength="2"
+          maxlength="100"
+          [(ngModel)]="firstName"
+          [disabled]="loading"
+        />
+
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Last name"
+          autocomplete="family-name"
+          minlength="2"
+          maxlength="100"
+          [(ngModel)]="lastName"
+          [disabled]="loading"
+          (keydown.enter)="onFinish()"
+        />
+      </div>
+
+      <button
+        type="button"
+        class="btn btn-primary-custom w-100"
+        (click)="onFinish()"
+        [disabled]="
+          loading ||
+          firstName.trim().length < 2 ||
+          lastName.trim().length < 2
+        "
+      >
+        {{
+          loading
+            ? 'Saving...'
+            : 'Continue'
+        }}
+      </button>
+    </div>
+  </div>
+</div>

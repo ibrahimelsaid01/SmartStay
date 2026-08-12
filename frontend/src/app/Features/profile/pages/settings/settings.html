@@ -1,0 +1,99 @@
+<div class="settings-container">
+
+  <!-- Customization preferences -->
+  <h4 class="fw-bold mb-4">Customization preferences</h4>
+
+  <!-- Currency -->
+  <div class="settings-section mb-4">
+    <div class="d-flex justify-content-between align-items-center">
+      <div>
+        <h6 class="fw-bold mb-1">Currency</h6>
+        <p class="text-muted small mb-0">Select your desired currency for transactions and price display.</p>
+      </div>
+      <select class="form-select w-auto" [(ngModel)]="selectedCurrency" (change)="saveCurrency()">
+        <option *ngFor="let c of currencies" [value]="c.value">{{ c.label }}</option>
+      </select>
+    </div>
+  </div>
+
+  <hr>
+
+  <!-- Language -->
+  <div class="settings-section mb-4">
+    <div class="d-flex justify-content-between align-items-center">
+      <div>
+        <h6 class="fw-bold mb-1">Language</h6>
+        <p class="text-muted small mb-0">Select your preferred language.</p>
+      </div>
+      <select class="form-select w-auto" [(ngModel)]="selectedLanguage" (change)="saveLanguage()">
+        <option *ngFor="let l of languages" [value]="l.value">{{ l.label }}</option>
+      </select>
+    </div>
+  </div>
+
+  <hr>
+
+
+
+
+
+  <!-- Security -->
+  <h4 class="fw-bold mb-4 mt-4">Security</h4>
+
+  <!-- Change Email -->
+  <div class="settings-section mb-4">
+    <h6 class="fw-bold mb-1">Change Email</h6>
+    <p class="text-muted small mb-3">Update your email address securely.</p>
+
+    <div *ngIf="emailStep === 1">
+      <div class="d-flex gap-2">
+        <input type="email" class="form-control" placeholder="New email address" [(ngModel)]="newEmail" />
+        <button class="btn btn-outline-info fw-bold px-4" (click)="requestEmailChange()" [disabled]="emailLoading">
+          {{ emailLoading ? 'Sending...' : 'Send OTP' }}
+        </button>
+      </div>
+    </div>
+
+    <div *ngIf="emailStep === 2">
+      <div class="d-flex gap-2">
+        <input type="text" class="form-control" placeholder="Enter OTP code" [(ngModel)]="otpCode" />
+        <button class="btn btn-info text-white fw-bold px-4" (click)="confirmEmailChange()" [disabled]="emailLoading">
+          {{ emailLoading ? 'Confirming...' : 'Confirm' }}
+        </button>
+      </div>
+    </div>
+
+    <p class="small mt-2" *ngIf="emailMessage"
+       [class.text-success]="emailMessage.includes('success') || emailMessage.includes('sent')"
+       [class.text-danger]="emailMessage.includes('wrong') || emailMessage.includes('Invalid')">
+      {{ emailMessage }}
+    </p>
+  </div>
+
+  <hr>
+
+  <!-- Delete Account -->
+  <div class="settings-section mb-4">
+    <h6 class="fw-bold mb-1">Remove account</h6>
+    <p class="text-muted small mb-3">Delete your account through settings for complete removal of your data.</p>
+
+    <div *ngIf="!showDeleteConfirm">
+      <button class="btn btn-outline-danger fw-bold" (click)="showDeleteConfirm = true">
+        Delete account
+      </button>
+    </div>
+
+    <div *ngIf="showDeleteConfirm" class="alert alert-danger">
+      <p class="fw-bold mb-2">Are you sure? This action cannot be undone!</p>
+      <div class="d-flex gap-2">
+        <button class="btn btn-danger fw-bold" (click)="deleteAccount()" [disabled]="deleteLoading">
+          {{ deleteLoading ? 'Deleting...' : 'Yes, Delete my account' }}
+        </button>
+        <button class="btn btn-outline-secondary fw-bold" (click)="showDeleteConfirm = false">
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+
+</div>

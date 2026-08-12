@@ -1,0 +1,260 @@
+.profile-sidebar {
+  width: 286px;
+  padding: 4px;
+  background: transparent;
+  flex-shrink: 0;
+  transition: width 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.sidebar-header {
+  width: 100%;
+  min-width: 0;
+  gap: 0.75rem;
+  overflow: hidden;
+}
+
+.user-info-box {
+  min-width: 0;
+  overflow: hidden;
+  flex: 1 1 auto;
+}
+
+.profile-avatar-img {
+  width: 48px;
+  height: 48px;
+  object-fit: cover;
+  border-radius: 50%;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  flex: 0 0 48px;
+}
+
+.text-fields {
+  display: flex;
+  min-width: 0;
+  overflow: hidden;
+  flex-direction: column;
+}
+
+.user-name,
+.user-role {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.user-name {
+  color: #1a202c;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.user-role {
+  color: #718096;
+  font-size: 14px;
+}
+
+.sidebar-context-label {
+  padding: 0 12px;
+  color: #94a3b8;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.9px;
+  text-transform: uppercase;
+}
+
+.separator-line {
+  width: 100%;
+  margin-right: 0;
+  margin-left: 0;
+  border: 0;
+  border-top: 1px solid rgba(66, 204, 204, 0.55);
+  opacity: 1;
+  transition: width 0.25s ease;
+}
+
+.nav-menu {
+  width: 100%;
+}
+
+.nav-item {
+  width: 100%;
+  color: #4a5568;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 500;
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.icon-slate {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  color: #4a5568;
+  font-size: 20px;
+  flex: 0 0 24px;
+}
+
+.nav-item:hover {
+  color: #2aaeb0;
+  background-color: #f0fdfa;
+}
+
+.nav-item:hover .icon-slate {
+  color: #2aaeb0;
+}
+
+.active-link,
+.active-parent {
+  color: #2aaeb0 !important;
+  background-color: #e6f7f9 !important;
+  font-weight: 600;
+}
+
+.active-link .icon-slate,
+.active-parent .icon-slate,
+.active-parent .arrow-icon {
+  color: #2aaeb0 !important;
+}
+
+.arrow-icon {
+  color: #2aaeb0;
+  font-size: 12px;
+}
+
+.sub-menu {
+  position: relative;
+  display: flex;
+  margin-top: 4px;
+  padding-left: 20px;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.sub-menu::before {
+  position: absolute;
+  top: 8px;
+  bottom: 8px;
+  left: 20px;
+  z-index: 1;
+  width: 2px;
+  background-color: #e2e8f0;
+  content: '';
+}
+
+.sub-item {
+  position: relative;
+  z-index: 2;
+  display: block;
+  width: 100%;
+  padding: 6px 0 6px 16px;
+  color: #718096;
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.sub-item:hover {
+  color: #2aaeb0;
+}
+
+.sub-active {
+  color: #2aaeb0 !important;
+  font-weight: 600;
+}
+
+.sub-active::before {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 3px;
+  background-color: #42cccc;
+  content: '';
+}
+
+.logout-btn {
+  color: #e53e3e !important;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.logout-btn .icon-slate {
+  color: #e53e3e;
+}
+
+.logout-btn:hover {
+  color: #c53030 !important;
+  background-color: #fff5f5 !important;
+}
+
+.logout-btn:hover .icon-slate {
+  color: #c53030;
+}
+
+.btn-toggle-sidebar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  color: #2aaeb0;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 50%;
+  cursor: pointer;
+  flex: 0 0 32px;
+  transition: all 0.2s ease;
+}
+
+.btn-toggle-sidebar:hover {
+  background: #f0fdfa;
+}
+
+.profile-sidebar.is-collapsed {
+  width: 76px;
+}
+
+.profile-sidebar.is-collapsed .text-fields,
+.profile-sidebar.is-collapsed .menu-text,
+.profile-sidebar.is-collapsed .sub-menu {
+  display: none !important;
+}
+
+.profile-sidebar.is-collapsed .separator-line {
+  width: 40px;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.profile-sidebar.is-collapsed .sidebar-header,
+.profile-sidebar.is-collapsed .user-info-box,
+.profile-sidebar.is-collapsed .nav-item {
+  justify-content: center !important;
+}
+
+.profile-sidebar.is-collapsed .nav-item {
+  padding-right: 0 !important;
+  padding-left: 0 !important;
+}
+
+.profile-sidebar.is-collapsed .user-info-box {
+  flex: 0 0 auto;
+}
+
+@media (max-width: 767.98px) {
+  .profile-sidebar {
+    width: 100% !important;
+    padding: 0;
+  }
+
+  .separator-line {
+    width: 100% !important;
+  }
+}

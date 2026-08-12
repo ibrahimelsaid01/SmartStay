@@ -1,0 +1,429 @@
+import { Routes } from '@angular/router';
+
+import { adminGuard } from './Core/guards/admin-guard';
+import { authGuard } from './Core/guards/auth-guard';
+import { hostGuard } from './Core/guards/host-guard-guard';
+
+export const routes: Routes = [
+  {
+    path: '',
+    loadComponent: () =>
+      import('./Features/layouts/main-layout/main-layout').then(
+        (module) => module.MainLayout,
+      ),
+    children: [
+      {
+        path: '',
+        loadComponent: () =>
+          import('./Features/home/home').then(
+            (module) => module.Home,
+          ),
+      },
+      {
+        path: 'all-stays',
+        loadComponent: () =>
+          import('./Features/home/pages/all-stays/all-stays').then(
+            (module) => module.AllStays,
+          ),
+      },
+      {
+        path: 'property-details/:id',
+        loadComponent: () =>
+          import(
+            './Features/home/pages/propertydetails/propertydetails'
+          ).then((module) => module.Propertydetails),
+      },
+      {
+        path: 'login',
+        loadComponent: () =>
+          import('./Features/auth/login/login').then(
+            (module) => module.Login,
+          ),
+      },
+      {
+        path: 'checkout/:bookingId',
+        canActivate: [authGuard],
+        loadComponent: () =>
+          import('./Features/home/pages/checkout/checkout').then(
+            (module) => module.Checkout,
+          ),
+      },
+      {
+        path: 'booking-confirmation/:paymentId',
+        canActivate: [authGuard],
+        loadComponent: () =>
+          import(
+            './Features/home/pages/booking-confirmation/booking-confirmation'
+          ).then((module) => module.BookingConfirmation),
+      },
+      {
+        path: 'recommendations/:bookingId',
+        canActivate: [authGuard],
+        loadComponent: () =>
+          import(
+            './Features/home/pages/ai-recommendation/ai-recommendation'
+          ).then((module) => module.AiRecommendation),
+      },
+      {
+        path: 'ai-chat',
+        loadComponent: () =>
+          import(
+            './Features/home/pages/ai-chatbot-page/ai-chatbot-page'
+          ).then((module) => module.AiChatbotPageComponent),
+      },
+
+      // Legal
+      {
+        path: 'privacy-policy',
+        loadComponent: () =>
+          import(
+            './Features/pages/legal/privacy-policy/privacy-policy'
+          ).then((module) => module.PrivacyPolicy),
+      },
+      {
+        path: 'terms-of-service',
+        loadComponent: () =>
+          import(
+            './Features/pages/legal/terms-of-service/terms-of-service'
+          ).then((module) => module.TermsOfServiceComponent),
+      },
+      {
+        path: 'cookie-policy',
+        loadComponent: () =>
+          import(
+            './Features/pages/legal/cookie-policy/cookie-policy'
+          ).then((module) => module.CookiePolicy),
+      },
+
+      // Support
+      {
+        path: 'help-center',
+        loadComponent: () =>
+          import(
+            './Features/pages/support/help-center/help-center'
+          ).then((module) => module.HelpCenterComponent),
+      },
+      {
+        path: 'safety-information',
+        loadComponent: () =>
+          import(
+            './Features/pages/support/safety-information/safety-information'
+          ).then((module) => module.SafetyInformationComponent),
+      },
+      {
+        path: 'cancellation-options',
+        loadComponent: () =>
+          import(
+            './Features/pages/support/cancellation-options/cancellation-options'
+          ).then((module) => module.CancellationOptions),
+      },
+      {
+        path: 'contact-us',
+        loadComponent: () =>
+          import(
+            './Features/pages/support/contact-us/contact-us'
+          ).then((module) => module.ContactUs),
+      },
+
+      // About
+      {
+        path: 'our-story',
+        loadComponent: () =>
+          import(
+            './Features/pages/about/our-story/our-story'
+          ).then((module) => module.OurStory),
+      },
+      {
+        path: 'how-it-works',
+        loadComponent: () =>
+          import(
+            './Features/pages/about/how-it-works/how-it-works'
+          ).then((module) => module.HowItWorks),
+      },
+      {
+        path: 'careers',
+        loadComponent: () =>
+          import(
+            './Features/pages/about/careers/careers'
+          ).then((module) => module.Careers),
+      },
+      {
+        path: 'press',
+        loadComponent: () =>
+          import(
+            './Features/pages/about/press/press'
+          ).then((module) => module.Press),
+      },
+
+      // Profile
+      {
+        path: 'profile',
+        canActivate: [authGuard],
+        loadComponent: () =>
+          import('./Features/profile/profile').then(
+            (module) => module.Profile,
+          ),
+        children: [
+          {
+            path: '',
+            redirectTo: 'personal-data',
+            pathMatch: 'full',
+          },
+          {
+            path: 'personal-data',
+            loadComponent: () =>
+              import(
+                './Features/profile/pages/personal-data/personal-data'
+              ).then((module) => module.PersonalData),
+          },
+          {
+            path: 'payment-account',
+            loadComponent: () =>
+              import(
+                './Shared/components/payment-account/payment-account'
+              ).then((module) => module.PaymentAccount),
+          },
+          {
+            path: 'wishlist',
+            loadComponent: () =>
+              import(
+                './Features/profile/pages/wishlist/wishlist'
+              ).then((module) => module.Wishlist),
+          },
+          {
+            path: 'support',
+            loadComponent: () =>
+              import(
+                './Features/profile/pages/support/support'
+              ).then((module) => module.Support),
+          },
+          {
+            path: 'settings',
+            loadComponent: () =>
+              import(
+                './Features/profile/pages/settings/settings'
+              ).then((module) => module.Settings),
+          },
+          {
+            path: 'my-reviews',
+            loadComponent: () =>
+              import(
+                './Features/profile/pages/my-reviews/my-reviews'
+              ).then((module) => module.MyReviews),
+          },
+          {
+            path: 'messages',
+            loadComponent: () =>
+              import(
+                './Features/profile/messages/user-messages'
+              ).then((module) => module.UserMessages),
+          },
+          {
+            path: 'bookings',
+            redirectTo: 'bookings/all',
+            pathMatch: 'full',
+          },
+          {
+            path: 'bookings/cancelled',
+            redirectTo: 'bookings/canceled',
+            pathMatch: 'full',
+          },
+          {
+            path: 'bookings/:filter',
+            loadComponent: () =>
+              import(
+                './Features/profile/pages/my-bookings/my-bookings'
+              ).then((module) => module.MyBookings),
+          },
+          {
+            path: '**',
+            redirectTo: 'personal-data',
+          },
+        ],
+      },
+
+      // Host
+      {
+        path: 'host',
+        canActivate: [hostGuard],
+        loadComponent: () =>
+          import('./Features/host/host').then(
+            (module) => module.Host,
+          ),
+        children: [
+          {
+            path: '',
+            redirectTo: 'dashboard',
+            pathMatch: 'full',
+          },
+          {
+            path: 'dashboard',
+            loadComponent: () =>
+              import(
+                './Features/host/pages/host-dashboard/host-dashboard'
+              ).then((module) => module.HostDashboard),
+          },
+          {
+            path: 'messages',
+            loadComponent: () =>
+              import(
+                './Features/host/pages/meesages/meesages'
+              ).then((module) => module.Meesages),
+          },
+          {
+            path: 'my-listings',
+            loadComponent: () =>
+              import(
+                './Features/host/pages/my-listings/my-listings'
+              ).then((module) => module.MyListingsComponent),
+          },
+          {
+            path: 'listings',
+            redirectTo: 'my-listings',
+            pathMatch: 'full',
+          },
+          {
+            path: 'listings/add',
+            loadComponent: () =>
+              import(
+                './Features/host/pages/property-editor/property-editor'
+              ).then((module) => module.PropertyEditorComponent),
+          },
+          {
+            path: 'listings/edit/:propertyId',
+            redirectTo: 'listings/:propertyId/edit',
+          },
+          {
+            path: 'listings/:propertyId/edit',
+            loadComponent: () =>
+              import(
+                './Features/host/pages/property-editor/property-editor'
+              ).then((module) => module.PropertyEditorComponent),
+          },
+          {
+            path: 'settings',
+            loadComponent: () =>
+              import(
+                './Features/profile/pages/settings/settings'
+              ).then((module) => module.Settings),
+          },
+          {
+            path: 'my-reviews',
+            redirectTo: '/profile/my-reviews',
+            pathMatch: 'full',
+          },
+          {
+            path: '**',
+            redirectTo: 'dashboard',
+          },
+        ],
+      },
+
+      // Become Host
+      {
+        path: 'become-host',
+        canActivate: [authGuard],
+        loadComponent: () =>
+          import(
+            './Features/host/pages/host-application/host-application'
+          ).then((module) => module.HostApplicationComponent),
+      },
+
+      // Admin
+      {
+        path: 'admin',
+        canActivate: [adminGuard],
+        loadComponent: () =>
+          import('./Features/admin/admin').then(
+            (module) => module.AdminLayout,
+          ),
+        children: [
+          {
+            path: '',
+            redirectTo: 'dashboard',
+            pathMatch: 'full',
+          },
+          {
+            path: 'dashboard',
+            loadComponent: () =>
+              import(
+                './Features/admin/pages/admin-dashboard/admin-dashboard'
+              ).then((module) => module.AdminDashboard),
+          },
+          {
+            path: 'user-management',
+            loadComponent: () =>
+              import(
+                './Features/admin/pages/user-managment/user-managment'
+              ).then((module) => module.UserManagment),
+          },
+          {
+            path: 'user-managment',
+            redirectTo: 'user-management',
+            pathMatch: 'full',
+          },
+          {
+            path: 'property-verifications',
+            loadComponent: () =>
+              import(
+                './Features/admin/pages/property-verifications/property-verifications'
+              ).then((module) => module.PropertyVerifications),
+          },
+          {
+            path: 'messages',
+            loadComponent: () =>
+              import(
+                './Features/admin/messages/admin-messages'
+              ).then((module) => module.AdminMessages),
+          },
+          {
+            path: 'financials-payouts',
+            loadComponent: () =>
+              import(
+                './Features/admin/pages/financials-payouts/financials-payouts'
+              ).then((module) => module.FinancialsPayouts),
+          },
+          {
+            path: 'complaints-support',
+            loadComponent: () =>
+              import(
+                './Features/admin/pages/complaints-support/complaints-support'
+              ).then((module) => module.ComplaintsSupport),
+          },
+          {
+            path: 'reviews-moderation',
+            loadComponent: () =>
+              import(
+                './Features/admin/pages/reviews-moderation/reviews-moderation'
+              ).then((module) => module.ReviewsModeration),
+          },
+          {
+            path: 'bookings',
+            loadComponent: () =>
+              import(
+                './Features/admin/pages/bookings-management/bookings-management'
+              ).then((module) => module.BookingsManagement),
+          },
+          {
+            path: 'action-logs',
+            loadComponent: () =>
+              import(
+                './Features/admin/pages/action-logs/action-logs'
+              ).then((module) => module.ActionLogs),
+          },
+          {
+            path: '**',
+            redirectTo: 'dashboard',
+          },
+        ],
+      },
+    ],
+  },
+  {
+    path: '**',
+    loadComponent: () =>
+      import('./Features/not-found/not-found').then(
+        (module) => module.NotFound,
+      ),
+  },
+];

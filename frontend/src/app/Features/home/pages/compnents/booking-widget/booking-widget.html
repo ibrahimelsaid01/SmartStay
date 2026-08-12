@@ -1,0 +1,530 @@
+<div class="booking-card">
+  <div class="booking-card-header">
+    <span class="booking-icon">
+      <i class="fa-solid fa-calendar-days"></i>
+    </span>
+
+    <div>
+      <h3 class="booking-title mb-1">
+        Booking
+      </h3>
+
+      <p class="booking-subtitle mb-0 text-muted small">
+        Reserve your stay
+      </p>
+    </div>
+  </div>
+
+  <div class="booking-price-pill mb-4">
+    {{ property.pricePerNight | number }}
+    {{ property.currency }}
+    per night
+  </div>
+
+  <div class="booking-divider"></div>
+
+  @if (statusMessage) {
+    <div
+      class="alert alert-info py-2 small mb-3 booking-status-message"
+      aria-live="polite"
+    >
+      <span
+        class="spinner-border spinner-border-sm me-2"
+        aria-hidden="true"
+      ></span>
+
+      {{ statusMessage }}
+    </div>
+  }
+
+  @if (errorMessage) {
+    <div
+      class="alert alert-danger py-2 small mb-3"
+      aria-live="assertive"
+    >
+      {{ errorMessage }}
+    </div>
+  }
+
+  <div class="booking-field mb-3">
+    <label
+      class="form-label mb-2"
+      for="booking-check-in"
+    >
+      Check-in Date
+    </label>
+
+    <input
+      id="booking-check-in"
+      type="date"
+      class="form-control"
+      [min]="today"
+      [disabled]="isBusy"
+      [(ngModel)]="bookingData.checkInDate"
+      (ngModelChange)="onBookingDataChanged()"
+    />
+  </div>
+
+  <div class="booking-field mb-3">
+    <label
+      class="form-label mb-2"
+      for="booking-check-out"
+    >
+      Check-out Date
+    </label>
+
+    <input
+      id="booking-check-out"
+      type="date"
+      class="form-control"
+      [min]="bookingData.checkInDate || today"
+      [disabled]="isBusy"
+      [(ngModel)]="bookingData.checkOutDate"
+      (ngModelChange)="onBookingDataChanged()"
+    />
+  </div>
+
+  <div class="booking-field mb-4">
+    <label
+      class="form-label mb-2"
+      for="booking-guests"
+    >
+      Guests
+    </label>
+
+    <select
+      id="booking-guests"
+      class="form-select"
+      [disabled]="isBusy"
+      [(ngModel)]="bookingData.guestsCount"
+      (ngModelChange)="onBookingDataChanged()"
+    >
+      @for (guestCount of guestOptions; track guestCount) {
+        <option [ngValue]="guestCount">
+          {{ guestCount }}
+
+          {{
+            guestCount === 1
+              ? 'Guest'
+              : 'Guests'
+          }}
+        </option>
+      }
+    </select>
+  </div>
+
+  @if (bookingQuote) {
+    <div
+      class="booking-quote mb-3"
+      aria-live="polite"
+    >
+      <div class="quote-row">
+        <span>
+          {{
+            bookingQuote.pricePerNight
+              | number
+          }}
+
+          {{ quoteCurrency }}
+
+          ×
+
+          {{ bookingQuote.nights }}
+
+          {{
+            bookingQuote.nights === 1
+              ? 'night'
+              : 'nights'
+          }}
+        </span>
+
+        <strong>
+          {{
+            bookingQuote.subtotal
+              | number
+          }}
+
+          {{ quoteCurrency }}
+        </strong>
+      </div>
+
+      <div class="quote-row">
+        <span>
+          SmartStay service fee
+
+          ({{
+            bookingQuote.serviceFeePercentage
+              | number: '1.0-2'
+          }}%)
+        </span>
+
+        <strong>
+          {{
+            bookingQuote.serviceFee
+              | number
+          }}
+
+          {{ quoteCurrency }}
+        </strong>
+      </div>
+
+      <div class="quote-divider"></div>
+
+      <div class="quote-row total">
+        <span>
+          Total
+        </span>
+
+        <strong>
+          {{
+            bookingQuote.totalAmount
+              | number
+          }}
+
+          {{ quoteCurrency }}
+        </strong>
+      </div>
+
+      <p class="quote-policy mb-0 mt-2">
+        {{ cancellationPolicyTitle }}
+        cancellation policy
+      </p>
+    </div>
+  } @else if (stayNights > 0) {
+    <div
+      class="d-flex justify-content-between gap-3 small text-muted mb-3"
+    >
+      <span>
+        {{ stayNights }}
+
+        {{
+          stayNights === 1
+            ? 'night'
+            : 'nights'
+        }}
+      </span>
+
+      <strong class="text-end">
+        {{
+          estimatedSubtotal
+            | number
+        }}
+
+        {{
+          property.currency ||
+          'EGP'
+        }}
+
+        before service fee
+      </strong>
+    </div>
+  }
+
+  <button
+    type="button"
+    class="booking-submit w-100"
+    (click)="onBookNow()"
+    [disabled]="isBusy"
+  >
+    @if (isQuoteLoading) {
+      <span
+        class="spinner-border spinner-border-sm me-2"
+        aria-hidden="true"
+      ></span>
+
+      Checking availability...
+    } @else if (isSubmitting) {
+      <span
+        class="spinner-border spinner-border-sm me-2"
+        aria-hidden="true"
+      ></span>
+
+      Processing...
+    } @else {
+      Book Now
+    }
+  </button>
+</div>
+
+@if (showBookingTermsModal) {
+  <div class="terms-modal-backdrop">
+    <div
+      class="terms-modal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="booking-terms-title"
+    >
+      <div class="terms-modal-header">
+        <div>
+          <span class="terms-label">
+            Before you book
+          </span>
+
+          <h3 id="booking-terms-title">
+            Review booking terms
+          </h3>
+        </div>
+
+        <button
+          type="button"
+          class="terms-close-btn"
+          (click)="closeBookingTermsModal()"
+          [disabled]="isSubmitting"
+          aria-label="Close booking terms"
+        >
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <div class="terms-booking-summary">
+        <div>
+          <span>
+            Check-in
+          </span>
+
+          <strong>
+            {{ bookingData.checkInDate }}
+          </strong>
+        </div>
+
+        <div>
+          <span>
+            Check-out
+          </span>
+
+          <strong>
+            {{ bookingData.checkOutDate }}
+          </strong>
+        </div>
+
+        <div>
+          <span>
+            Guests
+          </span>
+
+          <strong>
+            {{ bookingData.guestsCount }}
+          </strong>
+        </div>
+
+        <div>
+          <span>
+            Nights
+          </span>
+
+          <strong>
+            {{ stayNights }}
+          </strong>
+        </div>
+
+        <div>
+          <span>
+            Subtotal
+          </span>
+
+          <strong>
+            {{
+              estimatedSubtotal
+                | number
+            }}
+
+            {{ quoteCurrency }}
+          </strong>
+        </div>
+
+        <div>
+          <span>
+            Service fee
+          </span>
+
+          <strong>
+            {{
+              estimatedServiceFee
+                | number
+            }}
+
+            {{ quoteCurrency }}
+          </strong>
+        </div>
+
+        <div class="terms-total-item">
+          <span>
+            Total
+          </span>
+
+          <strong>
+            {{
+              estimatedTotal
+                | number
+            }}
+
+            {{ quoteCurrency }}
+          </strong>
+        </div>
+      </div>
+
+      <div class="terms-section">
+        <div class="terms-section-icon">
+          <i class="fa-solid fa-rotate-left"></i>
+        </div>
+
+        <div>
+          <h4>
+            Cancellation policy:
+            {{ cancellationPolicyTitle }}
+          </h4>
+
+          <p>
+            {{ cancellationPolicyDescription }}
+          </p>
+
+          <p>
+            The cancellation policy applied when the booking
+            is created is stored as a snapshot. Later host
+            changes do not alter this booking.
+          </p>
+        </div>
+      </div>
+
+      <div class="terms-section">
+        <div class="terms-section-icon warning">
+          <i class="fa-solid fa-triangle-exclamation"></i>
+        </div>
+
+        <div>
+          <h4>
+            Repeated confirmed cancellations
+          </h4>
+
+          <p>
+            Repeated confirmed booking cancellations may trigger
+            a warning, an admin review, or a temporary booking
+            restriction. Pending bookings, failed payments,
+            host cancellations, and admin cancellations are not
+            treated as guest cancellation abuse.
+          </p>
+        </div>
+      </div>
+
+      <div class="terms-section">
+        <div class="terms-section-icon">
+          <i class="fa-solid fa-house-circle-check"></i>
+        </div>
+
+        <div>
+          <h4>
+            Property rules
+          </h4>
+
+          <p>
+            You must follow the listing rules and the host's valid
+            check-in instructions. Violations may lead to a report,
+            penalty, or temporary account restriction.
+          </p>
+
+          <ul class="terms-rules-list">
+            @for (rule of propertyRulesList; track rule) {
+              <li>
+                {{ rule }}
+              </li>
+            }
+          </ul>
+        </div>
+      </div>
+
+      <div class="terms-section">
+        <div class="terms-section-icon">
+          <i class="fa-solid fa-camera"></i>
+        </div>
+
+        <div>
+          <h4>
+            Complaints and evidence
+          </h4>
+
+          <p>
+            If the property is materially different from the
+            listing, you can submit a complaint and attach evidence
+            such as property photos, a selfie at the property,
+            and a clear issue description for admin review.
+          </p>
+
+          <p>
+            Admin review may result in a partial refund, full
+            refund, payout hold, or host action. False or abusive
+            reports may also trigger account review.
+          </p>
+        </div>
+      </div>
+
+      <label class="terms-check final-terms-check">
+        <input
+          type="checkbox"
+          [disabled]="isSubmitting"
+          [(ngModel)]="acceptedAllBookingTerms"
+        />
+
+        <span>
+          I have read and agree to the booking terms,
+          cancellation policy, repeated cancellation rules,
+          property rules, and complaint policy.
+        </span>
+      </label>
+
+      @if (termsErrorMessage) {
+        <div
+          class="alert alert-danger py-2 small mt-3"
+          aria-live="assertive"
+        >
+          {{ termsErrorMessage }}
+        </div>
+      }
+
+      @if (statusMessage && isSubmitting) {
+        <div
+          class="alert alert-info py-2 small mt-3"
+          aria-live="polite"
+        >
+          <span
+            class="spinner-border spinner-border-sm me-2"
+            aria-hidden="true"
+          ></span>
+
+          {{ statusMessage }}
+        </div>
+      }
+
+      <div class="terms-modal-actions">
+        <button
+          type="button"
+          class="terms-secondary-btn"
+          (click)="closeBookingTermsModal()"
+          [disabled]="isSubmitting"
+        >
+          Cancel
+        </button>
+
+        <button
+          type="button"
+          class="terms-primary-btn"
+          (click)="confirmBookingTermsAndContinue()"
+          [disabled]="
+            !areAllTermsAccepted ||
+            isSubmitting
+          "
+        >
+          @if (isSubmitting) {
+            <span
+              class="spinner-border spinner-border-sm me-2"
+              aria-hidden="true"
+            ></span>
+
+            Processing...
+          } @else {
+            Confirm & Continue
+          }
+        </button>
+      </div>
+    </div>
+  </div>
+}

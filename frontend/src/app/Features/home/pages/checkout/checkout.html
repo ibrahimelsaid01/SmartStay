@@ -1,0 +1,179 @@
+<div class="checkout-page">
+  <div class="checkout-card">
+    <h1 class="checkout-title">
+      Complete your payment
+    </h1>
+
+    <p class="checkout-subtitle">
+      Your booking was created successfully. Complete payment before the
+      reservation window expires.
+    </p>
+
+    @if (paymentResponse) {
+      <div class="payment-summary">
+        <div>
+          <span class="summary-label">
+            Amount
+          </span>
+
+          <strong>
+            {{ paymentResponse.amount | number }}
+            {{ paymentResponse.currency }}
+          </strong>
+        </div>
+
+        <div>
+          <span class="summary-label">
+            Status
+          </span>
+
+          <strong>
+            {{ paymentResponse.status }}
+          </strong>
+        </div>
+      </div>
+    }
+
+    @if (
+      paymentResponse &&
+      !isPaymentDeadlineUnavailable
+    ) {
+      <section
+        class="payment-deadline"
+        [class.is-urgent]="
+          isPaymentWindowUrgent
+        "
+        [class.is-expired]="
+          isPaymentExpired
+        "
+        aria-live="polite"
+      >
+        <i
+          class="bi"
+          [class.bi-clock-history]="
+            !isPaymentExpired
+          "
+          [class.bi-hourglass-bottom]="
+            isPaymentExpired
+          "
+          aria-hidden="true"
+        ></i>
+
+        <div>
+          <span class="deadline-label">
+            {{
+              isPaymentExpired
+                ? 'Payment window expired'
+                : 'Time remaining to pay'
+            }}
+          </span>
+
+          <strong class="deadline-countdown">
+            {{ paymentCountdownLabel }}
+          </strong>
+
+          @if (
+            paymentResponse.bookingExpiresAt
+          ) {
+            <small>
+              Deadline:
+              {{
+                paymentResponse.bookingExpiresAt
+                  | date: 'medium'
+              }}
+            </small>
+          }
+        </div>
+      </section>
+    }
+
+    @if (errorMessage) {
+      <div
+        class="alert alert-danger py-2 small mb-3"
+        role="alert"
+      >
+        {{ errorMessage }}
+      </div>
+    }
+
+    @if (isPreparingPayment) {
+      <div
+        class="payment-loading-box"
+        aria-live="polite"
+      >
+        <span
+          class="spinner-border spinner-border-sm me-2"
+          aria-hidden="true"
+        ></span>
+
+        {{ loadingMessage }}
+      </div>
+    }
+
+    <div
+      #paymentElementContainer
+      class="stripe-payment-element"
+      [class.is-hidden]="
+        (!isPaymentReady &&
+          !isPreparingPayment) ||
+        isPaymentExpired ||
+        isPaymentDeadlineUnavailable
+      "
+    ></div>
+
+    @if (
+      !isPreparingPayment &&
+      !isPaymentReady &&
+      errorMessage &&
+      !isPaymentExpired &&
+      !isPaymentDeadlineUnavailable
+    ) {
+      <button
+        type="button"
+        class="pay-button retry-button"
+        (click)="retryPreparePayment()"
+      >
+        Retry preparing payment
+      </button>
+    }
+
+    @if (
+      isPaymentExpired ||
+      isPaymentDeadlineUnavailable
+    ) {
+      <button
+        type="button"
+        class="pay-button bookings-button"
+        (click)="goToMyBookings()"
+      >
+        Go to My Bookings
+      </button>
+    }
+
+    <button
+      type="button"
+      class="pay-button"
+      (click)="payNow()"
+      [disabled]="!canPayNow"
+    >
+      @if (isPaymentExpired) {
+        Payment window expired
+      } @else if (
+        isPaymentDeadlineUnavailable
+      ) {
+        Payment deadline unavailable
+      } @else if (isPaying) {
+        Processing payment...
+      } @else if (isPreparingPayment) {
+        Preparing payment...
+      } @else {
+        Pay now
+      }
+    </button>
+
+    <p class="secure-note">
+      Your card details are processed securely by Stripe. SmartStay does not
+      store card numbers or CVV.
+    </p>
+  </div>
+</div>
