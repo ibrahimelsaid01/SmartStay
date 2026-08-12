@@ -1,4 +1,5 @@
-\# SmartStay
+<img width="1920" height="1080" alt="Screenshot 2026-08-12 070120" src="https://github.com/user-attachments/assets/68c4304a-56aa-4fdb-a340-1894a2636cf8" />\# SmartStay
+<img width="1920" height="1080" alt="Screenshot 2026-08-12 065604" src="https://github.com/user-attachments/assets/93ec4b93-e109-4225-9e0a-4f6861284dee" />
 
 
 
@@ -269,6 +270,58 @@ Administrators have protected access to management and moderation functionality 
 
 
 \---
+
+\## Screenshots
+
+
+
+Project screenshots can be added here as the repository documentation is finalized.
+
+
+
+\### Home Page
+<img width="1920" height="1080" alt="Screenshot 2026-08-12 065604" src="https://github.com/user-attachments/assets/ffd73e82-ac2f-4d37-a604-92864572bf14" />
+<img width="1920" height="1080" alt="Screenshot 2026-08-12 065627" src="https://github.com/user-attachments/assets/70c6f19f-0c03-4b90-9d42-00c966d1a922" />
+<img width="1920" height="1080" alt="Screenshot 2026-08-12 070059" src="https://github.com/user-attachments/assets/12cb55cf-a2bf-47b6-9940-a668dd86343c" />
+<img width="1920" height="1080" alt="Screenshot 2026-08-12 070106" src="https://github.com/user-attachments/assets/b635caf9-0f59-426d-a3cd-ffbf6676ccea" />
+<img width="1920" height="1080" alt="Screenshot 2026-08-12 070115" src="https://github.com/user-attachments/assets/ad16a504-4108-4a7e-940e-e17a739024c5" />
+<img width="1920" height="1080" alt="Screenshot 2026-08-12 070120" src="https://github.com/user-attachments/assets/cf4c828e-f777-4eed-9ffc-1ec31f881f2f" />
+
+\### Property Discovery
+
+<img width="1920" height="1080" alt="Screenshot 2026-08-12 070059" src="https://github.com/user-attachments/assets/dd2548e1-8f5d-45a1-94c8-dea8e223a0b5" />
+
+<img width="1920" height="1080" alt="Screenshot 2026-08-12 070106" src="https://github.com/user-attachments/assets/d018523c-d3a3-4f4d-bd26-32a3f599a3e8" />
+
+<img width="1920" height="1080" alt="Screenshot 2026-08-12 090222" src="https://github.com/user-attachments/assets/79ab6b00-70fd-479c-84e3-4fef924f9e25" />
+<img width="1920" height="1080" alt="Screenshot 2026-08-12 090236" src="https://github.com/user-attachments/assets/9c5363e5-d208-41f5-bb6c-675eb77078fd" />
+<img width="1920" height="1080" alt="Screenshot 2026-08-12 090242" src="https://github.com/user-attachments/assets/ca80b9fe-46db-4300-8bae-d6d9de65859d" />
+<img width="1920" height="1080" alt="Screenshot 2026-08-12 090253" src="https://github.com/user-attachments/assets/654c59cd-67bf-4601-84b8-000fb1459353" />
+
+
+\### Booking
+
+<img width="1920" height="1080" alt="Screenshot 2026-08-12 070254" src="https://github.com/user-attachments/assets/cf620f19-1cdd-4ec1-b1f6-f8226755312e" />
+
+<img width="1920" height="1080" alt="Screenshot 2026-08-12 070301" src="https://github.com/user-attachments/assets/6e3bef30-b4e3-42ba-9ec1-fee086e53b4a" />
+
+
+\### User Profile
+
+
+<img width="1920" height="1080" alt="Screenshot 2026-08-12 070243" src="https://github.com/user-attachments/assets/0b395a84-e22f-4c57-9dc8-0208d7a7810f" />
+
+
+\### Admin Dashboard
+
+
+<img width="1920" height="1080" alt="Screenshot 2026-08-12 070254" src="https://github.com/user-attachments/assets/5b4bc6af-3040-41b9-b6ca-6245bbf5a554" />
+
+<img width="1920" height="1080" alt="Screenshot 2026-08-12 070301" src="https://github.com/user-attachments/assets/039ba0dd-4734-44a0-8d70-5045c96be004" />
+
+<img width="1920" height="1080" alt="Screenshot 2026-08-12 070323" src="https://github.com/user-attachments/assets/525ec651-47f3-4bf0-b572-f543db054007" />
+
+
 
 
 
@@ -947,74 +1000,6 @@ frontend
 
 
 The ASP.NET Core API can be deployed to a compatible .NET hosting environment with SQL Server access and the required environment-specific application configuration.
-
-
-
-\---
-
-
-
-\## Screenshots
-
-
-
-Project screenshots can be added here as the repository documentation is finalized.
-
-
-
-\### Home Page
-
-
-
-<!-- Add SmartStay home page screenshot -->
-
-
-
-\### Property Discovery
-
-
-
-<!-- Add property discovery screenshot -->
-
-
-
-\### Property Details
-
-
-
-<!-- Add property details screenshot -->
-
-
-
-\### Booking
-
-
-
-<!-- Add booking screenshot -->
-
-
-
-\### User Profile
-
-
-
-<!-- Add user profile screenshot -->
-
-
-
-\### Host Dashboard
-
-
-
-<!-- Add host dashboard screenshot -->
-
-
-
-\### Admin Dashboard
-
-
-
-<!-- Add admin dashboard screenshot -->
 
 
 
