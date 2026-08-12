@@ -1,4 +1,3 @@
-<img width="1920" height="1080" alt="Screenshot 2026-08-12 070120" src="https://github.com/user-attachments/assets/68c4304a-56aa-4fdb-a340-1894a2636cf8" />\# SmartStay
 <img width="1920" height="1080" alt="Screenshot 2026-08-12 065604" src="https://github.com/user-attachments/assets/93ec4b93-e109-4225-9e0a-4f6861284dee" />
 
 
