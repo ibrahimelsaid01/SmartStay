@@ -1,281 +1,199 @@
 <img width="1920" height="1080" alt="Screenshot 2026-08-12 065604" src="https://github.com/user-attachments/assets/93ec4b93-e109-4225-9e0a-4f6861284dee" />
 
+SmartStay is a full-stack accommodation marketplace built with Angular and ASP.NET Core Web API. It provides property discovery, booking workflows, host management, secure authentication, online payments, reviews, wishlists, notifications, and administrative moderation through a structured multi-role architecture.
 
-
-SmartStay is a full-stack accommodation marketplace built with \*\*Angular\*\* and \*\*ASP.NET Core Web API\*\*. It provides property discovery, booking workflows, host management, secure authentication, online payments, reviews, wishlists, notifications, and administrative moderation through a structured multi-role architecture.
-
-
-
-\## Overview
-
-
+Overview
 
 SmartStay was developed as a complete accommodation booking platform supporting three main application roles:
 
+Guests / Users
 
+Hosts
 
-\* Guests / Users
-
-\* Hosts
-
-\* Administrators
-
-
+Administrators
 
 The application combines a modern Angular frontend with a layered ASP.NET Core backend and SQL Server persistence.
 
-
-
 The backend is separated into API, business-logic, and data-access projects, while the frontend uses Angular standalone architecture, route guards, interceptors, RxJS, and reusable feature modules.
 
+Key Features
 
+Authentication & Account Management
 
-\---
+Email OTP authentication
 
+OTP verification and resend workflows
 
+JWT access-token authentication
 
-\## Key Features
+Refresh-token rotation
 
+Secure refresh-token cookies
 
+Google authentication
 
-\### Authentication \& Account Management
+Facebook authentication
 
+User profile management
 
+Account activation and deactivation
 
-\* Email OTP authentication
+Role-based authorization
 
-\* OTP verification and resend workflows
+Property Discovery
 
-\* JWT access-token authentication
+Property browsing
 
-\* Refresh-token rotation
+Property details
 
-\* Secure refresh-token cookies
+Property images
 
-\* Google authentication
+Amenities
 
-\* Facebook authentication
+Location information
 
-\* User profile management
+Property reviews
 
-\* Account activation and deactivation
+Wishlist support
 
-\* Role-based authorization
+Property search and discovery workflows
 
+Host Features
 
+Become-a-host workflow
 
-\### Property Discovery
+Host profile management
 
+Host identity verification
 
+Property creation and editing
 
-\* Property browsing
+Property image uploads
 
-\* Property details
+Property availability management
 
-\* Property images
+Property submission for administrative review
 
-\* Amenities
+Host booking management
 
-\* Location information
+Host dashboard summaries
 
-\* Property reviews
+Booking System
 
-\* Wishlist support
+Property booking workflows
 
-\* Property search and discovery workflows
+Booking status management
 
+Booking lifecycle processing
 
+Booking cancellation
 
-\### Host Features
+Guest booking history
 
+Host booking management
 
+Booking restrictions and validation
 
-\* Become-a-host workflow
+Automated background processing for booking lifecycle updates
 
-\* Host profile management
+Payments
 
-\* Host identity verification
+Stripe payment integration
 
-\* Property creation and editing
+Checkout workflows
 
-\* Property image uploads
+Stripe webhook handling
 
-\* Property availability management
+Booking payment tracking
 
-\* Property submission for administrative review
+Refund workflows
 
-\* Host booking management
+Host payout-related functionality
 
-\* Host dashboard summaries
+Reviews & Wishlists
 
+Property reviews
 
+Review images
 
-\### Booking System
+Review replies
 
+Helpful review interactions
 
+User review management
 
-\* Property booking workflows
+Wishlist management
 
-\* Booking status management
+Administrative review moderation
 
-\* Booking lifecycle processing
+Notifications & Support
 
-\* Booking cancellation
+User notifications
 
-\* Guest booking history
+Notification references to related application resources
 
-\* Host booking management
+Support ticket workflows
 
-\* Booking restrictions and validation
+Support attachments
 
-\* Automated background processing for booking lifecycle updates
+Complaint and support management
 
+Administrative support handling
 
+Administration
 
-\### Payments
+Admin dashboard
 
+User management
 
+Host approval and rejection
 
-\* Stripe payment integration
+Property verification and moderation
 
-\* Checkout workflows
+Booking management
 
-\* Stripe webhook handling
+Review moderation
 
-\* Booking payment tracking
+Complaints and support management
 
-\* Refund workflows
+Financial and payout-related administration
 
-\* Host payout-related functionality
+Administrative action tracking
 
+Media & External Services
 
+Cloudinary-based image and document uploads
 
-\### Reviews \& Wishlists
+Stripe payment services
 
+Google authentication
 
+Facebook authentication
 
-\* Property reviews
+External AI recommendation/chatbot integrations
 
-\* Review images
+User Roles
 
-\* Review replies
-
-\* Helpful review interactions
-
-\* User review management
-
-\* Wishlist management
-
-\* Administrative review moderation
-
-
-
-\### Notifications \& Support
-
-
-
-\* User notifications
-
-\* Notification references to related application resources
-
-\* Support ticket workflows
-
-\* Support attachments
-
-\* Complaint and support management
-
-\* Administrative support handling
-
-
-
-\### Administration
-
-
-
-\* Admin dashboard
-
-\* User management
-
-\* Host approval and rejection
-
-\* Property verification and moderation
-
-\* Booking management
-
-\* Review moderation
-
-\* Complaints and support management
-
-\* Financial and payout-related administration
-
-\* Administrative action tracking
-
-
-
-\### Media \& External Services
-
-
-
-\* Cloudinary-based image and document uploads
-
-\* Stripe payment services
-
-\* Google authentication
-
-\* Facebook authentication
-
-\* External AI recommendation/chatbot integrations
-
-
-
-\---
-
-
-
-\## User Roles
-
-
-
-\### Guest
-
-
+Guest
 
 Unauthenticated visitors can browse publicly available property information and access authentication workflows.
 
-
-
-\### User
-
-
+User
 
 Authenticated users can manage their profiles, browse properties, maintain wishlists, create bookings, complete supported payment workflows, submit reviews, receive notifications, and interact with support features.
 
-
-
-\### Host
-
-
+Host
 
 Approved hosts can manage host-specific information, create and maintain property listings, manage availability and bookings, and use host dashboard functionality.
 
-
-
-\### Administrator
-
-
+Administrator
 
 Administrators have protected access to management and moderation functionality including users, hosts, properties, bookings, reviews, support cases, and financial workflows.
 
+Screenshots
 
+Home Page
 
-\---
-
-\## Screenshots
-
-
-
-
-\### Home Page
 <img width="1920" height="1080" alt="Screenshot 2026-08-12 065604" src="https://github.com/user-attachments/assets/ffd73e82-ac2f-4d37-a604-92864572bf14" />
 <img width="1920" height="1080" alt="Screenshot 2026-08-12 065627" src="https://github.com/user-attachments/assets/70c6f19f-0c03-4b90-9d42-00c966d1a922" />
 <img width="1920" height="1080" alt="Screenshot 2026-08-12 070059" src="https://github.com/user-attachments/assets/12cb55cf-a2bf-47b6-9940-a668dd86343c" />
@@ -283,7 +201,7 @@ Administrators have protected access to management and moderation functionality 
 <img width="1920" height="1080" alt="Screenshot 2026-08-12 070115" src="https://github.com/user-attachments/assets/ad16a504-4108-4a7e-940e-e17a739024c5" />
 <img width="1920" height="1080" alt="Screenshot 2026-08-12 070120" src="https://github.com/user-attachments/assets/cf4c828e-f777-4eed-9ffc-1ec31f881f2f" />
 
-\### Property Discovery
+Property Discovery
 
 <img width="1920" height="1080" alt="Screenshot 2026-08-12 070059" src="https://github.com/user-attachments/assets/dd2548e1-8f5d-45a1-94c8-dea8e223a0b5" />
 
@@ -294,22 +212,17 @@ Administrators have protected access to management and moderation functionality 
 <img width="1920" height="1080" alt="Screenshot 2026-08-12 090242" src="https://github.com/user-attachments/assets/ca80b9fe-46db-4300-8bae-d6d9de65859d" />
 <img width="1920" height="1080" alt="Screenshot 2026-08-12 090253" src="https://github.com/user-attachments/assets/654c59cd-67bf-4601-84b8-000fb1459353" />
 
-
-\### Booking
+Booking
 
 <img width="1920" height="1080" alt="Screenshot 2026-08-12 070254" src="https://github.com/user-attachments/assets/cf620f19-1cdd-4ec1-b1f6-f8226755312e" />
 
 <img width="1920" height="1080" alt="Screenshot 2026-08-12 070301" src="https://github.com/user-attachments/assets/6e3bef30-b4e3-42ba-9ec1-fee086e53b4a" />
 
-
-\### User Profile
-
+User Profile
 
 <img width="1920" height="1080" alt="Screenshot 2026-08-12 070243" src="https://github.com/user-attachments/assets/0b395a84-e22f-4c57-9dc8-0208d7a7810f" />
 
-
-\### Admin Dashboard
-
+Admin Dashboard
 
 <img width="1920" height="1080" alt="Screenshot 2026-08-12 070254" src="https://github.com/user-attachments/assets/5b4bc6af-3040-41b9-b6ca-6245bbf5a554" />
 
@@ -317,241 +230,176 @@ Administrators have protected access to management and moderation functionality 
 
 <img width="1920" height="1080" alt="Screenshot 2026-08-12 070323" src="https://github.com/user-attachments/assets/525ec651-47f3-4bf0-b572-f543db054007" />
 
+Tech Stack
 
+Frontend
 
+Angular 21
 
+TypeScript
 
-\## Tech Stack
+RxJS
 
+Angular standalone components
 
+Angular Router
 
-\### Frontend
+Angular route guards
 
+Angular HTTP interceptors
 
+Angular Material
 
-\* Angular 21
+Bootstrap 5
 
-\* TypeScript
+ng-bootstrap
 
-\* RxJS
+ApexCharts
 
-\* Angular standalone components
+Stripe.js
 
-\* Angular Router
+Backend
 
-\* Angular route guards
+.NET 10
 
-\* Angular HTTP interceptors
+ASP.NET Core Web API
 
-\* Angular Material
+C#
 
-\* Bootstrap 5
+ASP.NET Core Identity
 
-\* ng-bootstrap
+JWT authentication
 
-\* ApexCharts
+Dependency Injection
 
-\* Stripe.js
+Background Services
 
+Data Access
 
+Entity Framework Core
 
-\### Backend
+SQL Server
 
+EF Core Migrations
 
+Integrations
 
-\* .NET 10
+Stripe
 
-\* ASP.NET Core Web API
+Cloudinary
 
-\* C#
+Google Authentication
 
-\* ASP.NET Core Identity
+Facebook Authentication
 
-\* JWT authentication
+SMTP / Email services
 
-\* Dependency Injection
+External AI services
 
-\* Background Services
+Development Tools
 
+Visual Studio
 
+Visual Studio Code
 
-\### Data Access
+Git
 
+GitHub
 
+Swagger / OpenAPI
 
-\* Entity Framework Core
+Vercel configuration for the Angular frontend
 
-\* SQL Server
-
-\* EF Core Migrations
-
-
-
-\### Integrations
-
-
-
-\* Stripe
-
-\* Cloudinary
-
-\* Google Authentication
-
-\* Facebook Authentication
-
-\* SMTP / Email services
-
-\* External AI services
-
-
-
-\### Development Tools
-
-
-
-\* Visual Studio
-
-\* Visual Studio Code
-
-\* Git
-
-\* GitHub
-
-\* Swagger / OpenAPI
-
-\* Vercel configuration for the Angular frontend
-
-
-
-\---
-
-
-
-\## Architecture
-
-
+Architecture
 
 SmartStay uses a full-stack architecture with a layered backend.
 
 
+                          Browser
 
-```text
+                             |
 
-&#x20;                          Browser
+                             v
 
-&#x20;                             |
+                    Angular Frontend
 
-&#x20;                             v
+                             |
 
-&#x20;                    Angular Frontend
+                       HTTP / REST
 
-&#x20;                             |
+                             |
 
-&#x20;                       HTTP / REST
+                             v
 
-&#x20;                             |
+                      SmartStay.Api
 
-&#x20;                             v
+                             |
 
-&#x20;                      SmartStay.Api
+                             v
 
-&#x20;                             |
+                      SmartStayBLL
 
-&#x20;                             v
+                   Business Logic Layer
 
-&#x20;                      SmartStayBLL
+                             |
 
-&#x20;                   Business Logic Layer
+                             v
 
-&#x20;                             |
+                      SmartStayDAL
 
-&#x20;                             v
+                    Data Access Layer
 
-&#x20;                      SmartStayDAL
+                             |
 
-&#x20;                    Data Access Layer
+                             v
 
-&#x20;                             |
-
-&#x20;                             v
-
-&#x20;                        SQL Server
-
-```
+                        SQL Server
 
 
+Backend Layers
 
-\### Backend Layers
-
-
-
-\#### `SmartStay.Api`
-
-
+SmartStay.Api
 
 The presentation/API layer containing application startup configuration, API controllers, authentication configuration, middleware, external-service integration, and HTTP endpoints.
 
-
-
-\#### `SmartStayBLL`
-
-
+SmartStayBLL
 
 Contains application business logic and service implementations for features such as properties, bookings, users, hosts, administration, payments, reviews, and related workflows.
 
-
-
-\#### `SmartStayDAL`
-
-
+SmartStayDAL
 
 Contains database entities, Entity Framework Core configuration, migrations, and persistence-related functionality.
 
-
-
-\### Frontend
-
-
+Frontend
 
 The Angular application contains feature-oriented UI code for:
 
+Authentication
 
+Home and property discovery
 
-\* Authentication
+Property details
 
-\* Home and property discovery
+User profiles
 
-\* Property details
+Bookings
 
-\* User profiles
+Host management
 
-\* Bookings
+Administration
 
-\* Host management
+Reviews
 
-\* Administration
+Wishlists
 
-\* Reviews
+Support
 
-\* Wishlists
+Payments
 
-\* Support
+Legal pages
 
-\* Payments
+Project Structure
 
-\* Legal pages
-
-
-
-\---
-
-
-
-\## Project Structure
-
-
-
-```text
 
 SmartStay/
 
@@ -597,185 +445,113 @@ SmartStay/
 
 └── README.md
 
-```
 
+Database
 
-
-\---
-
-
-
-\## Database
-
-
-
-SmartStay uses \*\*SQL Server\*\* with \*\*Entity Framework Core\*\*.
-
-
+SmartStay uses SQL Server with Entity Framework Core.
 
 Database evolution is managed through EF Core migrations.
 
-
-
 Major domain areas include:
 
+Users
 
+Host profiles
 
-\* Users
+Host identity documents
 
-\* Host profiles
+Properties
 
-\* Host identity documents
+Property images
 
-\* Properties
+Amenities
 
-\* Property images
+Bookings
 
-\* Amenities
+Booking payments
 
-\* Bookings
+Wishlists
 
-\* Booking payments
+Reviews
 
-\* Wishlists
+Review images
 
-\* Reviews
+Notifications
 
-\* Review images
+Support tickets
 
-\* Notifications
+Administrative data
 
-\* Support tickets
-
-\* Administrative data
-
-
-
-\---
-
-
-
-\## Authentication \& Security
-
-
+Authentication & Security
 
 The application includes several authentication and authorization mechanisms:
 
+ASP.NET Core Identity
 
+JWT access tokens
 
-\* ASP.NET Core Identity
+Refresh-token rotation
 
-\* JWT access tokens
+HttpOnly refresh-token cookies
 
-\* Refresh-token rotation
+Role-based authorization
 
-\* HttpOnly refresh-token cookies
+Email OTP verification
 
-\* Role-based authorization
+Google authentication
 
-\* Email OTP verification
+Facebook authentication
 
-\* Google authentication
+Account status validation
 
-\* Facebook authentication
+Server-side input validation
 
-\* Account status validation
+HTTPS configuration
 
-\* Server-side input validation
-
-\* HTTPS configuration
-
-\* Global exception handling
-
-
+Global exception handling
 
 Sensitive production configuration such as database credentials, signing keys, SMTP credentials, payment secrets, and third-party API secrets should be supplied through secure configuration mechanisms and must not be committed to public source control.
 
+Getting Started
 
-
-\---
-
-
-
-\## Getting Started
-
-
-
-\### Prerequisites
-
-
+Prerequisites
 
 Install:
 
+.NET 10 SDK
 
+Node.js and npm
 
-\* .NET 10 SDK
+SQL Server
 
-\* Node.js and npm
+Visual Studio, Visual Studio Code, or another compatible IDE
 
-\* SQL Server
+1. Clone the Repository
 
-\* Visual Studio, Visual Studio Code, or another compatible IDE
-
-
-
-\---
-
-
-
-\### 1. Clone the Repository
-
-
-
-```bash
 
 git clone https://github.com/ibrahimelsaid01/SmartStay.git
 
 cd SmartStay
 
-```
 
-
-
-\---
-
-
-
-\### 2. Backend Setup
-
-
+2. Backend Setup
 
 Navigate to:
 
 
-
-```bash
-
 cd backend
-
-```
-
 
 
 Restore and build the solution:
 
 
-
-```bash
-
 dotnet restore SmartStay.slnx
 
 dotnet build SmartStay.slnx
 
-```
-
-
 
 Configure the required application settings for:
 
-
-
-```text
 
 ConnectionStrings
 
@@ -793,151 +569,71 @@ Cloudinary
 
 Stripe
 
-```
-
-
 
 Do not commit real credentials to source control.
 
-
-
 Apply the Entity Framework Core migrations using the appropriate startup and migration projects for the solution.
-
-
 
 Then run the API project:
 
 
-
-```bash
-
 dotnet run --project SmartStay.Api
 
-```
 
-
-
-\---
-
-
-
-\### 3. Frontend Setup
-
-
+3. Frontend Setup
 
 Navigate to:
 
 
-
-```bash
-
 cd frontend
-
-```
-
 
 
 Install dependencies:
 
 
-
-```bash
-
 npm install
-
-```
-
 
 
 Run the Angular development server:
 
 
-
-```bash
-
 npm start
-
-```
-
 
 
 A production build can be created using:
 
 
-
-```bash
-
 npm run build
 
-```
 
-
-
-\---
-
-
-
-\## Build Verification
-
-
+Build Verification
 
 The reorganized repository structure has been verified independently for both application sides.
 
+Backend
 
-
-\### Backend
-
-
-
-```bash
 
 dotnet build SmartStay.slnx
-
-```
-
 
 
 Build completes successfully.
 
+Frontend
 
-
-\### Frontend
-
-
-
-```bash
 
 npm run build
-
-```
-
 
 
 Angular production bundle generation completes successfully.
 
-
-
 The current frontend build may report non-blocking optimization and stylesheet budget warnings.
 
-
-
-\---
-
-
-
-\## Configuration
-
-
+Configuration
 
 SmartStay requires configuration for several backend and third-party services.
 
-
-
 Typical configuration sections include:
 
-
-
-```text
 
 ConnectionStrings
 
@@ -955,119 +651,63 @@ Cloudinary
 
 Stripe
 
-```
-
-
 
 Actual credentials and secrets should be configured locally or through deployment environment configuration rather than documented in the repository.
 
-
-
-\---
-
-
-
-\## Deployment
-
-
+Deployment
 
 The application supports independent deployment of its frontend and backend.
 
-
-
-\### Frontend
-
-
+Frontend
 
 The Angular application contains Vercel configuration and can be deployed with the repository root configured to:
 
 
-
-```text
-
 frontend
 
-```
 
-
-
-\### Backend
-
-
+Backend
 
 The ASP.NET Core API can be deployed to a compatible .NET hosting environment with SQL Server access and the required environment-specific application configuration.
 
-
-
-\---
-
-
-
-\## Known Development Notes
-
-
+Known Development Notes
 
 The current project build contains a small number of non-blocking warnings that can be improved in future iterations, including:
 
+Angular stylesheet budget warnings for selected feature stylesheets
 
+CommonJS optimization warning related to html2pdf.js
 
-\* Angular stylesheet budget warnings for selected feature stylesheets
+Nullable-reference warnings in selected backend property services
 
-\* CommonJS optimization warning related to `html2pdf.js`
-
-\* Nullable-reference warnings in selected backend property services
-
-
-
-
-
-\## Future Improvements
-
-
+Future Improvements
 
 Potential improvements include:
 
+Automated backend unit and integration tests
 
+Expanded Angular component and service testing
 
-\* Automated backend unit and integration tests
+CI/CD workflows
 
-\* Expanded Angular component and service testing
+Docker support
 
-\* CI/CD workflows
+Centralized production configuration
 
-\* Docker support
+Additional API-level rate limiting
 
-\* Centralized production configuration
+Further bundle-size optimization
 
-\* Additional API-level rate limiting
+Resolution of remaining nullable-reference warnings
 
-\* Further bundle-size optimization
+Dependency security maintenance
 
-\* Resolution of remaining nullable-reference warnings
+Additional observability and structured application monitoring
 
-\* Dependency security maintenance
+Author
 
-\* Additional observability and structured application monitoring
+Ibrahim Elsaid
 
+GitHub: ibrahimelsaid01
 
-
-\---
-
-
-
-\## Author
-
-
-
-\*\*Ibrahim Elsaid\*\*
-
-
-
-GitHub: \[ibrahimelsaid01](https://github.com/ibrahimelsaid01)
-
-
-
-LinkedIn: [Ibrahim Elsaid](https://www.linkedin.com/in/ibrahimelsaid1/)
-
-
-
+LinkedIn: Ibrahim Elsaid
